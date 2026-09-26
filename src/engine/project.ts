@@ -13,6 +13,7 @@ import { layout, readGrid, type CellRole, type GridOptions } from "./grid";
 import { toChart, translate, type Construction, type Row, type Visible } from "./construction";
 import { longFloats, purlRelief, read, render, twoColour, type Carrier, type CarrierId, type ColourNames, type LegendEntry } from "./carrier";
 import { checkStitchCounts, writeRows } from "./pattern";
+import { CIPHERS, decipher, encipher, PUZZLE_LABEL, type CipherSettings } from "./ciphers";
 
 export const PROJECT_FORMAT = "unravel-the-purloined/project";
 export const PROJECT_VERSION = 1;
@@ -29,6 +30,8 @@ export interface ProjectSettings {
   layout: GridOptions;
   carrier: { id: CarrierId; colours?: ColourNames };
   construction: Construction;
+  /** Optional classical cipher, applied after normalizing and before encoding. */
+  cipher?: CipherSettings;
 }
 
 export interface Project {
@@ -38,6 +41,8 @@ export interface Project {
   settings: ProjectSettings;
   message: {
     normalized: string;
+    /** The enciphered text that is actually knitted, when a cipher is set. */
+    enciphered?: string;
     dropped: Dropped[];
     /** Anything the reader should know about how the text was changed or carried. */
     notes: string[];
@@ -62,7 +67,33 @@ function carrierFor(s: ProjectSettings["carrier"]): Carrier {
   return s.id === "two-colour" ? twoColour(s.colours) : purlRelief();
 }
 
-function encodeMessage(message: string, e: EncodingSettings): { normalized: string; dropped: Dropped[]; notes: string[]; bits: Bit[] } {
+const activeCipher = (c?: CipherSettings): CipherSettings | undefined => (c && c.kind !== "none" ? c : undefined);
+const SUBSTITUTION = new Set(["caesar", "keyword", "vigenere"]);
+
+function encodeMessage(message: string, e: EncodingSettings, c?: CipherSettings): { normalized: string; enciphered?: string; dropped: Dropped[]; notes: string[]; bits: Bit[] } {
+  const cipher = activeCipher(c);
+  if (!cipher) return encodePlain(message, e);
+  if (e.alphabet === "bacon" && e.variant === "historical24" && SUBSTITUTION.has(cipher.kind)) {
+    throw new Error("Bacon's 24-letter alphabet cannot carry every letter a substitution cipher makes (J and V). Use the 26-letter Bacon, or a transposition cipher.");
+  }
+  // Normalize for the alphabet first, then encipher, then encode the enciphered text.
+  const plain = encodePlain(message, e);
+  const enciphered = encipher(plain.normalized, cipher);
+  // The ciphertext uses only characters the alphabet carries, so it is encoded as is.
+  const bits =
+    e.alphabet === "morse" ? morse.toUnits(morse.encode(enciphered))
+    : e.alphabet === "bacon" ? bacon.encode(enciphered, e.variant)
+    : encodeFrame(enciphered, e.errorControl);
+  return {
+    normalized: plain.normalized,
+    enciphered,
+    dropped: plain.dropped,
+    notes: [...plain.notes, `${CIPHERS[cipher.kind].name}, key ${cipher.key.trim().toUpperCase()}. ${PUZZLE_LABEL}`],
+    bits,
+  };
+}
+
+function encodePlain(message: string, e: EncodingSettings): { normalized: string; dropped: Dropped[]; notes: string[]; bits: Bit[] } {
   if (e.alphabet === "morse") {
     const n = morse.normalize(message);
     return { normalized: n.text, dropped: n.dropped, notes: [], bits: morse.toUnits(morse.encode(n.text)) };
@@ -85,16 +116,16 @@ export function decodeRows(rows: readonly Row[], settings: ProjectSettings): str
   const cells = read(toChart(rows), carrierFor(settings.carrier)).cells;
   const bits = readGrid(cells, settings.layout.border).bits;
   const e = settings.encoding;
-  if (e.alphabet === "morse") return morse.decodeUnits(bits).text;
-  if (e.alphabet === "bacon") return bacon.decode(bits, e.variant).text;
-  return decodeFrame(bits, e.errorControl).text;
+  const text = e.alphabet === "morse" ? morse.decodeUnits(bits).text : e.alphabet === "bacon" ? bacon.decode(bits, e.variant).text : decodeFrame(bits, e.errorControl).text;
+  const cipher = activeCipher(settings.cipher);
+  return cipher ? decipher(text, cipher) : text;
 }
 
 const newId = () => globalThis.crypto?.randomUUID?.() ?? `p-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 /** Run the whole pipeline for one set of settings. */
 export function createProject(settings: ProjectSettings, id: string = newId()): Project {
-  const msg = encodeMessage(settings.message, settings.encoding);
+  const msg = encodeMessage(settings.message, settings.encoding, settings.cipher);
   const grid = layout(msg.bits, settings.layout);
   const carrier = carrierFor(settings.carrier);
   const chart = render(grid.cells, carrier);
@@ -108,7 +139,7 @@ export function createProject(settings: ProjectSettings, id: string = newId()): 
     version: PROJECT_VERSION,
     id,
     settings,
-    message: { normalized: msg.normalized, dropped: msg.dropped, notes: msg.notes },
+    message: { normalized: msg.normalized, ...(msg.enciphered !== undefined ? { enciphered: msg.enciphered } : {}), dropped: msg.dropped, notes: msg.notes },
     output: {
       bits: msg.bits,
       logicalGrid: grid.cells,

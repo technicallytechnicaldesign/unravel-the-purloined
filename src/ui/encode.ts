@@ -1,7 +1,7 @@
 // T09 encode tool: settings in, every pipeline stage out, in order.
 
 import { h, download, svgToPng } from "./h";
-import { carrierControls, check, constructionControl, encodingControls, field } from "./controls";
+import { carrierControls, check, cipherControls, constructionControl, encodingControls, field } from "./controls";
 import { createProject, exportProject, type Project } from "../engine/project";
 import { chartSvg } from "../engine/chartsvg";
 import { chartCsv, workbook } from "../engine/xlsx";
@@ -59,14 +59,24 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
       out.replaceChildren(h("li.step", {}, h("p.error", {}, "Width must be a whole number from 3 to 60.")));
       return;
     }
-    const p = createProject({
-      title: title.value || "Untitled",
-      message: message.value,
-      encoding: enc.get(),
-      layout: { width: w, border: border.input.checked },
-      carrier: car.get(),
-      construction: con.get(),
-    });
+    const cipher = cip.get();
+    let p: Project;
+    try {
+      p = createProject({
+        title: title.value || "Untitled",
+        message: message.value,
+        encoding: enc.get(),
+        layout: { width: w, border: border.input.checked },
+        carrier: car.get(),
+        construction: con.get(),
+        ...(cipher ? { cipher } : {}),
+      });
+    } catch (err) {
+      out.replaceChildren(h("li.step", {}, h("p.error", {}, err instanceof Error ? err.message : String(err))));
+      return;
+    }
+    let n = 0;
+    const next = () => ++n;
     const e = p.settings.encoding;
     const method = p.settings.construction.method;
     const dropped = [...new Set(p.message.dropped.map((d) => (/\s/.test(d.char) ? "space" : d.char)))];
@@ -76,35 +86,38 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
 
     out.replaceChildren(
       step(
-        1,
+        next(),
         "Normalize",
         h("p.mono.big", {}, p.message.normalized || "(nothing left to carry)"),
         dropped.length ? h("p.error.mono", {}, `Left out, this alphabet cannot carry: ${dropped.join(" ")}`) : "",
         ...p.message.notes.map((n) => h("p.hint", {}, n)),
       ),
+      p.message.enciphered !== undefined
+        ? step(next(), "Encipher", h("p.mono.big", {}, p.message.enciphered), h("p.hint", {}, "This is what gets knitted. The decoder needs the same cipher and key to read it back."))
+        : "",
       step(
-        2,
+        next(),
         e.alphabet === "fivebit" ? "Encode and add error checks" : e.alphabet === "morse" ? "Encode as Morse" : "Encode as A/B groups",
         h("p.hint", {}, `${p.output.bits.length} cells in the stream.`),
         symbolTable(p),
       ),
       step(
-        3,
+        next(),
         "Logical grid",
         h("p.hint", {}, `${p.output.logicalGrid.length} rows of ${stitches} cells. Row 1 at the bottom. The message runs right to left from the bottom, between the marker row and the top row.`),
         h("div.scroll", {}, logicalGrid(p.output.logicalGrid, p.output.roles)),
         h("p.legend.mono", {}, h("span", {}, h("i.lcell.b1.role-data"), " message 1"), h("span", {}, h("i.lcell.b0.role-data"), " message 0"), h("span", {}, h("i.lcell.b1.role-marker"), " marker, top, border, padding")),
       ),
-      step(4, "Chart", h("div.scroll.chart-svg", { role: "img", "aria-label": "Knitting chart" }), ...p.output.carrierNotes.map((n) => h("p.hint", {}, n))),
+      step(next(), "Chart", h("div.scroll.chart-svg", { role: "img", "aria-label": "Knitting chart" }), ...p.output.carrierNotes.map((n) => h("p.hint", {}, n))),
       step(
-        5,
+        next(),
         method === "round" ? "Knit it: rounds" : "Knit it: rows",
         h("p.hint", {}, `Cast on ${stitches} stitches. Work each line as written; right-side and wrong-side are already handled.`),
         h("ol.instructions.mono", {}, ...[...p.output.instructions].map((line) => h("li", {}, line))),
         ...p.output.checks.map((c) => h("p.error.mono", {}, c)),
       ),
       step(
-        6,
+        next(),
         "Check",
         h(`p.mono.big${matches ? "" : ".error"}`, {}, `Read back from the pattern: ${p.output.decoded || "(empty)"}`),
         h("p.hint", {}, matches ? "The pattern decodes to the message." : "The pattern does not decode to the message. Please report this."),
@@ -140,12 +153,14 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const enc = encodingControls(render);
   const car = carrierControls(render, true);
   const con = constructionControl(render);
+  const cip = cipherControls(render);
   for (const el of [message, title, width, border.input]) el.addEventListener("input", render);
 
   const form = h(
     "form.controls",
     { onsubmit: (ev: Event) => (ev.preventDefault(), render(), out.scrollIntoView({ behavior: "smooth" })) },
     field("MESSAGE", message),
+    cip.el,
     enc.el,
     h("div.control-group", {}, field("WIDTH (STITCHES)", width, "Border adds one each side."), border.el),
     car.el,

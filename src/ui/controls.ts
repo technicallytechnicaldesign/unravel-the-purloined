@@ -7,6 +7,7 @@ import { type EncodingSettings } from "../engine/project";
 import { type SymbolCode } from "../engine/errorcontrol";
 import { type Construction } from "../engine/construction";
 import { type CarrierId } from "../engine/carrier";
+import { CIPHERS, keyProblem, PUZZLE_LABEL, type CipherKind, type CipherSettings } from "../engine/ciphers";
 
 export function field(label: string, control: HTMLElement, hint?: string): HTMLLabelElement {
   return h("label.field", {}, h("span.mono.field-label", {}, label), control, hint ? h("span.hint", {}, hint) : null);
@@ -97,5 +98,37 @@ export function constructionControl(onChange: () => void) {
   return {
     el: field("CONSTRUCTION", el),
     get: (): Construction => (el.value === "round" ? { method: "round", firstRow: "RS" } : { method: "flat", firstRow: el.value === "flat-WS" ? "WS" : "RS" }),
+  };
+}
+
+/** Optional classical cipher: kind, key, and what the key means. */
+export function cipherControls(onChange: () => void) {
+  const kind = select("cipher", Object.entries(CIPHERS).map(([k, v]) => [k, v.name] as [string, string]));
+  const key = h("input", { type: "text", name: "cipher-key", maxlength: 40, autocomplete: "off", spellcheck: "false" });
+  const keyField = field("KEY", key);
+  const hint = h("p.hint", {});
+  const problem = h("p.error.mono", { role: "status" });
+  const sync = () => {
+    const info = CIPHERS[kind.value as CipherKind];
+    keyField.hidden = kind.value === "none";
+    keyField.querySelector(".field-label")!.textContent = info.keyLabel;
+    key.placeholder = info.example;
+    hint.textContent = kind.value === "none" ? "" : `${info.keyHint} ${PUZZLE_LABEL}`;
+    const p = kind.value === "none" ? null : keyProblem(get());
+    problem.textContent = p ?? "";
+  };
+  const get = (): CipherSettings => ({ kind: kind.value as CipherKind, key: key.value.trim() || CIPHERS[kind.value as CipherKind].example });
+  kind.addEventListener("change", () => (sync(), onChange()));
+  key.addEventListener("input", () => (sync(), onChange()));
+  sync();
+  return {
+    el: h("div.control-group", {}, field("CIPHER (OPTIONAL)", kind), keyField, hint, problem),
+    /** The cipher, or undefined when none is chosen or the key is unusable. */
+    get: (): CipherSettings | undefined => (kind.value === "none" || keyProblem(get()) ? undefined : get()),
+    set: (c?: CipherSettings) => {
+      kind.value = c?.kind ?? "none";
+      key.value = c?.key ?? "";
+      sync();
+    },
   };
 }

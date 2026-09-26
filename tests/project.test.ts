@@ -72,3 +72,53 @@ describe("project", () => {
     expect(p.output.checks.some((c) => /float [AB] behind; catch it/.test(c))).toBe(true);
   });
 });
+
+describe("project with a cipher", () => {
+  const withCipher = (kind: "caesar" | "vigenere" | "railfence" | "route", key: string, encoding: ProjectSettings["encoding"] = base.encoding) =>
+    createProject({ ...base, message: "In plain sight", encoding, cipher: { kind, key } }, "c");
+
+  it("knits the enciphered text and decodes back to the plaintext", () => {
+    for (const [kind, key] of [["caesar", "3"], ["vigenere", "DUPIN"], ["railfence", "3"], ["route", "4 spiral"]] as const) {
+      const p = withCipher(kind, key);
+      expect(p.message.normalized).toBe("IN PLAIN SIGHT");
+      expect(p.message.enciphered).not.toBe("IN PLAIN SIGHT");
+      expect(p.output.decoded).toBe("IN PLAIN SIGHT");
+      expect(p.message.notes.at(-1)).toMatch(/Historical \/ puzzle cipher, not modern security\.$/);
+    }
+    expect(withCipher("caesar", "3").message.enciphered).toBe("LQ SODLQ VLJKW");
+  });
+
+  it("decodes exactly for every cipher, alphabet and many messages", () => {
+    const messages = ["A B", "MEET AT THE OLD MILL", "IN PLAIN SIGHT.", "TRAIN AT 6", "WAIT BY THE BRIDGE?"];
+    const ciphers = [["caesar", "7"], ["keyword", "KNITTING"], ["vigenere", "DUPIN"], ["railfence", "3"], ["route", "3 snake"], ["route", "5 spiral"]] as const;
+    for (const m of messages)
+      for (const [kind, key] of ciphers)
+        for (const encoding of [base.encoding, { alphabet: "morse" } as const]) {
+          const p = createProject({ ...base, message: m, encoding, cipher: { kind, key } }, "c");
+          expect([m, kind, encoding.alphabet, p.output.decoded]).toEqual([m, kind, encoding.alphabet, p.message.normalized]);
+        }
+  });
+
+  it("works with Morse and the 26-letter Bacon", () => {
+    expect(withCipher("vigenere", "DUPIN", { alphabet: "morse" }).output.decoded).toBe("IN PLAIN SIGHT");
+    expect(withCipher("caesar", "5", { alphabet: "bacon", variant: "modern26" }).output.decoded).toBe("INPLAINSIGHT");
+    expect(withCipher("railfence", "2", { alphabet: "bacon", variant: "historical24" }).output.decoded).toBe("INPLAINSIGHT");
+  });
+
+  it("refuses a substitution cipher with the 24-letter Bacon, and says why", () => {
+    expect(() => withCipher("caesar", "3", { alphabet: "bacon", variant: "historical24" })).toThrow(/cannot carry every letter/);
+  });
+
+  it("keeps the cipher through export and import", () => {
+    const p = withCipher("vigenere", "DUPIN");
+    const back = importProject(exportProject(p));
+    expect(back.issues).toEqual([]);
+    expect(back.project!.settings.cipher).toEqual({ kind: "vigenere", key: "DUPIN" });
+  });
+
+  it("still opens project files made before ciphers existed", () => {
+    const p = createProject(base, "old");
+    expect(p.settings.cipher).toBeUndefined();
+    expect(importProject(exportProject(p)).issues).toEqual([]);
+  });
+});

@@ -142,7 +142,10 @@ export function decodeCells(cells: readonly (readonly Bit[])[], border: boolean,
   const toCells = ([from, to]: Span): Cell[] =>
     order.slice(Math.max(from, 0), Math.max(to, 0)).map((c) => mapCell(c, g.orientation, height, width));
 
-  const findings: Finding[] = g.issues.map((i) => ({ severity: i.kind === "orientation" ? "note" : "error", message: i.message, cells: [] }));
+  const findings: Finding[] = g.issues.map((i) => {
+    const at = (i.cells ?? []).map((c) => mapCell(c, g.orientation, height, width));
+    return { severity: i.kind === "orientation" ? "note" : "error", message: relocate(i.message, at, width), cells: at };
+  });
   let text = "";
   let symbols: SymbolStep[] = [];
 
