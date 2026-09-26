@@ -10,7 +10,9 @@
 //   data rows    message cells in chart reading order (right to left, bottom up),
 //                then one 1 and 0s to fill the last row
 //   top row      all 1
-// With `border`, a ring of 0 cells goes round the lot.
+// With `border`, a frame `borderWidth` cells deep (default 1) goes round the
+// lot. Its cells are 0 in the logical grid; a border style may restyle them
+// later, so the decoder never relies on what the border holds, only its depth.
 
 import { type Bit } from "./fivebit";
 
@@ -18,7 +20,15 @@ export interface GridOptions {
   /** Cells per row for the message, not counting the border. At least 3. */
   width: number;
   border: boolean;
+  /** Border depth in cells on every side, when `border` is on. Default 1. */
+  borderWidth?: number;
 }
+
+/** A border given as on/off (depth 1) or as a depth in cells. */
+export type Edge = boolean | number;
+export const edgeDepth = (e: Edge): number => (e === true ? 1 : e === false ? 0 : Math.max(0, Math.floor(e)));
+/** The border depth a layout uses. */
+export const borderOf = (o: GridOptions): number => (o.border ? (o.borderWidth ?? 1) : 0);
 
 export type CellRole = "data" | "pad" | "marker" | "top" | "border";
 
@@ -60,10 +70,16 @@ export function layout(bits: readonly Bit[], options: GridOptions): LogicalGrid 
   }
   rows.push({ cells: new Array<Bit>(width).fill(1), roles: new Array<CellRole>(width).fill("top") });
 
-  if (!border) return { options, cells: rows.map((r) => r.cells), roles: rows.map((r) => r.roles) };
-  const full = width + 2;
+  const bw = borderOf(options);
+  if (!border || bw === 0) return { options, cells: rows.map((r) => r.cells), roles: rows.map((r) => r.roles) };
+  const full = width + 2 * bw;
+  const side = <T>(v: T) => new Array<T>(bw).fill(v);
   const edge = () => ({ cells: new Array<Bit>(full).fill(0), roles: new Array<CellRole>(full).fill("border") });
-  const framed = [edge(), ...rows.map((r) => ({ cells: [0 as Bit, ...r.cells, 0 as Bit], roles: ["border" as CellRole, ...r.roles, "border" as CellRole] })), edge()];
+  const framed = [
+    ...Array.from({ length: bw }, edge),
+    ...rows.map((r) => ({ cells: [...side<Bit>(0), ...r.cells, ...side<Bit>(0)], roles: [...side<CellRole>("border"), ...r.roles, ...side<CellRole>("border")] })),
+    ...Array.from({ length: bw }, edge),
+  ];
   return { options, cells: framed.map((r) => r.cells), roles: framed.map((r) => r.roles) };
 }
 
@@ -107,9 +123,8 @@ const ORIENTATIONS: Orientation[] = [false, true].flatMap((rotated180) =>
   [false, true].flatMap((mirrored) => [false, true].map((inverted) => ({ rotated180, mirrored, inverted }))),
 );
 
-/** Score how well an upright-candidate grid matches the fixed marker, top row and border. */
-function fit(cells: Bit[][], border: boolean): { score: number; max: number; wrong: Cell[] } {
-  const b = border ? 1 : 0;
+/** Score how well an upright-candidate grid matches the fixed marker and top row. Border cells are not checked: styles may fill them. */
+function fit(cells: Bit[][], b: number): { score: number; max: number; wrong: Cell[] } {
   const width = cells[0]!.length - 2 * b;
   const rows = cells.length;
   let score = 0;
@@ -122,30 +137,23 @@ function fit(cells: Bit[][], border: boolean): { score: number; max: number; wro
   };
   markerRow(width).forEach((want, i) => check(b, b + i, want));
   for (let i = 0; i < width; i++) check(rows - 1 - b, b + i, 1);
-  if (border) {
-    cells.forEach((row, r) =>
-      row.forEach((_, c) => {
-        if (r === 0 || r === rows - 1 || c === 0 || c === row.length - 1) check(r, c, 0);
-      }),
-    );
-  }
   return { score, max, wrong };
 }
 
 /**
  * Read a grid back to its bit stream. Tries every way the fabric could have
- * been turned, keeps the one that best matches the marker, top row and border,
+ * been turned, keeps the one that best matches the marker and top row,
  * and reports anything off rather than guessing silently.
  */
-export function readGrid(cells: readonly (readonly Bit[])[], border: boolean): GridReadResult {
+export function readGrid(cells: readonly (readonly Bit[])[], border: Edge): GridReadResult {
   const issues: GridIssue[] = [];
-  const b = border ? 1 : 0;
+  const b = edgeDepth(border);
   const width = (cells[0]?.length ?? 0) - 2 * b;
   if (width < MIN_WIDTH || cells.length < 2 + 2 * b || cells.some((row) => row.length !== cells[0]!.length)) {
     return { bits: [], orientation: UPRIGHT, issues: [{ kind: "shape", message: "Grid is too small or its rows differ in length." }] };
   }
 
-  const scored = ORIENTATIONS.map((o) => ({ o, grid: transform(cells, o), ...fit(transform(cells, o), border) }));
+  const scored = ORIENTATIONS.map((o) => ({ o, grid: transform(cells, o), ...fit(transform(cells, o), b) }));
   const best = scored.reduce((a, c) => (c.score > a.score ? c : a));
   const ties = scored.filter((s) => s.score === best.score);
   const { o, grid, score, max, wrong } = best;
@@ -155,7 +163,7 @@ export function readGrid(cells: readonly (readonly Bit[])[], border: boolean): G
   } else if (o !== ORIENTATIONS[0]) {
     issues.push({ kind: "orientation", message: `Grid was ${describe(o)}; read the right way round.` });
   }
-  if (score < max) issues.push({ kind: "marker", message: `${max - score} of ${max} marker, top and border cells do not match.`, cells: wrong });
+  if (score < max) issues.push({ kind: "marker", message: `${max - score} of ${max} marker and top-row cells do not match.`, cells: wrong });
 
   const bits = dataCellOrder(grid.length, grid[0]!.length, border).map(([r, c]) => grid[r]![c]!);
   const lastOne = bits.lastIndexOf(1);
@@ -169,8 +177,8 @@ export function readGrid(cells: readonly (readonly Bit[])[], border: boolean): G
 export type Cell = [row: number, col: number];
 
 /** Upright positions of the data cells in reading order: between marker and top, right to left, bottom up. */
-export function dataCellOrder(height: number, width: number, border: boolean): Cell[] {
-  const b = border ? 1 : 0;
+export function dataCellOrder(height: number, width: number, border: Edge): Cell[] {
+  const b = edgeDepth(border);
   const out: Cell[] = [];
   for (let r = b + 1; r < height - 1 - b; r++) for (let c = width - 1 - b; c >= b; c--) out.push([r, c]);
   return out;
