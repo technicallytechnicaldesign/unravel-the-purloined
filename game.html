@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Purloined Parcel</title>
+    <meta name="description" content="A small game of knitted secrets: read the stitches, find the message. All cases are fiction." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23f3eee2'/%3E%3Ccircle cx='5' cy='5' r='2.4' fill='%23c8201e'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="masthead masthead-small">
+      <div class="labels">
+        <a class="mono" href="./">&larr; ARCHIVE</a>
+        <a class="mono" href="./lab.html">LAB</a>
+        <span class="stamp">FICTION / A GAME</span>
+      </div>
+      <h1 class="title title-small">The Purloined Parcel</h1>
+      <p class="lede">
+        Parcels arrive at the archive with knitting inside and no letter. Read the stitches and find the message. Take
+        your time: nothing here is timed.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel" aria-label="Case files">
+        <div id="game"></div>
+      </section>
+      <p class="note">
+        Every case is invented for this game. For what knitters and needleworkers really did, and how sure we can be,
+        see the archive.
+      </p>
+    </main>
+
+    <footer class="foot mono">
+      <span>UNRAVEL THE PURLOINED / THE PURLOINED PARCEL</span>
+      <span>Decryption may require frogging.</span>
+    </footer>
+
+    <script type="module" src="/src/game.ts"></script>
+  </body>
+</html>
