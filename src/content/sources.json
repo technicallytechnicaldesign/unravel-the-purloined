@@ -1,5 +1,5 @@
 {
-  "_about": "Source register for the archive (packet section 39). T11 checks each source and fills checked, supports and grade. Until then every source is unchecked and no page citing it may be published.",
+  "_about": "Source register for the archive (packet section 39). T11 read each source on 2026-09-26 and recorded what it supports and a grade. needs-human means a book page, library or purchase is still required. No page citing an unchecked or needs-human source may be published.",
   "sources": [
     {
       "id": "S01",
@@ -12,11 +12,17 @@
         "26 February 1942 prohibition",
         "broader historical symbolism"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Article by Ingun Grimstad Klepp (OsloMet), updated 4 February 2026.",
+        "The red topplue suited use as a symbol of Norwegianness and resistance during the occupation; knitting and Norwegian patterns became forms of protest.",
+        "Quotes a Trondheim police notice: wearing red topplues had become so common it was treated as a demonstration, forbidden from Thursday 26 February 1942.",
+        "The ban covered all ages; parents of children under 14 could be penalised.",
+        "Before the war the cap marked working men against city hat wearers, and entered the bunad."
+      ],
+      "grade": "B",
+      "notes": "The quoted notice is from Trondheim police, so the page does not show a nationwide ban. The police notice itself (primary, grade A) still needs finding."
     },
     {
       "id": "S02",
@@ -30,11 +36,18 @@
         "patriotic motifs",
         "making as control / inner freedom / resistance"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Page edited by Kirsten Linde, conservator, dated 5 May 2026.",
+        "About 2,000 women were imprisoned at Grini; they knitted very small mittens and socks, using hairpins and pins as needles.",
+        "Thread came from sanitary bandages, mattress stuffing and the prisoners' own clothing.",
+        "Pieces carried patriotic statements and motifs, for example 'Kjemp for alt hvad du har kjært'; being found with them in a cell search risked punishment.",
+        "The museum reads the handwork as concentration, inner freedom and will, self-respect, mastery and resistance.",
+        "Agnes (Aggi) Klønig, prisoner 2047, smuggled messages and supplies for the Red Cross, spent 9 months in solitary, and embroidered with a smuggled needle."
+      ],
+      "grade": "B",
+      "notes": "Supports Klønig's two activities separately; nothing says her messages were in stitches."
     },
     {
       "id": "S03",
@@ -46,11 +59,15 @@
         "White Lady / Clarence context",
         "recent archive-based scholarship"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
+      "status": "needs-human",
+      "checked": "2026-09-26",
+      "supports": [
+        "Publisher page for Helen Fry, The White Lady: The Story of Two Key British Secret Service Networks Behind German Lines, Yale, 25 November 2025.",
+        "Covers La Dame Blanche in the First World War and its successor, the Clarence Service, in the Second.",
+        "Agents worked as couriers, radio operators and spies; over 800 radio messages and more than 1,000 reports went to London."
+      ],
       "grade": null,
-      "notes": "Use page-level scholarship before publishing any precise stitch-code claim."
+      "notes": "Use page-level scholarship before publishing any precise stitch-code claim. The publisher page says nothing about watching rail transport or knitting. Page-level citations from the book itself are needed before the Belgium rail claim can be checked."
     },
     {
       "id": "S04",
@@ -62,11 +79,14 @@
         "wartime codes/signals context",
         "research lead for handwork-code section"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
+      "status": "needs-human",
+      "checked": "2026-09-26",
+      "supports": [
+        "Bibliographic details, confirmed on Google Books and a dealer listing: A Guide to Codes and Signals: International Flag Code, Secret Ciphers, Weather Signals, Morse Code, Sign Language, etc., with Flags of All Nations.",
+        "Whitman Publishing, Racine, Wisconsin, 1942, 62 pages, a small booklet about 5.25 by 3.25 inches."
+      ],
       "grade": null,
-      "notes": ""
+      "notes": "The si.edu record sits behind a bot check and has no Wayback copy. Not on archive.org; Google Books has no preview. The handwork line widely quoted from it (spies working code messages into knitting, embroidery and hooked rugs) needs the physical page. HathiTrust search also sits behind a bot check: a person should look there once, then buy a used copy."
     },
     {
       "id": "S05",
@@ -79,11 +99,16 @@
         "homespun",
         "economic resistance"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "The 1774 Continental Association called for an end to importing British manufactured goods and for consumers to refuse them, from 1 December 1774.",
+        "It encouraged household production to replace British goods, discouraged eating lamb to increase wool for colonial cloth-making, and relied on households, women as well as men, to make more.",
+        "Buying homespun cloth from neighbours became part of patriot behaviour; women in Hartford gathered to spin thread for weavers to make cloth for the poor.",
+        "Shows a spinning wheel of the kind used to make homespun in place of imported fabric."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 1 May 2026."
     },
     {
       "id": "S06",
@@ -95,11 +120,16 @@
         "women and non-importation",
         "domestic production as political participation"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Research paper by Alyssa Kariofyllis, 2016 Scholar in the Park, for Minute Man National Historical Park.",
+        "In 1769 forty-five Lexington women gathered to spin for a day, producing 602 knots of linen and 246 of cotton.",
+        "Women who had not spun before began to; demand for spinning wheels rose.",
+        "55 of the 650 or more signatures on Boston's 1767 non-importation subscription were women's."
+      ],
+      "grade": "B",
+      "notes": "A student research paper hosted by the Park Service, citing period records. Good for detail; pair it with S05 or S23 for any headline claim."
     },
     {
       "id": "S07",
@@ -112,10 +142,14 @@
         "Gandhi",
         "spinning / textile production as resistance"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "The swadeshi ('own country') movement of the 1890s urged boycotting foreign goods and buying Indian products.",
+        "Gandhi appealed to people to spin, weave and wear khadi, hand-woven from hand-spun cotton.",
+        "In 1921 Indian nationalists adopted khadi as a symbol of resistance and put the spinning wheel into the design of their flag."
+      ],
+      "grade": "B",
       "notes": ""
     },
     {
@@ -129,10 +163,15 @@
         "1908 NUWSS procession",
         "suffrage banners as political textile communication"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Object record for the Women Writers' Suffrage League banner, 1908: velvet, cotton, wool and silk.",
+        "Designed by Mary Lowndes and embroidered by Christiana Herringham, both founding members of the Artists' Suffrage League.",
+        "First carried in the National Union of Women's Suffrage Societies procession on 13 June 1908.",
+        "Bears the motto 'litera scripta manet'; paid for by Cicely Hamilton and Evelyn Sharp."
+      ],
+      "grade": "A",
       "notes": ""
     },
     {
@@ -146,11 +185,16 @@
         "resistance",
         "political textile documentation"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Arpilleras began with Violeta Parra embroidering on burlap.",
+        "They were made by mothers, sisters and daughters of the disappeared, detained and executed, later also in community workshops.",
+        "Works in the exhibition show raids with tanks, children's soup kitchens, land occupations, water supply and unemployment.",
+        "They served as a tool of social denunciation that got past censorship, and peaked during the dictatorship."
+      ],
+      "grade": "B",
+      "notes": "The page does not list disappearance or detention as subjects shown; it names them through the makers' relatives."
     },
     {
       "id": "S10",
@@ -162,11 +206,15 @@
         "1987 National Mall display",
         "scale and collective memorialization"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Conceived in November 1985 by Cleve Jones; the NAMES Project Foundation was organised in June 1987.",
+        "First displayed on the National Mall on 11 October 1987 with 1,920 panels; half a million people visited that weekend.",
+        "Today about 54 tons, nearly 50,000 panels for more than 110,000 people."
+      ],
+      "grade": "B",
+      "notes": "The organisation's own history. It does not say each panel is for one person (today's totals give about 2.2 people per panel)."
     },
     {
       "id": "S11",
@@ -179,10 +227,15 @@
         "mass visual identity",
         "contemporary protest craft"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "The Women's March on 21 January 2017: half a million in Washington DC, about 4 million at sister marches in over 600 cities.",
+        "The Pussyhat Project was co-founded by Krista Suh and Jayna Zweiman; Kat Coyle of The Little Knittery designed a simple pattern shared publicly.",
+        "People were asked to knit a hat to wear or to donate one to a marcher.",
+        "The hat became a recognisable symbol of solidarity; the V&A collected one in February 2017."
+      ],
+      "grade": "B",
       "notes": ""
     },
     {
@@ -196,11 +249,15 @@
         "knitting as environmental activism",
         "persistent public presence"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "The group's own account: began in 2012 in Lismore, NSW, when older women joined an anti coal seam gas group.",
+        "Small groups parked by roadsides with knitting, folding chairs and thermoses, watching and recording Metgasco truck movements.",
+        "Their method: 'Sit, knit, plot', talking with passers-by."
+      ],
+      "grade": "C",
+      "notes": "First-person organisational history, so grade C."
     },
     {
       "id": "S13",
@@ -211,11 +268,14 @@
         "thread / knots as structured information",
         "material data systems"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Object record NMAI 14/3866: quipu or counting record, khipu, cotton cord and dye, tied and knotted, 61.5 by 64.5 cm.",
+        "AD 1450 to 1532 (Late Horizon), probably Inka, from Chulpaca, Ica, Peru; acquired in 1925 by exchange with San Marcos University, Lima."
+      ],
+      "grade": "A",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 4 April 2025. The record names it a counting record but does not describe how khipu hold information."
     },
     {
       "id": "S14",
@@ -227,11 +287,17 @@
         "oral history vs documentary evidence",
         "historical methodology"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Folklife Magazine article on quilt codes, weighing belief against documentary evidence.",
+        "Quilt scholar Marsha MacDowell: before 1999 the codes were unheard of, even among African American quilters; the story spread from Tobin and Dobard's 1999 book Hidden in Plain View.",
+        "Historians note several patterns cited as signals probably did not exist during 1850 to 1860.",
+        "About fifty recorded interviews with African American quilters in Michigan in the late 1990s mentioned no code.",
+        "Sets out the believers' case with respect: absence of evidence is expected if discovery meant death."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 2025."
     },
     {
       "id": "S15",
@@ -241,10 +307,12 @@
       "packetLeads": [
         "encryption terminology"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "NIST glossary: encryption is the cryptographic transformation of data to produce ciphertext (CNSSI 4009-2022), or changing plaintext into ciphertext using an algorithm and key (SP 800-57)."
+      ],
+      "grade": "A",
       "notes": ""
     },
     {
@@ -256,10 +324,12 @@
         "cryptography terminology",
         "confidentiality / integrity / authentication context"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "NIST glossary: cryptography provides information security, including confidentiality, data integrity, source authentication and non-repudiation (SP 800-175B Rev. 1)."
+      ],
+      "grade": "A",
       "notes": ""
     },
     {
@@ -271,10 +341,12 @@
         "definition of steganography",
         "hiding the existence of communication"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "NIST glossary: steganography is communicating in a way that hides the existence of the communication (CNSSI 4009-2022)."
+      ],
+      "grade": "A",
       "notes": ""
     },
     {
@@ -286,11 +358,16 @@
         "Bacon's five-position A/B cipher",
         "history of cryptology"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "David Hatch, The Dawn of American Cryptology, 1900 to 1917, Center for Cryptologic History, NSA, Special Series vol. 7, 80 pages.",
+        "Chapter 2 (pp. 15 to 25): the Bacon biliteral cipher was real, invented by Sir Francis Bacon early in the seventeenth century; five-group combinations of As and Bs can represent each letter.",
+        "Elizabeth Wells Gallup claimed typeface differences in the 1623 First Folio were its As and Bs; she was dismissed from the International Bacon Society in 1900 for claims she could not prove.",
+        "George Fabyan brought her to Riverbank Laboratories, where William Friedman came to cryptology."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 5 August 2024. A good Gallup story for the evidence exhibit."
     },
     {
       "id": "S19",
@@ -302,11 +379,13 @@
         "substitution and transposition education",
         "cipher-machine history"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "The National Cryptologic Museum is NSA's public museum; it collects, preserves and shows cryptologic artifacts and runs tours and K-12 education programs."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 7 January 2022. The page is general; it does not itself teach substitution or transposition."
     },
     {
       "id": "S20",
@@ -318,11 +397,15 @@
         "Morse/Vail code history",
         "dots/dashes as a communication encoding"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Morse's test message 'What Hath God Wrought?' went from Washington to Baltimore on 24 May 1844; Alfred Vail received it.",
+        "Vail improved the machine and developed a simpler alphabetic code in place of Morse's numerical code book system; Morse's name alone went on the patents.",
+        "The Smithsonian Institution Archives hold Vail's papers."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 12 January 2026."
     },
     {
       "id": "S21",
@@ -334,11 +417,15 @@
         "scrambled alphabets",
         "keys embodied in mechanical arrangement"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Object record: a wheel cipher found in a home near Monticello, thought to be the oldest surviving true cipher device, apparently for French.",
+        "Scrambled alphabets on numbered wheels, placed on the spindle in a prearranged order.",
+        "Called the 'Jefferson Cipher Wheel', but the link to Jefferson is unproven."
+      ],
+      "grade": "A",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 7 June 2026."
     },
     {
       "id": "S22",
@@ -350,11 +437,14 @@
         "machine ciphers",
         "historical transition toward mechanized encryption"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Enigma was an electromechanical machine using wired rotors and plugs, the workhorse of German forces in the Second World War.",
+        "Allied cryptologists read most Enigma traffic for most of the war; many historians think this shortened the war by up to two years."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 4 April 2025."
     },
     {
       "id": "S23",
@@ -366,11 +456,14 @@
         "home manufacturing",
         "homespun textiles"
       ],
-      "status": "unchecked",
-      "checked": null,
-      "supports": [],
-      "grade": null,
-      "notes": ""
+      "status": "checked",
+      "checked": "2026-09-26",
+      "supports": [
+        "Patriots made agreements not to use imported British goods such as fine fabrics, furnishings or tea.",
+        "To join, the wealthy bought plainer goods from neighbours, including linen spun by colonial women and woven by colonial weavers."
+      ],
+      "grade": "B",
+      "notes": "Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 13 December 2025."
     }
   ]
 }
