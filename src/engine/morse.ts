@@ -132,10 +132,19 @@ function decodeTagged(elements: readonly Tagged[]): MorseDecodeResult {
  * Leading and trailing spaces are border, not message.
  */
 export function decodeUnits(units: readonly Bit[]): MorseDecodeResult {
+  return decodeTagged(tagUnits(units));
+}
+
+/** Timing units back to elements by the same thresholds decodeUnits uses. */
+export function readUnits(units: readonly Bit[]): MorseElement[] {
+  return tagUnits(units).map((t) => t.e);
+}
+
+function tagUnits(units: readonly Bit[]): Tagged[] {
   const tagged: Tagged[] = [];
   let i = units.indexOf(1);
   const end = units.lastIndexOf(1);
-  if (i < 0) return { text: "", issues: [] };
+  if (i < 0) return [];
   while (i <= end) {
     const bit = units[i]!;
     let n = 0;
@@ -154,5 +163,5 @@ export function decodeUnits(units: readonly Bit[]): MorseDecodeResult {
     }
     i += n;
   }
-  return decodeTagged(tagged);
+  return tagged;
 }

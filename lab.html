@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Lab: Unravel the Purloined</title>
+    <meta name="description" content="Turn a message into a knitting pattern, and read a knitted grid back into text, one step at a time." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23f3eee2'/%3E%3Ccircle cx='5' cy='5' r='2.4' fill='%23c8201e'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="masthead masthead-small">
+      <div class="labels">
+        <a class="mono" href="./">&larr; ARCHIVE</a>
+        <span class="mono">LAB 01</span>
+        <span class="stamp">MODERN RECONSTRUCTION</span>
+      </div>
+      <h1 class="title title-small">The Lab</h1>
+      <p class="lede">
+        Type a message and follow it, step by step, into a pattern you can knit. Then read a grid back into text, and see
+        how the checks catch a missed stitch.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="enc-h">
+        <div class="panel-head">
+          <h2 id="enc-h" class="section-label">01 / Encode a message</h2>
+        </div>
+        <div id="encoder"></div>
+        <p class="warning mono">ENCODED IS NOT ENCRYPTED. Anyone with the table can read this.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="dec-h">
+        <div class="panel-head">
+          <h2 id="dec-h" class="section-label">02 / Decode a grid</h2>
+        </div>
+        <p class="note">
+          Mark each cell as you see it on the right side, row 1 at the bottom. It does not matter which way up the fabric
+          is: the marker row tells the decoder.
+        </p>
+        <div id="decoder"></div>
+      </section>
+    </main>
+
+    <footer class="foot mono">
+      <span>UNRAVEL THE PURLOINED / LAB</span>
+      <span>Decryption may require frogging.</span>
+    </footer>
+
+    <script type="module" src="/src/lab.ts"></script>
+  </body>
+</html>

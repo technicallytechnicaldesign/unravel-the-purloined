@@ -41,6 +41,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--paper);
 }
@@ -274,4 +278,270 @@ body {
   gap: 8px;
   padding-top: 20px;
   color: var(--ink-2);
+}
+
+/* ---------- Lab ---------- */
+a {
+  color: inherit;
+}
+.masthead-small {
+  padding-bottom: 24px;
+}
+.title-small {
+  font-size: clamp(2.8rem, 10vw, 5rem);
+}
+.hint {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.error {
+  color: var(--red);
+}
+.big {
+  font-size: 1rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Controls */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 8px 24px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+.controls > .field:first-child {
+  grid-column: 1 / -1;
+}
+.control-group .field {
+  margin-bottom: 10px;
+}
+.field select,
+.field input,
+.more textarea {
+  width: 100%;
+  padding: 9px 10px;
+  font: 600 0.95rem var(--mono);
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+}
+.field select:focus-visible,
+.more textarea:focus-visible,
+.btn:focus-visible,
+.dcell:focus-visible,
+.check input:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.checks {
+  margin: 0;
+  padding: 8px 12px 10px;
+  border: 1px dashed var(--rule);
+}
+.checks legend {
+  padding: 0 4px;
+  color: var(--ink-2);
+}
+.check {
+  display: block;
+  margin: 6px 0;
+}
+.btn {
+  display: inline-block;
+  padding: 9px 14px;
+  font: 600 0.8rem var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--paper);
+}
+.btn-go {
+  align-self: end;
+  color: var(--on-red);
+  background: var(--red);
+  border-color: var(--red);
+}
+.btn-go:hover {
+  background: var(--red);
+  text-decoration: underline;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.more {
+  margin: 10px 0;
+}
+.more summary {
+  cursor: pointer;
+  padding: 6px 0;
+  color: var(--ink-2);
+}
+.more textarea {
+  display: block;
+  margin: 6px 0 8px;
+}
+
+/* Steps: each pipeline stage, numbered */
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step {
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+}
+.step-title {
+  margin: 0 0 8px;
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+.step-n {
+  color: var(--red);
+}
+.scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.chart-svg svg {
+  display: block;
+  max-width: none;
+}
+.bits {
+  word-break: break-all;
+}
+
+/* Symbol table */
+.symbols {
+  border-collapse: collapse;
+  margin-top: 6px;
+}
+.symbols th,
+.symbols td {
+  padding: 3px 12px 3px 0;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rule);
+}
+.symbols th {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+.symbols tr.flag td {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* Logical grid preview */
+.lgrid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 14px);
+  gap: 1px;
+  width: max-content;
+  padding: 6px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+}
+.lcell {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  border: 1px solid var(--ink);
+  background: var(--knit);
+}
+.lcell.b1 {
+  background: var(--ink);
+}
+.lcell:not(.role-data) {
+  opacity: 0.4;
+}
+.instructions {
+  margin: 8px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.instructions li {
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--rule);
+}
+
+/* Decoder grid: buttons plus a row number column */
+.dgrid {
+  display: grid;
+  grid-template-columns: repeat(calc(var(--cols) - 1), 26px) 32px;
+  gap: 2px;
+  width: max-content;
+  padding: 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+}
+.dcell {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: var(--knit);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+.dcell.b1::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.dgrid.colour .dcell.b1 {
+  background: var(--ink);
+}
+.dgrid.colour .dcell.b1::after {
+  display: none;
+}
+.dcell.flag {
+  box-shadow: inset 0 0 0 3px var(--red);
+}
+.dcell.focus {
+  outline: 3px solid var(--red);
+  outline-offset: 1px;
+  z-index: 1;
+}
+.rownum {
+  align-self: center;
+  padding-left: 6px;
+  color: var(--ink-2);
+}
+.findings {
+  margin: 0;
+  padding-left: 18px;
+}
+.findings li {
+  margin: 4px 0;
+}
+.findings li.error {
+  color: var(--red);
 }
