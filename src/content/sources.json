@@ -1,0 +1,376 @@
+{
+  "_about": "Source register for the archive (packet section 39). T11 checks each source and fills checked, supports and grade. Until then every source is unchecked and no page citing it may be published.",
+  "sources": [
+    {
+      "id": "S01",
+      "publisher": "Store norske leksikon",
+      "title": "Nisselue",
+      "url": "https://snl.no/nisselue",
+      "packetLeads": [
+        "red topplue as Norwegian symbol",
+        "resistance context",
+        "26 February 1942 prohibition",
+        "broader historical symbolism"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S02",
+      "publisher": "MiA / Museumstjenesten",
+      "title": "Grini motstandsbroderi og strikk",
+      "url": "https://mia.no/museumstjenesten/grini-motstandsbroderi-og-strikk",
+      "packetLeads": [
+        "clandestine prison handwork",
+        "miniature knitting",
+        "improvised tools/materials",
+        "patriotic motifs",
+        "making as control / inner freedom / resistance"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S03",
+      "publisher": "Yale University Press",
+      "title": "Helen Fry, The White Lady",
+      "url": "https://yalebooks.yale.edu/book/9780300275117/the-white-lady/",
+      "packetLeads": [
+        "Belgian intelligence networks",
+        "White Lady / Clarence context",
+        "recent archive-based scholarship"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": "Use page-level scholarship before publishing any precise stitch-code claim."
+    },
+    {
+      "id": "S04",
+      "publisher": "Smithsonian Libraries and Archives",
+      "title": "Gordon A. J. Petersen and Marshall McClintock, A Guide to Codes and Signals (1942)",
+      "url": "https://www.si.edu/object/siris_sil_523835",
+      "packetLeads": [
+        "confirming publication",
+        "wartime codes/signals context",
+        "research lead for handwork-code section"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S05",
+      "publisher": "Smithsonian Institution",
+      "title": "American Revolutionaries and Patriotism",
+      "url": "https://www.si.edu/stories/american-revolutionaries-and-patriotism",
+      "packetLeads": [
+        "non-importation",
+        "household production",
+        "homespun",
+        "economic resistance"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S06",
+      "publisher": "U.S. National Park Service",
+      "title": "Women During the Lead Up To War",
+      "url": "https://www.nps.gov/articles/000/alyssa-kariofyllis-women-of-the-battle-road-paper4.htm",
+      "packetLeads": [
+        "spinning bees",
+        "women and non-importation",
+        "domestic production as political participation"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S07",
+      "publisher": "Victoria and Albert Museum",
+      "title": "Indian textiles",
+      "url": "https://www.vam.ac.uk/articles/indian-textiles",
+      "packetLeads": [
+        "Swadeshi",
+        "khadi",
+        "Gandhi",
+        "spinning / textile production as resistance"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S08",
+      "publisher": "London Museum",
+      "title": "Women Writers' Suffrage League banner",
+      "url": "https://www.londonmuseum.org.uk/collections/v/object-91772/banner-suffrage-banner/",
+      "packetLeads": [
+        "Mary Lowndes",
+        "Christiana Herringham",
+        "1908 NUWSS procession",
+        "suffrage banners as political textile communication"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S09",
+      "publisher": "Museo de la Memoria y los Derechos Humanos",
+      "title": "Arpilleras: Pobladores, Resistencia y Organización",
+      "url": "https://mmdh.cl/exposiciones/itinerantes/arpilleras-pobladores-resistencia-y-organizacion",
+      "packetLeads": [
+        "arpilleras",
+        "testimony",
+        "resistance",
+        "political textile documentation"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S10",
+      "publisher": "National AIDS Memorial",
+      "title": "Quilt History",
+      "url": "https://www.aidsmemorial.org/quilt-history",
+      "packetLeads": [
+        "AIDS Memorial Quilt history",
+        "1987 National Mall display",
+        "scale and collective memorialization"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S11",
+      "publisher": "Victoria and Albert Museum",
+      "title": "The Pussyhat",
+      "url": "https://www.vam.ac.uk/articles/the-pussyhat",
+      "packetLeads": [
+        "2017 Women's March",
+        "distributed pattern",
+        "mass visual identity",
+        "contemporary protest craft"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S12",
+      "publisher": "Knitting Nannas",
+      "title": "History",
+      "url": "https://knitting-nannas.com/about-us/history/",
+      "packetLeads": [
+        "origin in 2012",
+        "observation / \"guerrilla surveillance\"",
+        "knitting as environmental activism",
+        "persistent public presence"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S13",
+      "publisher": "Smithsonian National Museum of the American Indian",
+      "title": "Quipu / Counting record",
+      "url": "https://americanindian.si.edu/collections-search/object/NMAI_154591",
+      "packetLeads": [
+        "thread / knots as structured information",
+        "material data systems"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S14",
+      "publisher": "Smithsonian Center for Folklife and Cultural Heritage",
+      "title": "Underground Railroad Quilt Codes: What We Know, What We Believe, and What Inspires Us",
+      "url": "https://folklife.si.edu/magazine/underground-railroad-quilt-codes",
+      "packetLeads": [
+        "disputed quilt-code story",
+        "oral history vs documentary evidence",
+        "historical methodology"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S15",
+      "publisher": "NIST Computer Security Resource Center",
+      "title": "Encryption",
+      "url": "https://csrc.nist.gov/glossary/term/encryption",
+      "packetLeads": [
+        "encryption terminology"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S16",
+      "publisher": "NIST Computer Security Resource Center",
+      "title": "Cryptography",
+      "url": "https://csrc.nist.gov/glossary/term/cryptography",
+      "packetLeads": [
+        "cryptography terminology",
+        "confidentiality / integrity / authentication context"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S17",
+      "publisher": "NIST Computer Security Resource Center",
+      "title": "Steganography",
+      "url": "https://csrc.nist.gov/glossary/term/steganography",
+      "packetLeads": [
+        "definition of steganography",
+        "hiding the existence of communication"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S18",
+      "publisher": "National Security Agency / Center for Cryptologic History",
+      "title": "Dawn of American Cryptology / section discussing Bacon's Biliteral Cipher",
+      "url": "https://www.nsa.gov/portals/75/documents/about/cryptologic-heritage/historical-figures-publications/publications/pre-modern/DawnAmericanCryptology_Hatch.pdf",
+      "packetLeads": [
+        "Bacon's five-position A/B cipher",
+        "history of cryptology"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S19",
+      "publisher": "National Cryptologic Museum / NSA",
+      "title": "Museum information and educational programs",
+      "url": "https://www.nsa.gov/History/National-Cryptologic-Museum/",
+      "packetLeads": [
+        "cryptologic history",
+        "substitution and transposition education",
+        "cipher-machine history"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S20",
+      "publisher": "Smithsonian Institution Archives",
+      "title": "A Forgotten History: Alfred Vail and Samuel Morse",
+      "url": "https://siarchives.si.edu/blog/forgotten-history-alfred-vail-and-samuel-morse",
+      "packetLeads": [
+        "telegraph",
+        "Morse/Vail code history",
+        "dots/dashes as a communication encoding"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S21",
+      "publisher": "National Cryptologic Museum / NSA",
+      "title": "18th Century Cipher Device",
+      "url": "https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2718496/18th-century-cipher-device/",
+      "packetLeads": [
+        "physical cipher devices",
+        "scrambled alphabets",
+        "keys embodied in mechanical arrangement"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S22",
+      "publisher": "National Cryptologic Museum / NSA",
+      "title": "World War 2: Enigma",
+      "url": "https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2719176/world-war-2-enigma/",
+      "packetLeads": [
+        "rotor-machine cryptography",
+        "machine ciphers",
+        "historical transition toward mechanized encryption"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    },
+    {
+      "id": "S23",
+      "publisher": "National Museum of American History / Smithsonian",
+      "title": "Organizing as Patriots",
+      "url": "https://americanhistory.si.edu/explore/exhibitions/american-democracy/online/great-leap/revolution/organizing-patriots",
+      "packetLeads": [
+        "boycotts",
+        "home manufacturing",
+        "homespun textiles"
+      ],
+      "status": "unchecked",
+      "checked": null,
+      "supports": [],
+      "grade": null,
+      "notes": ""
+    }
+  ]
+}
