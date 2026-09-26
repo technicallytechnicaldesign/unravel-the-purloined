@@ -24,6 +24,7 @@ export const LEVELS: Level[] = [
   { n: 3, name: "Dots and dashes", teaches: "Purl bumps in runs: Morse code." },
   { n: 4, name: "Two yarns", teaches: "Bacon's A/B alphabet, knitted in two colours." },
   { n: 5, name: "A slipped stitch", teaches: "The knitter made a mistake. Let the checks find it." },
+  { n: 6, name: "The detective's key", teaches: "A Vigenère cipher on top of the stitches. The key is a name from Poe." },
 ];
 
 // Short, gentle messages in the spirit of Poe's letter: things hidden in plain sight.
@@ -57,6 +58,10 @@ export interface Case {
   /** Level 5: the stitch the knitter got wrong, in `shown` coordinates. */
   mistake?: [row: number, col: number];
   hints: string[];
+  /** How many hints before the decoder machine switches on. */
+  machineAfter: number;
+  /** For ciphered cases, how many hints before the machine also deciphers. */
+  decipherAfter?: number;
   /** Stitch-by-stitch text for players who cannot see the drawing. Describes, never decodes. */
   description: string;
 }
@@ -74,6 +79,8 @@ function settingsFor(level: number, message: string): ProjectSettings {
       return { ...base, encoding: { alphabet: "bacon", variant: "historical24" }, carrier: { id: "two-colour", colours: { A: "cream", B: "red" } } };
     case 5:
       return { ...base, encoding: { alphabet: "fivebit", errorControl: { code: "parity", separator: true, checksum: true } }, layout: { width: 14, border: false }, carrier: { id: "purl-relief" } };
+    case 6:
+      return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" }, cipher: { kind: "vigenere", key: "DUPIN" } };
     default:
       return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" } };
   }
@@ -90,8 +97,14 @@ function briefingFor(level: number): string[] {
       return [common, "No groups of five here. Runs of purl bumps and gaps of knit, read right to left from the bottom, row after row."];
     case 4:
       return [common, "Two yarns, groups of five, and an old alphabet with only 24 letters: I and J share a code, and so do U and V. Bacon's alphabet is a historical puzzle cipher, not modern security."];
-    default:
+    case 5:
       return [common, "The knitter was in a hurry. Each letter has a check stitch and a separator, and the message ends with a checksum. One stitch is wrong."];
+    default:
+      return [
+        common,
+        "The stitches read cleanly, five to a letter, but the words make no sense. A note pinned to the cuff says: the key is the name of the man who found the purloined letter.",
+        "Vigenère is a historical puzzle cipher, not modern security.",
+      ];
   }
 }
 
@@ -104,6 +117,13 @@ function hintsFor(level: number): string[] {
       return ["The marker row is at the bottom: red, red, cream, red, then cream, reading from the left.", "Cream is A, red is B. Groups of five, read right to left from the bottom. AAAAA is A, AAAAB is B, ABAAA is I or J.", "Put your reading into the decoder machine."];
     case 5:
       return ["Each letter is 5 cells, then a check cell (even parity), then a separator (always purl).", table, "Put your reading into the decoder machine: it will show which letter has the bad stitch. The letter is one cell away from a real word."];
+    case 6:
+      return [
+        "In Poe's story the letter is found by the detective C. Auguste Dupin. The key is DUPIN.",
+        `${table} Read the stitches first: you get a scrambled message.`,
+        "The decoder machine is on: it reads your copy into the scrambled message.",
+        "To unscramble, take each letter back by the matching key letter (D=3, U=20, P=15, I=8, N=13), repeating DUPIN and skipping spaces. The machine now does it for you.",
+      ];
     default:
       return ["Find the marker row 1 1 0 1 at one edge. That edge is the bottom; the row of all purl is the top.", table, "Put your reading into the decoder machine."];
   }
@@ -174,6 +194,8 @@ export function makeCase(levelN: number, seed: number): Case {
     orientation,
     ...(mistake ? { mistake } : {}),
     hints: hintsFor(level.n),
+    machineAfter: level.n === 6 ? 3 : hintsFor(level.n).length,
+    ...(level.n === 6 ? { decipherAfter: 4 } : {}),
     description: describe(shown),
   };
 }

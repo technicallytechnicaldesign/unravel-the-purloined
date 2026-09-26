@@ -10,7 +10,13 @@ The name comes from Poe's *The Purloined Letter*, where the letter stays hidden 
 
 ## Status
 
-Early. The five-bit knit/purl alphabet and the error control layer (framing, parity or Hamming codes, checksum, slip detection) work in the engine. See `docs/ROADMAP.md` for what comes next.
+Working, and growing. Three parts are live:
+
+- **The lab** (`lab.html`): encode a message (five-bit, Morse or Bacon, with optional classical ciphers and error checks) into a knit/purl or two-colour pattern for flat or round knitting, with chart, written rows and exports; decode a grid back to text with every step shown.
+- **The Purloined Parcel** (`game.html`): six case files of knitted evidence to read and decode.
+- **The archive** (`archive.html`): exhibits with evidence grades. Drafts stay private until their sources are checked; to write one, see `content/README.md`.
+
+See `docs/ROADMAP.md` for what comes next.
 
 ## Develop
 

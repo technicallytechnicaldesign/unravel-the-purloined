@@ -20,6 +20,8 @@ The full brief is `docs/research/research-packet-v0.2.txt`. Section numbers belo
 | `docs/research/research-packet-v0.2.txt` | The research packet: history, taxonomy, cipher families, architecture, roadmap, sources S01 to S23. |
 | `docs/ROADMAP.md` | The task list for agents, each task with acceptance criteria. Tick tasks here when done. |
 | `docs/LOG.md` | One dated line per session saying what changed. Append, never rewrite. |
+| `content/exhibits/*.md` | Archive exhibits, one Markdown file each. Format and rules in `content/README.md`. |
+| `src/content/sources.json` | The source register: every source, its check status, what it supports and its grade. |
 | `docs/PROJECT.md` | Project card: UID and version. Bump the version and add an iteration line only when the maker asks. |
 
 ## Architecture rules (packet sections 31, 32, 40)

@@ -10,6 +10,7 @@ import { fabricSvg } from "../engine/fabric";
 import { decodeCells } from "../engine/steps";
 import { describe as describeOrientation } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
+import { decipher, encipher } from "../engine/ciphers";
 
 const STORE = "purloined-parcel";
 
@@ -39,22 +40,28 @@ export function mountGame(root: HTMLElement): void {
   const progress = loadProgress();
 
   const showList = () => {
+    const solved = LEVELS.filter((l) => progress.solved[l.n]).length;
     root.replaceChildren(
-      h("p.note", {}, "Five case files, each teaching one idea. Open any of them; each can be played again with a new parcel."),
+      h("div.folio-head", {}, h("p.mono", {}, `FOLIO / CASE FILES 01 TO 0${LEVELS.length}`), h("p.mono", {}, `${solved} OF ${LEVELS.length} SOLVED`)),
       h(
-        "ol.cases",
+        "ol.folio",
         {},
         ...LEVELS.map((l) =>
           h(
-            "li.case-card",
+            "li",
             {},
-            h("p.mono.case-n", {}, `CASE FILE 0${l.n}`, progress.solved[l.n] ? h("span.stamp.stamp-small", {}, "SOLVED") : ""),
-            h("h3.step-title", {}, l.name),
-            h("p.hint", {}, l.teaches),
-            h("button.btn", { type: "button", onclick: () => showCase(makeCase(l.n, newSeed())) }, "Open the file →"),
+            h(
+              "button.dossier",
+              { type: "button", onclick: () => showCase(makeCase(l.n, newSeed())), "aria-label": `Open case file ${l.n}: ${l.name}` },
+              h("span.dossier-tab.mono", {}, `0${l.n}`),
+              progress.solved[l.n] ? h("span.stamp.stamp-small.dossier-stamp", {}, "SOLVED") : "",
+              h("span.dossier-name", {}, l.name),
+              h("span.dossier-teaches", {}, l.teaches),
+            ),
           ),
         ),
       ),
+      h("p.hint", {}, "Every case can be opened again with a new parcel. Nothing is timed."),
     );
   };
 
@@ -72,13 +79,13 @@ export function mountGame(root: HTMLElement): void {
     });
     figure.innerHTML = svg; // our own SVG, no outside text in it
     const setZoom = (z: number) => {
-      zoom = Math.min(3, Math.max(0.6, z));
+      zoom = Math.min(3, Math.max(0.5, z));
       const el = figure.querySelector("svg")!;
       el.style.width = `${Math.round(Number(el.getAttribute("width")) * zoom)}px`;
       el.style.height = "auto";
     };
 
-    const machine = h("div.machine");
+    const machine = h("div.machine", {}, h("p.hint", {}, `Locked. It switches on with hint ${c.machineAfter}.`));
     const grid = cellGrid({
       cells: Array.from({ length: rows }, () => new Array<Bit>(cols).fill(0)),
       label: "Your copy of the evidence",
@@ -87,17 +94,25 @@ export function mountGame(root: HTMLElement): void {
     });
     let hintsShown = 0;
     const hintList = h("ol.hints");
-    const hintBtn = h("button.btn", { type: "button" }, `Take a hint (1 of ${c.hints.length})`);
+    const hintBtn = h("button.btn", { type: "button" }, `Take hint 1 of ${c.hints.length}`);
+    const machineBox = h("details.more.fold", {}, h("summary.mono", {}, "THE DECODER MACHINE"), machine);
     const runMachine = () => {
-      if (hintsShown < c.hints.length) return;
-      machine.replaceChildren(h("h3.step-title", {}, "The decoder machine"), stepsView(decodeCells(grid.get(), c.settings.layout.border, c.settings.encoding), c.settings.encoding, grid));
+      if (hintsShown < c.machineAfter) return;
+      const s = decodeCells(grid.get(), c.settings.layout.border, c.settings.encoding);
+      const cipher = c.settings.cipher;
+      const deciphers = cipher && c.decipherAfter !== undefined && hintsShown >= c.decipherAfter;
+      machine.replaceChildren(
+        stepsView(s, c.settings.encoding, grid),
+        deciphers ? h("p.mono.big", {}, `Deciphered with ${cipher.key}: ${decipher(s.text, cipher) || "(nothing yet)"}`) : "",
+      );
     };
     hintBtn.addEventListener("click", () => {
       if (hintsShown >= c.hints.length) return;
       hintList.append(h("li", {}, c.hints[hintsShown]!));
       hintsShown++;
-      hintBtn.textContent = hintsShown < c.hints.length ? `Take a hint (${hintsShown + 1} of ${c.hints.length})` : "No more hints: the decoder machine is on";
+      hintBtn.textContent = hintsShown < c.hints.length ? `Take hint ${hintsShown + 1} of ${c.hints.length}` : "No more hints";
       hintBtn.toggleAttribute("disabled", hintsShown >= c.hints.length);
+      if (hintsShown === c.machineAfter) machineBox.open = true;
       runMachine();
     });
 
@@ -114,6 +129,7 @@ export function mountGame(root: HTMLElement): void {
             const extra =
               c.level.n === 2 ? ` The parcel was photographed ${describeOrientation(c.orientation)}.`
               : c.mistake ? ` The slipped stitch was row ${c.mistake[0] + 1}, stitch ${cols - c.mistake[1]}.`
+              : c.settings.cipher ? ` The stitches said "${encipher(c.answer, c.settings.cipher)}" until the key turned them back.`
               : "";
             verdict.className = "verdict solved";
             verdict.replaceChildren(h("span.stamp", {}, "SOLVED"), ` "${c.answer}".${extra}`);
@@ -128,23 +144,42 @@ export function mountGame(root: HTMLElement): void {
     );
 
     root.replaceChildren(
-      h("button.btn", { type: "button", onclick: showList }, "← All case files"),
-      h("div.case-head", {}, h("p.mono", {}, `CASE FILE 0${c.level.n} / PARCEL ${String(c.seed).padStart(3, "0")}`), h("span.stamp", {}, "FICTION")),
-      h("h2.section-label", {}, c.title),
-      ...c.briefing.map((b) => h("p.brief.mono", {}, b)),
-      h("h3.step-title", {}, "Exhibit A"),
-      h("div.actions", {}, h("button.btn", { type: "button", onclick: () => setZoom(zoom * 1.25) }, "Zoom in"), h("button.btn", { type: "button", onclick: () => setZoom(zoom / 1.25) }, "Zoom out")),
-      figure,
-      h("details.more", {}, h("summary.mono", {}, "DESCRIBE THE IMAGE IN WORDS"), h("pre.description.mono", {}, c.description)),
-      h("h3.step-title", {}, "Your copy"),
-      h("p.hint", {}, `Mark each stitch as you see it in the image: ${colour ? "switch red stitches to dark" : "switch purl bumps on"}. Row 1 is the bottom row of the image.`),
-      h("div.scroll", {}, grid.el),
-      h("div.actions", {}, hintBtn),
-      hintList,
-      machine,
-      form,
-      verdict,
-      h("div.actions", {}, h("button.btn", { type: "button", onclick: () => showCase(makeCase(c.level.n, newSeed())) }, "Another parcel like this")),
+      h(
+        "article.sheet",
+        {},
+        h(
+          "header.sheet-head",
+          {},
+          h("button.btn.btn-small", { type: "button", onclick: showList }, "← Folio"),
+          h("p.mono", {}, `CASE FILE 0${c.level.n} / PARCEL ${String(c.seed).padStart(3, "0")}`),
+          h("span.stamp", {}, "FICTION"),
+        ),
+        h("h2.section-label.sheet-title", {}, c.level.name),
+        h("div.memo.mono", {}, ...c.briefing.map((b) => h("p", {}, b))),
+        h(
+          "div.sheet-cols",
+          {},
+          h(
+            "section",
+            { "aria-label": "Exhibit A" },
+            h("div.sheet-label", {}, h("h3.step-title", {}, "Exhibit A"), h("span.zoom", {}, h("button.btn.btn-small", { type: "button", onclick: () => setZoom(zoom / 1.25), "aria-label": "Zoom out" }, "−"), h("button.btn.btn-small", { type: "button", onclick: () => setZoom(zoom * 1.25), "aria-label": "Zoom in" }, "+"))),
+            figure,
+            h("details.more", {}, h("summary.mono", {}, "DESCRIBE THE IMAGE IN WORDS"), h("pre.description.mono", {}, c.description)),
+          ),
+          h(
+            "section",
+            { "aria-label": "Your copy" },
+            h("div.sheet-label", {}, h("h3.step-title", {}, "Your copy")),
+            h("p.hint", {}, `Mark each stitch as you see it: ${colour ? "switch red stitches to dark" : "switch purl bumps on"}. Row 1 is the bottom row of the image.`),
+            h("div.scroll", {}, grid.el),
+            form,
+            verdict,
+          ),
+        ),
+        h("details.more.fold", {}, h("summary.mono", {}, `HINTS (${c.hints.length})`), h("div.actions", {}, hintBtn), hintList),
+        machineBox,
+        h("div.actions", {}, h("button.btn", { type: "button", onclick: () => showCase(makeCase(c.level.n, newSeed())) }, "Another parcel like this")),
+      ),
     );
     root.scrollIntoView({ behavior: "smooth" });
   };

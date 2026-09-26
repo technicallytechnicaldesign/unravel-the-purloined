@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { checkAnswer, LEVELS, makeCase } from "../src/engine/cases";
 import { decodeCells } from "../src/engine/steps";
 import { fabricSvg } from "../src/engine/fabric";
+import { decipher } from "../src/engine/ciphers";
 
 const bitsOf = (shown: string[][]) => shown.map((row) => row.map((v) => (v === "purl" || v === "B" ? 1 : 0) as 0 | 1));
 
@@ -23,6 +24,10 @@ describe("The Purloined Parcel: cases", () => {
           expect(bad, `seed ${seed}`).toBeDefined();
           const k = Number(/character (\d+)/.exec(bad.message)![1]);
           expect(s.text.slice(0, k - 1) + s.text.slice(k)).toBe(c.answer.slice(0, k - 1) + c.answer.slice(k));
+          expect(s.text).not.toBe(c.answer);
+        } else if (c.settings.cipher) {
+          // The stitches carry the ciphertext; deciphering gives the answer.
+          expect([seed, decipher(s.text, c.settings.cipher)]).toEqual([seed, c.answer]);
           expect(s.text).not.toBe(c.answer);
         } else {
           expect([seed, s.text]).toEqual([seed, c.answer]);
