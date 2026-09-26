@@ -654,3 +654,56 @@ a {
   display: inline-block;
   margin-right: 8px;
 }
+
+/* ---------- Archive ---------- */
+.badge-b { color: var(--ink); }
+.exhibit-title {
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  margin-top: 8px;
+}
+.claims {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.claim {
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  max-width: 48rem;
+}
+.claim > p {
+  margin: 6px 0;
+}
+.claim .src {
+  margin-left: 2px;
+}
+.know {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 0 32px;
+  margin-top: 12px;
+}
+.know ul {
+  padding-left: 18px;
+}
+.know li {
+  margin: 6px 0;
+}
+.experiment {
+  margin: 18px 0;
+}
+.source-list {
+  list-style: none;
+  padding: 0;
+  max-width: 50rem;
+}
+.source-list li {
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+}
+.grades p {
+  margin: 4px 0;
+}
+.coming {
+  padding-left: 18px;
+}
