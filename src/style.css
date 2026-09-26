@@ -881,3 +881,18 @@ a {
 .section-line {
   margin: 4px 0;
 }
+
+/* Parcel key */
+.key-code {
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  word-break: break-all;
+  padding: 6px 10px;
+  border: 2px dashed var(--red);
+  display: inline-block;
+}
+@media print {
+  .print-sheet .key-code {
+    font-size: 16pt;
+  }
+}
