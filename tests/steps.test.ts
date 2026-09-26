@@ -78,7 +78,7 @@ describe("structure errors", () => {
     const [r, c] = [turned.length - 2, 5];
     turned[r]![c] = (1 - turned[r]![c]!) as Bit;
     const s = decodeCells(turned, true, FIVE);
-    const f = s.findings.find((x) => /marker, top and border cells do not match/.test(x.message))!;
+    const f = s.findings.find((x) => /marker and top-row cells do not match/.test(x.message))!;
     expect(f.cells).toEqual([[r, c]]);
     expect(f.message).toMatch(new RegExp(`\\(row ${r + 1}, stitch ${turned[0]!.length - c}\\)\\.?$`));
     expect(s.text).toBe("HI");

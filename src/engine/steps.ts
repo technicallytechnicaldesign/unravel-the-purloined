@@ -8,7 +8,7 @@ import * as fivebit from "./fivebit";
 import * as morse from "./morse";
 import * as bacon from "./bacon";
 import { blockLength, codeLength, decodeFrame, decodeWord } from "./errorcontrol";
-import { dataCellOrder, describe as describeOrientation, mapCell, readGrid, type Cell, type Orientation } from "./grid";
+import { dataCellOrder, describe as describeOrientation, mapCell, readGrid, type Cell, type Orientation, type Edge } from "./grid";
 import { type EncodingSettings } from "./project";
 
 export interface SymbolStep {
@@ -134,7 +134,7 @@ function relocate(message: string, cells: readonly Cell[], width: number): strin
 }
 
 /** Read a grid of cells through every step back to text. */
-export function decodeCells(cells: readonly (readonly Bit[])[], border: boolean, encoding: EncodingSettings): DecodeSteps {
+export function decodeCells(cells: readonly (readonly Bit[])[], border: Edge, encoding: EncodingSettings): DecodeSteps {
   const g = readGrid(cells, border);
   const height = cells.length;
   const width = cells[0]?.length ?? 0;
