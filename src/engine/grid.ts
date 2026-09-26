@@ -30,7 +30,7 @@ export const edgeDepth = (e: Edge): number => (e === true ? 1 : e === false ? 0 
 /** The border depth a layout uses. */
 export const borderOf = (o: GridOptions): number => (o.border ? (o.borderWidth ?? 1) : 0);
 
-export type CellRole = "data" | "pad" | "marker" | "top" | "border";
+export type CellRole = "data" | "pad" | "marker" | "top" | "border" | "filler";
 
 export interface LogicalGrid {
   options: GridOptions;
@@ -70,17 +70,26 @@ export function layout(bits: readonly Bit[], options: GridOptions): LogicalGrid 
   }
   rows.push({ cells: new Array<Bit>(width).fill(1), roles: new Array<CellRole>(width).fill("top") });
 
-  const bw = borderOf(options);
-  if (!border || bw === 0) return { options, cells: rows.map((r) => r.cells), roles: rows.map((r) => r.roles) };
-  const full = width + 2 * bw;
-  const side = <T>(v: T) => new Array<T>(bw).fill(v);
-  const edge = () => ({ cells: new Array<Bit>(full).fill(0), roles: new Array<CellRole>(full).fill("border") });
-  const framed = [
-    ...Array.from({ length: bw }, edge),
-    ...rows.map((r) => ({ cells: [...side<Bit>(0), ...r.cells, ...side<Bit>(0)], roles: [...side<CellRole>("border"), ...r.roles, ...side<CellRole>("border")] })),
-    ...Array.from({ length: bw }, edge),
-  ];
-  return { options, cells: framed.map((r) => r.cells), roles: framed.map((r) => r.roles) };
+  const f = frame(rows.map((r) => r.cells), rows.map((r) => r.roles), border ? borderOf(options) : 0);
+  return { options, ...f };
+}
+
+/** Put a border `depth` cells deep round a block of cells. Border cells are 0 with the role "border". */
+export function frame(cells: readonly (readonly Bit[])[], roles: readonly (readonly CellRole[])[], depth: number): { cells: Bit[][]; roles: CellRole[][] } {
+  if (depth <= 0) return { cells: cells.map((r) => [...r]), roles: roles.map((r) => [...r]) };
+  const full = (cells[0]?.length ?? 0) + 2 * depth;
+  const side = <T>(v: T) => new Array<T>(depth).fill(v);
+  const edgeCells = () => new Array<Bit>(full).fill(0);
+  const edgeRoles = () => new Array<CellRole>(full).fill("border");
+  return {
+    cells: [...Array.from({ length: depth }, edgeCells), ...cells.map((r) => [...side<Bit>(0), ...r, ...side<Bit>(0)]), ...Array.from({ length: depth }, edgeCells)],
+    roles: [...Array.from({ length: depth }, edgeRoles), ...roles.map((r) => [...side<CellRole>("border"), ...r, ...side<CellRole>("border")]), ...Array.from({ length: depth }, edgeRoles)],
+  };
+}
+
+/** The block inside a border `depth` cells deep. */
+export function unframe<T>(cells: readonly (readonly T[])[], depth: number): T[][] {
+  return cells.slice(depth, cells.length - depth || undefined).map((r) => r.slice(depth, r.length - depth || undefined));
 }
 
 /** How a grid was turned relative to how it was made. Each part undoes itself. */

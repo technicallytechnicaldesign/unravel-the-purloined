@@ -101,8 +101,6 @@ export function describeStream(bits: readonly Bit[], encoding: EncodingSettings,
   return out;
 }
 
-type Span = [from: number, to: number];
-
 /** Cells as a knitter would say them: "row 6, stitches 3 to 8; row 7, stitch 1". Stitch 1 is on the right. */
 export function describeCells(cells: readonly Cell[], width: number): string {
   const byRow = new Map<number, number[]>();
@@ -146,30 +144,47 @@ export function decodeCells(cells: readonly (readonly Bit[])[], border: Edge, en
     const at = (i.cells ?? []).map((c) => mapCell(c, g.orientation, height, width));
     return { severity: i.kind === "orientation" ? "note" : "error", message: relocate(i.message, at, width), cells: at };
   });
-  let text = "";
-  let symbols: SymbolStep[] = [];
+  const d = decodeStream(g.bits, encoding, toCells, width);
+  findings.push(...d.findings);
+  return {
+    orientation: g.orientation,
+    orientationText: describeOrientation(g.orientation),
+    bits: g.bits,
+    symbols: d.symbols,
+    text: d.text,
+    findings,
+    ok: findings.every((f) => f.severity === "note"),
+  };
+}
 
+export type Span = [from: number, to: number];
+
+/**
+ * Decode a bit stream in an alphabet: symbols, text, and findings whose cells
+ * come from `toCells` (stream positions to cells in the grid as given).
+ * `width` is the grid width, for naming stitches.
+ */
+export function decodeStream(bits: readonly Bit[], encoding: EncodingSettings, toCells: (span: Span) => Cell[], width: number): { text: string; symbols: SymbolStep[]; findings: Finding[] } {
+  const findings: Finding[] = [];
   if (encoding.alphabet === "fivebit") {
     const o = encoding.errorControl;
     const B = blockLength(o);
     const W = codeLength(o.code);
-    const r = decodeFrame(g.bits, o);
-    text = r.text;
-    symbols = describeStream(g.bits, encoding, r.offset);
+    const r = decodeFrame(bits, o);
     for (const i of r.issues) {
       const span: Span | undefined =
         i.kind === "corrected" || i.kind === "separator" ? [i.cell, i.cell + 1]
         : i.kind === "checksum" ? [i.cell, i.cell + 2 * B]
-        : i.kind === "trailing" ? [i.cell, g.bits.length]
+        : i.kind === "trailing" ? [i.cell, bits.length]
         : i.kind === "framing" ? (i.region === "start" ? [Math.max(r.offset, 0), r.offset + W] : undefined)
         : [i.cell, i.cell + W];
       const at = span ? toCells(span) : [];
       findings.push({ severity: i.kind === "corrected" ? "note" : "error", message: relocate(i.message, at, width), cells: at });
     }
-  } else if (encoding.alphabet === "bacon") {
-    const r = bacon.decode(g.bits, encoding.variant);
-    text = r.text;
-    symbols = describeStream(g.bits, encoding);
+    return { text: r.text, symbols: describeStream(bits, encoding, r.offset), findings };
+  }
+  if (encoding.alphabet === "bacon") {
+    const r = bacon.decode(bits, encoding.variant);
     findings.push({ severity: "note", message: r.label, cells: [] });
     for (const grp of r.invalidGroups) {
       const at = toCells([grp * 5, grp * 5 + 5]);
@@ -178,24 +193,13 @@ export function decodeCells(cells: readonly (readonly Bit[])[], border: Edge, en
     if (r.ambiguous.length) {
       findings.push({ severity: "note", message: `Could be either letter at ${r.ambiguous.map((a) => `${a.position} (${a.letters.split("").join("/")})`).join(", ")}.`, cells: [] });
     }
-    if (r.trailingBits) findings.push({ severity: "error", message: `${r.trailingBits} cells left over after the last group of five.`, cells: toCells([g.bits.length - r.trailingBits, g.bits.length]) });
-  } else {
-    const r = morse.decodeUnits(g.bits);
-    text = r.text;
-    symbols = describeStream(g.bits, encoding);
-    for (const i of r.issues) {
-      const at = i.unit === undefined ? [] : toCells([i.unit, i.unit + 1]);
-      findings.push({ severity: "error", message: relocate(i.message, at, width), cells: at });
-    }
+    if (r.trailingBits) findings.push({ severity: "error", message: `${r.trailingBits} cells left over after the last group of five.`, cells: toCells([bits.length - r.trailingBits, bits.length]) });
+    return { text: r.text, symbols: describeStream(bits, encoding), findings };
   }
-
-  return {
-    orientation: g.orientation,
-    orientationText: describeOrientation(g.orientation),
-    bits: g.bits,
-    symbols,
-    text,
-    findings,
-    ok: findings.every((f) => f.severity === "note"),
-  };
+  const r = morse.decodeUnits(bits);
+  for (const i of r.issues) {
+    const at = i.unit === undefined ? [] : toCells([i.unit, i.unit + 1]);
+    findings.push({ severity: "error", message: relocate(i.message, at, width), cells: at });
+  }
+  return { text: r.text, symbols: describeStream(bits, encoding), findings };
 }

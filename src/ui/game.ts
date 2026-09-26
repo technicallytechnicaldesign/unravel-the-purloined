@@ -73,7 +73,7 @@ export function mountGame(root: HTMLElement): void {
     const figure = h("div.scroll.evidence-img");
     const svg = fabricSvg(c.shown, {
       seed: c.seed,
-      stitch: 30,
+      stitch: c.tiles ? 16 : 30,
       colours: { A: "#f9f6ee", B: "#c8201e" },
       label: `Evidence photograph: knitted fabric, ${rows} rows of ${cols} stitches. A description in words follows.`,
     });
@@ -87,7 +87,7 @@ export function mountGame(root: HTMLElement): void {
 
     const machine = h("div.machine", {}, h("p.hint", {}, `Locked. It switches on with hint ${c.machineAfter}.`));
     const grid = cellGrid({
-      cells: Array.from({ length: rows }, () => new Array<Bit>(cols).fill(0)),
+      cells: Array.from({ length: c.tiles?.rows ?? rows }, () => new Array<Bit>(c.tiles?.cols ?? cols).fill(0)),
       label: "Your copy of the evidence",
       colour,
       onChange: () => runMachine(),
@@ -170,7 +170,13 @@ export function mountGame(root: HTMLElement): void {
             "section",
             { "aria-label": "Your copy" },
             h("div.sheet-label", {}, h("h3.step-title", {}, "Your copy")),
-            h("p.hint", {}, `Mark each stitch as you see it: ${colour ? "switch red stitches to dark" : "switch purl bumps on"}. Row 1 is the bottom row of the image.`),
+            h(
+              "p.hint",
+              {},
+              c.tiles
+                ? "One cell per square: switch it on for a filled square. Row 1 is the bottom row of squares."
+                : `Mark each stitch as you see it: ${colour ? "switch red stitches to dark" : "switch purl bumps on"}. Row 1 is the bottom row of the image.`,
+            ),
             h("div.scroll", {}, grid.el),
             form,
             verdict,
