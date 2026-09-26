@@ -22,7 +22,7 @@ Tests: `npm test` (about 250). Build: `npm run build`. Browser checks so far use
 
 - **Playtest** of the game (G3, G4) and of the Phase 4 carriers. The maker is testing now.
 - **Museum writing.** The maker wants to write exhibits personally. Leave `content/exhibits/` alone unless asked.
-- **P4.7 swatches.** Real knitting to check block sizes, cable pull-in, lace leans and whether geometric symbols can be told apart in yarn.
+- **P4.7 swatches.** The maker has agreed to knit these; it will take a while. Real knitting to check block sizes, cable pull-in, lace leans and whether geometric symbols can be told apart in yarn.
 - **Motif sizes stay as they are.** Motif hiding and the unit carriers multiply the size of the piece; they are meant for big projects (a blanket, a jumper, a shirt), and the lab says so. Do not shrink them.
 - **Patterned fillers stay** as an option beside random texture.
 
@@ -33,9 +33,9 @@ Tests: `npm test` (about 250). Build: `npm run build`. Browser checks so far use
 - **XLSX** has only been checked by tests and by parsing; nobody has opened one in Excel yet.
 - **Old project files** (0.4 and earlier) import fine but report "regenerated from the settings", because the output gained `abbreviations`. Harmless; bump `PROJECT_VERSION` only if the settings shape changes.
 - **Glyph notes** point at the bottom-left cell of the character in reading coordinates. The decoder only highlights them when the piece was read as knitted (not turned or mirrored).
-- **Geometric symbols** are at least 2 stitches apart, so one slip is always reported but can be a tie between two symbols. Distance 3 would repair single slips but cannot fit 38 symbols in 3 × 3; a 4 × 4 pack could.
+- **Geometric symbols** are at least 2 stitches apart, so one slip is always reported but can be a tie between two symbols. The maker wants a 4 × 4 pack that repairs single slips: that is P4.8, the next build task.
 - **Stripes** are read from the cast-on edge; upside down they run backwards. The decoder assumes row 1 is the cast-on edge.
-- **The game's fabric renderer** (`fabric.ts`) draws only knit, purl and two colours. Game levels with cables, lace or bobbles would need drawings for those.
+- **The game's fabric renderer** (`fabric.ts`) draws only knit, purl and two colours. Game levels with the Phase 4 carriers are parked under Future directions in the roadmap, by the maker's choice.
 - **Cable blocks** are 6 stitches wide per cell, so a 20-cell message is 120 stitches. Fine for a blanket; the width hint says so.
 
 ## Next phases
@@ -56,4 +56,5 @@ Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteri
 ## Where to start next time
 
 1. Read the maker's playtest notes (they may arrive as issues or in the session prompt) and fix what they found first.
-2. Then Phase 6, task 1.
+2. Then P4.8, the 4 × 4 geometric alphabet.
+3. Then Phase 6, task 1.
