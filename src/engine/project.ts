@@ -9,7 +9,11 @@ import * as morse from "./morse";
 import * as bacon from "./bacon";
 import { type Dropped } from "./normalize";
 import { decodeFrame, encodeFrame, type ErrorControlOptions } from "./errorcontrol";
-import { borderOf, layout, readGrid, type CellRole, type GridOptions } from "./grid";
+import { borderOf, frame, layout, readGrid, type CellRole, type GridOptions, type LogicalGrid } from "./grid";
+import { expand, MOTIFS } from "./motifs";
+import { scatterCanvas, scatterHeight, SYNC, type HideSettings } from "./stego";
+import { KEY_FORMAT, keyCode, type ParcelKey } from "./key";
+import { decodeWithKey } from "./unhide";
 import { toChart, translate, type Construction, type Row, type Visible } from "./construction";
 import { longFloats, purlRelief, read, render, twoColour, type Carrier, type CarrierId, type ColourNames, type LegendEntry } from "./carrier";
 import { checkStitchCounts, writeRows } from "./pattern";
@@ -40,6 +44,8 @@ export interface ProjectSettings {
   borderStyle?: StitchPattern;
   /** Plain rows below and above the chart. Rounded up to even numbers. */
   edges?: { below: number; above: number; pattern: StitchPattern };
+  /** Hide the message by scattering it in a filler or turning cells into motifs (steganography). */
+  hide?: HideSettings;
 }
 
 export interface Project {
@@ -69,6 +75,9 @@ export interface Project {
     finishing: string[];
     /** Rough finished size. */
     dimensions: string;
+    /** For hidden messages: the key a reader needs, and the same key as a short code. */
+    key?: ParcelKey;
+    keyCode?: string;
     legend: LegendEntry[];
     carrierNotes: string[];
     /** Stitch-count and float checks, one plain line each. Empty is good. */
@@ -127,8 +136,12 @@ function encodePlain(message: string, e: EncodingSettings): { normalized: string
 }
 
 /** Read a finished pattern back to text, through every stage in reverse. */
-export function decodeRows(rows: readonly Row[], settings: ProjectSettings): string {
+export function decodeRows(rows: readonly Row[], settings: ProjectSettings, key?: ParcelKey): string {
   const cells = read(toChart(rows), carrierFor(settings.carrier)).cells;
+  if (key) {
+    const s = decodeWithKey(cells, key);
+    return s.deciphered ?? s.text;
+  }
   const bits = readGrid(cells, borderOf(settings.layout)).bits;
   const e = settings.encoding;
   const text = e.alphabet === "morse" ? morse.decodeUnits(bits).text : e.alphabet === "bacon" ? bacon.decode(bits, e.variant).text : decodeFrame(bits, e.errorControl).text;
@@ -141,8 +154,8 @@ const newId = () => globalThis.crypto?.randomUUID?.() ?? `p-${Date.now().toStrin
 /** Run the whole pipeline for one set of settings. */
 export function createProject(settings: ProjectSettings, id: string = newId()): Project {
   const msg = encodeMessage(settings.message, settings.encoding, settings.cipher);
-  const grid = layout(msg.bits, settings.layout);
   const carrier = carrierFor(settings.carrier);
+  const { grid, key } = settings.hide ? hidden(settings, msg.bits, carrier.id) : { grid: layout(msg.bits, settings.layout), key: undefined };
   let chart = render(grid.cells, carrier);
   const style = settings.borderStyle;
   if (style && grid.roles.some((row) => row.includes("border"))) {
@@ -174,9 +187,42 @@ export function createProject(settings: ProjectSettings, id: string = newId()): 
       legend: carrier.legend,
       carrierNotes: carrier.notes,
       checks: [...checkStitchCounts(rows, chart[0]!.length), ...floats],
-      decoded: decodeRows(rows, settings),
+      ...(key ? { key, keyCode: keyCode(key) } : {}),
+      decoded: decodeRows(rows, settings, key),
     },
   };
+}
+
+/** Build the hidden fabric and its key: scattered in a filler, or as motif tiles. */
+function hidden(settings: ProjectSettings, bits: Bit[], carrier: CarrierId): { grid: LogicalGrid; key: ParcelKey } {
+  const hide = settings.hide!;
+  const depth = borderOf(settings.layout);
+  const width = settings.layout.width;
+  let inner: { cells: Bit[][]; carries: boolean[][] };
+  let size: { width: number; height: number; length?: number };
+  if (hide.mode === "motif") {
+    const plain = layout(bits, { width, border: false });
+    inner = expand(plain.cells, MOTIFS[hide.motif]);
+    size = { width, height: plain.cells.length };
+  } else {
+    const stream = [...SYNC, ...bits];
+    const height = scatterHeight(stream.length, width, hide.density);
+    inner = scatterCanvas(stream, width, height, hide.seed, hide.filler, carrier);
+    size = { width, height, length: stream.length };
+  }
+  const framed = frame(inner.cells, inner.carries.map((row) => row.map((c): CellRole => (c ? "data" : "filler"))), depth);
+  const key: ParcelKey = {
+    format: KEY_FORMAT,
+    version: 1,
+    title: settings.title,
+    hide,
+    encoding: settings.encoding,
+    ...(activeCipher(settings.cipher) ? { cipher: settings.cipher! } : {}),
+    carrier,
+    border: depth,
+    ...size,
+  };
+  return { grid: { options: settings.layout, ...framed }, key };
 }
 
 const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);

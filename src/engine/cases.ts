@@ -10,6 +10,7 @@ import { type Visible } from "./construction";
 import { borderOf, dataCellOrder, transform, type Orientation, UPRIGHT } from "./grid";
 import { blockLength } from "./errorcontrol";
 import { rng } from "./fabric";
+import { MOTIFS, reduce, type MotifId } from "./motifs";
 
 export interface Level {
   n: number;
@@ -25,6 +26,7 @@ export const LEVELS: Level[] = [
   { n: 4, name: "Two yarns", teaches: "Bacon's A/B alphabet, knitted in two colours." },
   { n: 5, name: "A slipped stitch", teaches: "The knitter made a mistake. Let the checks find it." },
   { n: 6, name: "The detective's key", teaches: "A Vigenère cipher on top of the stitches. The key is a name from Poe." },
+  { n: 7, name: "Hidden in plain sight", teaches: "A pattern of little windows. The key card says how to read them." },
 ];
 
 // Short, gentle messages in the spirit of Poe's letter: things hidden in plain sight.
@@ -58,6 +60,8 @@ export interface Case {
   /** Level 5: the stitch the knitter got wrong, in `shown` coordinates. */
   mistake?: [row: number, col: number];
   hints: string[];
+  /** Motif cases: the image is made of tiles, and the copy has one cell per tile. */
+  tiles?: { size: number; rows: number; cols: number };
   /** How many hints before the decoder machine switches on. */
   machineAfter: number;
   /** For ciphered cases, how many hints before the machine also deciphers. */
@@ -81,6 +85,8 @@ function settingsFor(level: number, message: string): ProjectSettings {
       return { ...base, encoding: { alphabet: "fivebit", errorControl: { code: "parity", separator: true, checksum: true } }, layout: { width: 14, border: false }, carrier: { id: "purl-relief" } };
     case 6:
       return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" }, cipher: { kind: "vigenere", key: "DUPIN" } };
+    case 7:
+      return { ...base, encoding: FIVE_PLAIN, layout: { width: 8, border: false }, carrier: { id: "purl-relief" }, hide: { mode: "motif", motif: "window" } };
     default:
       return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" } };
   }
@@ -99,6 +105,12 @@ function briefingFor(level: number): string[] {
       return [common, "Two yarns, groups of five, and an old alphabet with only 24 letters: I and J share a code, and so do U and V. Bacon's alphabet is a historical puzzle cipher, not modern security."];
     case 5:
       return [common, "The knitter was in a hurry. Each letter has a check stitch and a separator, and the message ends with a checksum. One stitch is wrong."];
+    case 7:
+      return [
+        "This parcel held the end of a scarf covered in little squares, and nothing else. Tucked into the lining was a key card.",
+        "KEY CARD / WINDOWS. An open window (a knit stitch in the middle) is 0, a filled square is 1. Read the squares like a chart from the lab: marker row at the bottom, right to left, bottom up, five to a letter.",
+        "Steganography hides that a message is there at all. Without the card, this is just a pattern.",
+      ];
     default:
       return [
         common,
@@ -124,9 +136,33 @@ function hintsFor(level: number): string[] {
         "The decoder machine is on: it reads your copy into the scrambled message.",
         "To unscramble, take each letter back by the matching key letter (D=3, U=20, P=15, I=8, N=13), repeating DUPIN and skipping spaces. The machine now does it for you.",
       ];
+    case 7:
+      return [
+        "The bottom row of squares is the marker: filled, filled, open, filled, then open. The top row of squares is all filled.",
+        table,
+        "Your copy has one cell per square: switch it on for a filled square. The decoder machine is on.",
+      ];
     default:
       return ["Find the marker row 1 1 0 1 at one edge. That edge is the bottom; the row of all purl is the top.", table, "Put your reading into the decoder machine."];
   }
+}
+
+/** Tile by tile, for motif cases: what each square looks like, never what it means. */
+function describeTiles(shown: Visible[][], motif: MotifId): string {
+  const size = MOTIFS[motif].size;
+  const bits = shown.map((row) => row.map((v) => (v === "purl" || v === "B" ? 1 : 0) as 0 | 1));
+  const tiles = reduce(bits, MOTIFS[motif]).grid;
+  const lines = tiles.map((row, r) => {
+    const runs: string[] = [];
+    for (let i = 0; i < row.length; ) {
+      let j = i;
+      while (j + 1 < row.length && row[j + 1] === row[i]) j++;
+      runs.push(`${j - i + 1} ${row[i] ? "filled" : "open"}`);
+      i = j + 1;
+    }
+    return `Row ${r + 1} of squares (counting from the bottom), left to right: ${runs.join(", ")}.`;
+  });
+  return [`The image shows little ${size} by ${size} squares, ${tiles.length} rows of ${tiles[0]?.length ?? 0}. Each square is either open, with a knit stitch in the middle, or filled.`, ...lines.reverse()].join("\n");
 }
 
 function describe(shown: Visible[][]): string {
@@ -196,7 +232,8 @@ export function makeCase(levelN: number, seed: number): Case {
     hints: hintsFor(level.n),
     machineAfter: level.n === 6 ? 3 : hintsFor(level.n).length,
     ...(level.n === 6 ? { decipherAfter: 4 } : {}),
-    description: describe(shown),
+    description: project.output.key?.hide.mode === "motif" ? describeTiles(shown, project.output.key.hide.motif) : describe(shown),
+    ...(project.output.key?.hide.mode === "motif" ? { tiles: { size: MOTIFS[project.output.key.hide.motif].size, rows: project.output.key.height, cols: project.output.key.width } } : {}),
   };
 }
 

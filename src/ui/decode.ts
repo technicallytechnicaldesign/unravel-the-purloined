@@ -4,6 +4,9 @@
 import { h } from "./h";
 import { carrierControls, cipherControls, encodingControls, field } from "./controls";
 import { borderOf } from "../engine/grid";
+import { describeKey, importKey, parseKeyCode, type ParcelKey } from "../engine/key";
+import { decodeWithKey } from "../engine/unhide";
+import { MOTIFS } from "../engine/motifs";
 import { decipher } from "../engine/ciphers";
 import { decodeCells } from "../engine/steps";
 import { importProject, type Project } from "../engine/project";
@@ -40,7 +43,20 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const out = h("div");
   const message = h("p.hint", { role: "status" });
 
+  let key: ParcelKey | undefined;
+  const keyStatus = h("p.hint", { role: "status" }, "No key open. Without one, the decoder reads ordinary grids from the lab.");
+
   const decode = () => {
+    if (key) {
+      const s = decodeWithKey(grid.get(), key);
+      out.replaceChildren(
+        stepsView(s, key.encoding, grid),
+        s.deciphered !== undefined
+          ? h("ol.steps", {}, h("li.step", {}, h("h3.step-title", {}, h("span.step-n.mono", {}, "06"), " Decipher"), h("p.mono.big", {}, s.deciphered || "(nothing yet)"), h("p.hint", {}, "With the cipher and key from the parcel key.")))
+          : "",
+      );
+      return;
+    }
     const s = decodeCells(grid.get(), depth(), enc.get());
     const cipher = cip.get();
     out.replaceChildren(
@@ -73,11 +89,40 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const typed = h("textarea", { rows: 6, spellcheck: "false", placeholder: "Top row first. 0 or . = knit / A, 1 or x = purl / B\n1111111\n0110100\n1101000" });
   const pasted = h("textarea", { rows: 4, spellcheck: "false", placeholder: "Paste a downloaded project file here" });
   const file = h("input", { type: "file", accept: "application/json,.json" });
+  const keyCode = h("input", { type: "text", name: "key-code", placeholder: "UTP1-...", spellcheck: "false", autocomplete: "off", "aria-label": "Parcel key code" });
+  const keyFile = h("input", { type: "file", accept: "application/json,.json", "aria-label": "Parcel key file" });
+  keyFile.addEventListener("change", async () => {
+    const f = keyFile.files?.[0];
+    if (f) useKey(importKey(await f.text()));
+  });
 
   const setCells = (next: Bit[][]) => {
     width.value = String(next[0]!.length);
     height.value = String(next.length);
     grid.set(next);
+  };
+
+  /** Open a key: the grid takes the key's size, and decoding goes through it. */
+  const useKey = (k: ParcelKey | string) => {
+    if (typeof k === "string") {
+      keyStatus.textContent = k;
+      return;
+    }
+    key = k;
+    const size = k.hide.mode === "motif" ? MOTIFS[k.hide.motif].size : 1;
+    const w = k.width * size + 2 * k.border;
+    const ht = k.height * size + 2 * k.border;
+    const cells = grid.get();
+    if (cells.length !== ht || cells[0]!.length !== w) setCells(Array.from({ length: ht }, () => new Array<Bit>(w).fill(0)));
+    border.value = String(k.border);
+    grid.setColour(k.carrier === "two-colour");
+    keyStatus.replaceChildren(h("span.stamp.stamp-small", {}, "KEY OPEN"), ` ${k.title ? `"${k.title}": ` : ""}`, ...describeKey(k).map((l) => h("span.hint", {}, l)));
+    decode();
+  };
+  const forgetKey = () => {
+    key = undefined;
+    keyStatus.textContent = "Key put away. The decoder reads ordinary grids again.";
+    decode();
   };
 
   const load = (p: Project) => {
@@ -87,6 +132,8 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     grid.setColour(p.settings.carrier.id === "two-colour");
     border.value = String(borderOf(p.settings.layout));
     setCells(p.output.logicalGrid.map((r) => [...r]));
+    if (p.output.key) useKey(p.output.key);
+    else if (key) forgetKey();
     message.textContent = `Loaded "${p.settings.title}". Click cells to add mistakes and watch the report.`;
     root.scrollIntoView({ behavior: "smooth" });
   };
@@ -129,6 +176,16 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
         "Use these rows",
       ),
     ),
+    h(
+      "details.more",
+      {},
+      h("summary.mono", {}, "OPEN A PARCEL KEY"),
+      h("p.hint", {}, "For hidden messages. Type the code from a key card, or open a key file."),
+      keyCode,
+      h("div.actions", {}, h("button.btn", { type: "button", onclick: () => useKey(parseKeyCode(keyCode.value)) }, "Use this code"), h("button.btn", { type: "button", onclick: forgetKey }, "Put the key away")),
+      keyFile,
+    ),
+    keyStatus,
     h(
       "details.more",
       {},

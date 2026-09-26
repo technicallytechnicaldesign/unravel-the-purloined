@@ -3,6 +3,7 @@ import { checkAnswer, LEVELS, makeCase } from "../src/engine/cases";
 import { decodeCells } from "../src/engine/steps";
 import { fabricSvg } from "../src/engine/fabric";
 import { decipher } from "../src/engine/ciphers";
+import { MOTIFS, reduce } from "../src/engine/motifs";
 
 const bitsOf = (shown: string[][]) => shown.map((row) => row.map((v) => (v === "purl" || v === "B" ? 1 : 0) as 0 | 1));
 
@@ -17,7 +18,10 @@ describe("The Purloined Parcel: cases", () => {
     it(`level ${level.n} (${level.name}): 60 seeds all solvable from the image`, () => {
       for (let seed = 1; seed <= 60; seed++) {
         const c = makeCase(level.n, seed);
-        const s = decodeCells(bitsOf(c.shown), c.settings.layout.border, c.settings.encoding);
+        // Motif cases are copied one cell per tile, as the game asks.
+        const copy = c.tiles ? reduce(bitsOf(c.shown), MOTIFS.window).grid : bitsOf(c.shown);
+        if (c.tiles) expect([copy.length, copy[0]!.length]).toEqual([c.tiles.rows, c.tiles.cols]);
+        const s = decodeCells(copy, c.tiles ? 0 : c.settings.layout.border, c.settings.encoding);
         if (level.n === 5) {
           // The knitter's mistake is flagged at one letter, and the rest reads true.
           const bad = s.findings.find((f) => /Possible error near character (\d+)/.test(f.message))!;
@@ -35,6 +39,15 @@ describe("The Purloined Parcel: cases", () => {
         expect(checkAnswer(c, c.answer.toLowerCase())).toBe(true);
       }
     });
+
+  it("level 7 hides the message: the ordinary decoder cannot read the stitches", () => {
+    for (let seed = 1; seed <= 10; seed++) {
+      const c = makeCase(7, seed);
+      expect(decodeCells(bitsOf(c.shown), 0, c.settings.encoding).text).not.toBe(c.answer);
+      expect(c.description).toMatch(/^The image shows little 3 by 3 squares/);
+      expect(c.description).not.toContain(c.answer);
+    }
+  });
 
   it("level 2 is always turned, levels 1 and 3 to 5 never", () => {
     for (let seed = 1; seed <= 20; seed++) {
