@@ -1,9 +1,10 @@
 // T09 encode tool: settings in, every pipeline stage out, in order.
 
-import { h, download } from "./h";
+import { h, download, svgToPng } from "./h";
 import { carrierControls, check, constructionControl, encodingControls, field } from "./controls";
 import { createProject, exportProject, type Project } from "../engine/project";
 import { chartSvg } from "../engine/chartsvg";
+import { chartCsv, workbook } from "../engine/xlsx";
 import { describeStream } from "../engine/steps";
 import { type CellRole } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
@@ -110,10 +111,26 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         h(
           "div.actions",
           {},
-          h("button.btn", { type: "button", onclick: () => download(`${slug(p)}-chart.svg`, "image/svg+xml", svg) }, "Download chart (SVG)"),
-          h("button.btn", { type: "button", onclick: () => download(`${slug(p)}.json`, "application/json", exportProject(p)) }, "Download project (JSON)"),
-          h("button.btn", { type: "button", onclick: () => sendToDecoder(p) }, "Try it in the decoder ↓"),
+          h("button.btn", { type: "button", onclick: () => printPattern(p, svg) }, "Print or save as PDF"),
+          h("button.btn", { type: "button", onclick: () => svgToPng(svg).then((png) => download(`${slug(p)}-chart.png`, "image/png", png)) }, "Chart (PNG)"),
+          h("button.btn", { type: "button", onclick: () => download(`${slug(p)}-chart.svg`, "image/svg+xml", svg) }, "Chart (SVG)"),
+          h(
+            "button.btn",
+            {
+              type: "button",
+              onclick: () =>
+                download(
+                  `${slug(p)}.xlsx`,
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  workbook({ title: p.settings.title, chart: p.output.chart, rows: p.output.rows, method, legend: p.output.legend, instructions: p.output.instructions, notes: [...p.message.notes, ...p.output.carrierNotes] }),
+                ),
+            },
+            "Spreadsheet (XLSX)",
+          ),
+          h("button.btn", { type: "button", onclick: () => download(`${slug(p)}-chart.csv`, "text/csv", chartCsv(p.output.chart)) }, "Chart (CSV)"),
+          h("button.btn", { type: "button", onclick: () => download(`${slug(p)}.json`, "application/json", exportProject(p)) }, "Project (JSON)"),
         ),
+        h("div.actions", {}, h("button.btn", { type: "button", onclick: () => sendToDecoder(p) }, "Try it in the decoder ↓")),
       ),
     );
     // The SVG is our own output, built from escaped text only.
@@ -141,3 +158,22 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
 }
 
 const slug = (p: Project) => (p.settings.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "pattern");
+
+/** Fill the print sheet with the pattern and open the browser's print dialog, where "Save as PDF" lives. */
+function printPattern(p: Project, svg: string): void {
+  const sheet = document.querySelector<HTMLElement>("#print-sheet")!;
+  const stitches = p.output.chart[0]?.length ?? 0;
+  const method = p.settings.construction.method;
+  sheet.replaceChildren(
+    h("p.mono", {}, "UNRAVEL THE PURLOINED / PATTERN"),
+    h("h1", {}, p.settings.title),
+    h("p", {}, `Cast on ${stitches} stitches. ${method === "round" ? "Worked in the round" : "Worked flat"}. Row 1 is at the bottom of the chart, stitch 1 on the right.`),
+    h("div.print-chart"),
+    h("h2", {}, method === "round" ? "Rounds" : "Rows"),
+    h("ol.instructions.mono", {}, ...p.output.instructions.map((l) => h("li", {}, l))),
+    ...[...p.message.notes, ...p.output.carrierNotes, ...p.output.checks].map((n) => h("p", {}, n)),
+    h("p.mono", {}, "Encoded is not encrypted. A modern reconstruction made at the lab."),
+  );
+  sheet.querySelector(".print-chart")!.innerHTML = svg;
+  window.print();
+}
