@@ -69,3 +69,18 @@ describe("decode steps", () => {
     expect(describeStream(bits, enc).map((s) => `${s.cells}=${s.out}`)).toEqual(["...=S", "---=O", "...=S", "/=space", "....=H", "..=I"]);
   });
 });
+
+describe("structure errors", () => {
+  it("point at the marker cell that is wrong, in the grid as given", () => {
+    const grid = createProject(settings(FIVE, "HI"), "x").output.logicalGrid;
+    const turned = transform(grid, { rotated180: true, mirrored: false, inverted: false });
+    // The upright marker row is row 1 (row 0 is the border); upside down it is second from the top.
+    const [r, c] = [turned.length - 2, 5];
+    turned[r]![c] = (1 - turned[r]![c]!) as Bit;
+    const s = decodeCells(turned, true, FIVE);
+    const f = s.findings.find((x) => /marker, top and border cells do not match/.test(x.message))!;
+    expect(f.cells).toEqual([[r, c]]);
+    expect(f.message).toMatch(new RegExp(`\\(row ${r + 1}, stitch ${turned[0]!.length - c}\\)\\.?$`));
+    expect(s.text).toBe("HI");
+  });
+});
