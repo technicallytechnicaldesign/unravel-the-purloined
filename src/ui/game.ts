@@ -8,7 +8,7 @@ import { stepsView } from "./stepsview";
 import { checkAnswer, LEVELS, makeCase, type Case } from "../engine/cases";
 import { fabricSvg } from "../engine/fabric";
 import { decodeCells } from "../engine/steps";
-import { describe as describeOrientation } from "../engine/grid";
+import { borderOf, describe as describeOrientation } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
 import { decipher, encipher } from "../engine/ciphers";
 
@@ -98,7 +98,7 @@ export function mountGame(root: HTMLElement): void {
     const machineBox = h("details.more.fold", {}, h("summary.mono", {}, "THE DECODER MACHINE"), machine);
     const runMachine = () => {
       if (hintsShown < c.machineAfter) return;
-      const s = decodeCells(grid.get(), c.settings.layout.border, c.settings.encoding);
+      const s = decodeCells(grid.get(), borderOf(c.settings.layout), c.settings.encoding);
       const cipher = c.settings.cipher;
       const deciphers = cipher && c.decipherAfter !== undefined && hintsShown >= c.decipherAfter;
       machine.replaceChildren(

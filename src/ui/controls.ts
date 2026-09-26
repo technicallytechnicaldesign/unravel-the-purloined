@@ -98,6 +98,7 @@ export function constructionControl(onChange: () => void) {
   return {
     el: field("CONSTRUCTION", el),
     get: (): Construction => (el.value === "round" ? { method: "round", firstRow: "RS" } : { method: "flat", firstRow: el.value === "flat-WS" ? "WS" : "RS" }),
+    set: (c: Construction) => (el.value = c.method === "round" ? "round" : `flat-${c.firstRow}`),
   };
 }
 
