@@ -4,6 +4,9 @@ import { h, download, svgToPng } from "./h";
 import { carrierControls, cipherControls, constructionControl, encodingControls, field, select } from "./controls";
 import { fromRecipe, RECIPES, type RecipeId } from "../engine/recipes";
 import { PATTERNS, patternsFor, type StitchPattern } from "../engine/stitches";
+import { DENSITY_TEXT, FILLER_TEXTURE, type FillerId } from "../engine/stego";
+import { MOTIFS, type MotifId } from "../engine/motifs";
+import { describeKey, exportKey } from "../engine/key";
 import { createProject, exportProject, type Project } from "../engine/project";
 import { chartSvg } from "../engine/chartsvg";
 import { chartCsv, workbook } from "../engine/xlsx";
@@ -17,6 +20,7 @@ const ROLE_TEXT: Record<CellRole, string> = {
   marker: "orientation marker",
   top: "top row",
   border: "border",
+  filler: "filler (not message)",
 };
 
 function step(n: number, title: string, ...body: (Node | string)[]): HTMLElement {
@@ -59,11 +63,26 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const edgeBelow = h("input", { type: "number", name: "edge-below", value: 0, min: 0, max: 60, step: 2, inputmode: "numeric" });
   const edgeAbove = h("input", { type: "number", name: "edge-above", value: 0, min: 0, max: 60, step: 2, inputmode: "numeric" });
   const edgePattern = select("edge-pattern", []);
+  const hideMode = select("hide", [["off", "Off: a plain chart"], ["scatter", "Scatter in a filler"], ["motif", "Motifs"]]);
+  const filler = select("filler", []);
+  const density = select("density", Object.entries(DENSITY_TEXT).map(([k, v]) => [k, v] as [string, string]), "3");
+  const seed = h("input", { type: "number", name: "seed", value: 1 + Math.floor(Math.random() * 9999), min: 1, max: 999999, inputmode: "numeric" });
+  const motif = select("motif", Object.values(MOTIFS).map((m) => [m.id, m.name] as [string, string]));
+  const scatterBox = h("div", {}, field("FILLER", filler, "Regular patterns make message stitches stand out as small mistakes; random texture hides them best."), field("DENSITY", density), h("div.pair", {}, field("SEED", seed), h("button.btn.btn-small", { type: "button", onclick: () => ((seed.value = String(1 + Math.floor(Math.random() * 999999))), render()) }, "New seed")));
+  const motifBox = h("div", {}, field("MOTIF", motif), h("p.hint", {}, "Each cell of the message grid becomes one motif; a filled centre is 1."));
+  const hideNote = h("p.hint", {}, "Steganography hides that a message is there. It does not protect what it says: add a cipher for that, and keep the key apart from the knitting.");
+  const syncHide = () => {
+    scatterBox.hidden = hideMode.value !== "scatter";
+    motifBox.hidden = hideMode.value !== "motif";
+  };
   const out = h("ol.steps");
 
   // Border and edge patterns depend on the carrier: knit/purl textures or two colours.
   const fillPatterns = () => {
     const carrier = car.get().id;
+    const keepFiller = filler.value;
+    filler.replaceChildren(h("option", { value: "texture" }, FILLER_TEXTURE), ...patternsFor(carrier).map((k) => h("option", { value: k }, PATTERNS[k].name)));
+    filler.value = [...filler.options].some((o) => o.value === keepFiller) ? keepFiller : "texture";
     for (const [sel, plain] of [[borderStyle, "Plain (same as the background)"], [edgePattern, "Same as the border"]] as const) {
       const keep = sel.value;
       sel.replaceChildren(h("option", { value: "plain" }, plain), ...patternsFor(carrier).map((k) => h("option", { value: k }, PATTERNS[k].name)));
@@ -111,6 +130,11 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         ...(style !== "plain" ? { borderStyle: style } : {}),
         ...(edgeStyle !== "plain" && below + above > 0 ? { edges: { below, above, pattern: edgeStyle } } : {}),
         ...(recipe.value !== "none" ? { recipe: recipe.value as RecipeId } : {}),
+        ...(hideMode.value === "scatter"
+          ? { hide: { mode: "scatter" as const, seed: Math.max(1, Math.round(Number(seed.value)) || 1), filler: filler.value as FillerId, density: Number(density.value) as 2 | 3 | 4 } }
+          : hideMode.value === "motif"
+            ? { hide: { mode: "motif" as const, motif: motif.value as MotifId } }
+            : {}),
         carrier: car.get(),
         construction: con.get(),
         ...(cipher ? { cipher } : {}),
@@ -148,10 +172,31 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
       step(
         next(),
         "Logical grid",
-        h("p.hint", {}, `${p.output.logicalGrid.length} rows of ${stitches} cells. Row 1 at the bottom. The message runs right to left from the bottom, between the marker row and the top row.`),
+        h(
+          "p.hint",
+          {},
+          p.output.key
+            ? `${p.output.logicalGrid.length} rows of ${stitches} cells. The message cells are shown dark and light; everything dimmed is filler or border.`
+            : `${p.output.logicalGrid.length} rows of ${stitches} cells. Row 1 at the bottom. The message runs right to left from the bottom, between the marker row and the top row.`,
+        ),
         h("div.scroll", {}, logicalGrid(p.output.logicalGrid, p.output.roles)),
-        h("p.legend.mono", {}, h("span", {}, h("i.lcell.b1.role-data"), " message 1"), h("span", {}, h("i.lcell.b0.role-data"), " message 0"), h("span", {}, h("i.lcell.b1.role-marker"), " marker, top, border, padding")),
+        h("p.legend.mono", {}, h("span", {}, h("i.lcell.b1.role-data"), " message 1"), h("span", {}, h("i.lcell.b0.role-data"), " message 0"), h("span", {}, h("i.lcell.b1.role-marker"), p.output.key ? " filler and border" : " marker, top, border, padding")),
       ),
+      p.output.key
+        ? step(
+            next(),
+            "Hide",
+            h("p.hint", {}, "The chart below looks like pattern. Only a reader with this key can find the message in it."),
+            h("p.mono.big.key-code", {}, p.output.keyCode!),
+            ...describeKey(p.output.key).map((l) => h("p.hint", {}, l)),
+            h(
+              "div.actions",
+              {},
+              h("button.btn", { type: "button", onclick: () => printKeyCard(p) }, "Print the key card"),
+              h("button.btn", { type: "button", onclick: () => download(`${slug(p)}-key.json`, "application/json", exportKey(p.output.key!)) }, "Key (JSON)"),
+            ),
+          )
+        : "",
       step(next(), "Chart", h("div.scroll.chart-svg", { role: "img", "aria-label": "Knitting chart" }), ...p.output.carrierNotes.map((n) => h("p.hint", {}, n))),
       step(
         next(),
@@ -204,7 +249,10 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   fillPatterns();
   applyRecipe();
   for (const el of [message, title, width, borderDepth, edgeBelow, edgeAbove]) el.addEventListener("input", render);
-  for (const el of [borderStyle, edgePattern]) el.addEventListener("change", render);
+  for (const el of [borderStyle, edgePattern, filler, density, motif]) el.addEventListener("change", render);
+  seed.addEventListener("input", render);
+  hideMode.addEventListener("change", () => (syncHide(), render()));
+  syncHide();
   recipe.addEventListener("change", () => (applyRecipe(), render()));
 
   const stage = (n: number, name: string, ...body: HTMLElement[]) => h("fieldset.stage", {}, h("legend.mono", {}, h("span.step-n", {}, String(n).padStart(2, "0")), ` ${name}`), ...body);
@@ -223,7 +271,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
       h("div.pair", {}, field("PLAIN ROWS BELOW", edgeBelow), field("PLAIN ROWS ABOVE", edgeAbove)),
       field("EDGE PATTERN", edgePattern, "Edge rows are rounded up to even numbers so row 1 of the chart stays on the right side."),
     ),
-    stage(7, "FILLER", h("p.hint", {}, "Coming next. How a filler pattern stays apart from the message is a design choice still to make (roadmap T16).")),
+    stage(7, "HIDE (STEGANOGRAPHY)", field("HIDE THE MESSAGE", hideMode), scatterBox, motifBox, hideNote),
     h("button.btn.btn-go", { type: "submit" }, "Generate signal →"),
   );
   root.append(form, out);
@@ -250,5 +298,20 @@ function printPattern(p: Project, svg: string): void {
     h("p.mono", {}, "Encoded is not encrypted. A modern reconstruction made at the lab."),
   );
   sheet.querySelector(".print-chart")!.innerHTML = svg;
+  window.print();
+}
+
+/** Fill the print sheet with the parcel key card and open the print dialog. */
+function printKeyCard(p: Project): void {
+  const sheet = document.querySelector<HTMLElement>("#print-sheet")!;
+  sheet.replaceChildren(
+    h("p.mono", {}, "UNRAVEL THE PURLOINED / PARCEL KEY"),
+    h("h1", {}, p.settings.title),
+    h("p.mono", {}, "KEEP THIS CARD APART FROM THE KNITTING."),
+    h("p.mono.key-code", {}, p.output.keyCode!),
+    ...describeKey(p.output.key!).map((l) => h("p", {}, l)),
+    h("p", {}, "To read: open the lab, go to Decode a grid, open a parcel key, type the code above, then mark each stitch as you see it."),
+    h("p.mono", {}, "Steganography hides that a message is there. It does not protect what it says."),
+  );
   window.print();
 }

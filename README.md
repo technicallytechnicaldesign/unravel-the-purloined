@@ -12,8 +12,8 @@ The name comes from Poe's *The Purloined Letter*, where the letter stays hidden 
 
 Working, and growing. Three parts are live:
 
-- **The lab** (`lab.html`): encode a message (five-bit, Morse or Bacon, with optional classical ciphers and error checks) into a knit/purl or two-colour pattern for flat or round knitting, with chart, written rows and exports; decode a grid back to text with every step shown.
-- **The Purloined Parcel** (`game.html`): six case files of knitted evidence to read and decode.
+- **The lab** (`lab.html`): build a pattern in numbered stages, from message and cipher through recipe, carrier, border and edges to an optional hiding step (scattered in a filler, or turned into motifs, with a printable parcel key). Chart, written rows and exports for flat or round knitting; the decoder reads ordinary grids, or hidden ones with a key, showing every step.
+- **The Purloined Parcel** (`game.html`): seven case files of knitted evidence to read and decode.
 - **The archive** (`archive.html`): exhibits with evidence grades. Drafts stay private until their sources are checked; to write one, see `content/README.md`.
 
 See `docs/ROADMAP.md` for what comes next.
