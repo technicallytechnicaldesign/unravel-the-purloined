@@ -166,7 +166,7 @@ function describeTiles(shown: Visible[][], motif: MotifId): string {
 }
 
 function describe(shown: Visible[][]): string {
-  const name: Record<Visible, string> = { knit: "knit", purl: "purl", A: "cream", B: "red" };
+  const name: Record<Visible, string> = { knit: "knit", purl: "purl", A: "cream", B: "red", c4f: "left cable", c4b: "right cable", yo: "eyelet", k2tog: "right lean", ssk: "left lean", mb: "bobble", pb: "bead" };
   const w = shown[0]?.length ?? 0;
   const lines = [...shown].map((row, r) => {
     // Runs, left to right as seen: "3 knit, 1 purl".

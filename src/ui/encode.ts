@@ -69,7 +69,13 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const seed = h("input", { type: "number", name: "seed", value: 1 + Math.floor(Math.random() * 9999), min: 1, max: 999999, inputmode: "numeric" });
   const motif = select("motif", Object.values(MOTIFS).map((m) => [m.id, m.name] as [string, string]));
   const scatterBox = h("div", {}, field("FILLER", filler, "Regular patterns make message stitches stand out as small mistakes; random texture hides them best."), field("DENSITY", density), h("div.pair", {}, field("SEED", seed), h("button.btn.btn-small", { type: "button", onclick: () => ((seed.value = String(1 + Math.floor(Math.random() * 999999))), render()) }, "New seed")));
-  const motifBox = h("div", {}, field("MOTIF", motif), h("p.hint", {}, "Each cell of the message grid becomes one motif; a filled centre is 1."));
+  const motifBox = h(
+    "div",
+    {},
+    field("MOTIF", motif),
+    h("p.hint", {}, "Each cell of the message grid becomes one motif; a filled centre is 1."),
+    h("p.hint", {}, "Motifs make the fabric several times bigger than the message grid: best for large pieces such as a blanket, a jumper or a shirt, where the pattern has room to look like pattern."),
+  );
   const hideNote = h("p.hint", {}, "Steganography hides that a message is there. It does not protect what it says: add a cipher for that, and keep the key apart from the knitting.");
   const syncHide = () => {
     scatterBox.hidden = hideMode.value !== "scatter";
@@ -126,6 +132,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         title: title.value || "Untitled",
         message: message.value,
         encoding: enc.get(),
+        ...(enc.glyphs() ? { glyphs: enc.glyphs()! } : {}),
         layout: { width: w, border: depth > 0, borderWidth: depth },
         ...(style !== "plain" ? { borderStyle: style } : {}),
         ...(edgeStyle !== "plain" && below + above > 0 ? { edges: { below, above, pattern: edgeStyle } } : {}),
@@ -149,7 +156,6 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     const method = p.settings.construction.method;
     const dropped = [...new Set(p.message.dropped.map((d) => (/\s/.test(d.char) ? "space" : d.char)))];
     const svg = chartSvg({ title: p.settings.title, chart: p.output.chart, rows: p.output.rows, method, legend: p.output.legend });
-    const stitches = p.output.chart[0]?.length ?? 0;
     const matches = p.output.decoded === p.message.normalized;
 
     out.replaceChildren(
@@ -165,9 +171,11 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         : "",
       step(
         next(),
-        e.alphabet === "fivebit" ? "Encode and add error checks" : e.alphabet === "morse" ? "Encode as Morse" : "Encode as A/B groups",
-        h("p.hint", {}, `${p.output.bits.length} cells in the stream.`),
-        symbolTable(p),
+        p.settings.glyphs ? "Draw the letters" : e.alphabet === "fivebit" ? "Encode and add error checks" : e.alphabet === "morse" ? (p.settings.carrier.id === "stripes" ? "Encode as Morse, then stripes" : "Encode as Morse") : "Encode as A/B groups",
+        ...(p.settings.glyphs
+          ? [h("p.hint", {}, "Each character becomes its own small picture, with one stitch of space between them and one row between lines.")]
+          : [h("p.hint", {}, `${p.output.bits.length} cells in the stream.`), symbolTable(p)]),
+        ...(p.settings.carrier.id === "stripes" ? [h("p.hint", {}, "Each Morse unit becomes two rows: 1 is colour B, 0 is colour A. Four plain rows go before and after.")] : []),
       ),
       step(
         next(),
@@ -176,11 +184,15 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
           "p.hint",
           {},
           p.output.key
-            ? `${p.output.logicalGrid.length} rows of ${stitches} cells. The message cells are shown dark and light; everything dimmed is filler or border.`
-            : `${p.output.logicalGrid.length} rows of ${stitches} cells. Row 1 at the bottom. The message runs right to left from the bottom, between the marker row and the top row.`,
+            ? `${p.output.logicalGrid.length} rows of ${p.output.logicalGrid[0]?.length ?? 0} cells. The message cells are shown dark and light; everything dimmed is filler or border.`
+            : p.settings.glyphs
+              ? `${p.output.logicalGrid.length} rows of ${p.output.logicalGrid[0]?.length ?? 0} cells. Read left to right, top line first; there is no marker row, since letters show which way is up.`
+              : p.settings.carrier.id === "stripes"
+                ? `${p.output.logicalGrid.length} rows, one colour each. Row 1 at the bottom is the cast-on edge; read upwards from there.`
+                : `${p.output.logicalGrid.length} rows of ${p.output.logicalGrid[0]?.length ?? 0} cells. Row 1 at the bottom. The message runs right to left from the bottom, between the marker row and the top row.`,
         ),
         h("div.scroll", {}, logicalGrid(p.output.logicalGrid, p.output.roles)),
-        h("p.legend.mono", {}, h("span", {}, h("i.lcell.b1.role-data"), " message 1"), h("span", {}, h("i.lcell.b0.role-data"), " message 0"), h("span", {}, h("i.lcell.b1.role-marker"), p.output.key ? " filler and border" : " marker, top, border, padding")),
+        h("p.legend.mono", {}, h("span", {}, h("i.lcell.b1.role-data"), " message 1"), h("span", {}, h("i.lcell.b0.role-data"), " message 0"), h("span", {}, h("i.lcell.b1.role-marker"), p.output.key || p.settings.glyphs ? " background and border" : " marker, top, border, padding")),
       ),
       p.output.key
         ? step(
@@ -203,6 +215,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         method === "round" ? "Knit it: rounds" : "Knit it: rows",
         h("p.hint", {}, "Work each line as written; right side and wrong side are already handled."),
         ...p.output.preamble.map((line) => h("p.mono.section-line", {}, line)),
+        ...(p.output.abbreviations.length ? [h("div.abbrev", {}, h("p.mono.field-label", {}, "ABBREVIATIONS"), ...p.output.abbreviations.map((a) => h("p.hint", {}, a)))] : []),
         h("ol.instructions.mono", {}, ...[...p.output.instructions].map((line) => h("li", {}, line))),
         ...p.output.finishing.map((line) => h("p.mono.section-line", {}, line)),
         h("p.hint", {}, p.output.dimensions),
@@ -227,7 +240,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
                 download(
                   `${slug(p)}.xlsx`,
                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                  workbook({ title: p.settings.title, chart: p.output.chart, rows: p.output.rows, method, legend: p.output.legend, instructions: [...p.output.preamble, ...p.output.instructions, ...p.output.finishing], notes: [...p.message.notes, ...p.output.carrierNotes, p.output.dimensions] }),
+                  workbook({ title: p.settings.title, chart: p.output.chart, rows: p.output.rows, method, legend: p.output.legend, instructions: [...p.output.preamble, ...p.output.instructions, ...p.output.finishing], notes: [...p.message.notes, ...p.output.carrierNotes, ...p.output.abbreviations, p.output.dimensions] }),
                 ),
             },
             "Spreadsheet (XLSX)",
@@ -290,6 +303,7 @@ function printPattern(p: Project, svg: string): void {
     h("h1", {}, p.settings.title),
     h("p", {}, `${stitches} stitches, ${method === "round" ? "worked in the round" : "worked flat"}. Row 1 is at the bottom of the chart, stitch 1 on the right. ${p.output.dimensions}`),
     h("div.print-chart"),
+    ...(p.output.abbreviations.length ? [h("h2", {}, "Abbreviations"), ...p.output.abbreviations.map((a) => h("p.mono", {}, a))] : []),
     h("h2", {}, method === "round" ? "Rounds" : "Rows"),
     ...p.output.preamble.map((l) => h("p.mono", {}, l)),
     h("ol.instructions.mono", {}, ...p.output.instructions.map((l) => h("li", {}, l))),

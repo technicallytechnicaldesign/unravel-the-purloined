@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | UID | `UTP-2026-7F3A` |
-| Version | 0.4 |
+| Version | 0.5 |
 | Updated | 2026-09-26 |
 | Live | https://technicallytechnicaldesign.github.io/unravel-the-purloined/ |
 

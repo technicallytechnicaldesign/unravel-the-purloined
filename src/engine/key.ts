@@ -33,6 +33,7 @@ export interface ParcelKey {
 const FILLERS: Record<string, FillerId> = { TX: "texture", ST: "stockinette", GA: "garter", SE: "seed", DS: "double-seed", R1: "rib1", R2: "rib2", SA: "solid-a", SB: "solid-b", CH: "checker", SR: "stripes" };
 const MOTIF_CODES: Record<string, MotifId> = { W: "window", D: "diamond", X: "cross" };
 const CIPHER_CODES: Record<string, CipherKind> = { CA: "caesar", KW: "keyword", VI: "vigenere", RF: "railfence", RO: "route" };
+const CARRIER_CODES: Record<string, CarrierId> = { PR: "purl-relief", TC: "two-colour", CA: "cable", LA: "lace", BO: "bobble", BE: "bead" };
 const CODE_LETTER: Record<SymbolCode, string> = { plain: "N", parity: "P", hamming: "H" };
 const flip = <T extends string>(o: Record<string, T>) => Object.fromEntries(Object.entries(o).map(([k, v]) => [v, k])) as Record<T, string>;
 
@@ -50,7 +51,7 @@ export function keyCode(k: ParcelKey): string {
   const enc = e.alphabet === "morse" ? "MR" : e.alphabet === "bacon" ? `BA${e.variant === "historical24" ? 24 : 26}` : `5${CODE_LETTER[e.errorControl.code]}${e.errorControl.separator ? "S" : ""}${e.errorControl.checksum ? "K" : ""}`;
   const hide = k.hide.mode === "motif" ? flip(MOTIF_CODES)[k.hide.motif] : `${k.hide.seed.toString(36).toUpperCase()}.${k.hide.density}.${(k.length ?? 0).toString(36).toUpperCase()}.${flip(FILLERS)[k.hide.filler]}`;
   const cipher = k.cipher && k.cipher.kind !== "none" ? `${flip(CIPHER_CODES)[k.cipher.kind]}.${codeKey(k.cipher)}` : "NC";
-  const body = ["UTP1", k.hide.mode === "motif" ? "MO" : "SC", `${k.width}X${k.height}`, `B${k.border}`, k.carrier === "two-colour" ? "TC" : "PR", enc, hide, cipher].join("-");
+  const body = ["UTP1", k.hide.mode === "motif" ? "MO" : "SC", `${k.width}X${k.height}`, `B${k.border}`, flip(CARRIER_CODES)[k.carrier] ?? "PR", enc, hide, cipher].join("-");
   return `${body}-${check(body)}`;
 }
 
@@ -105,7 +106,7 @@ export function parseKeyCode(code: string): ParcelKey | string {
     hide: hideSettings,
     encoding,
     ...(cipherSettings ? { cipher: cipherSettings } : {}),
-    carrier: carrier === "TC" ? "two-colour" : "purl-relief",
+    carrier: CARRIER_CODES[carrier] ?? "purl-relief",
     border: Number(bm[1]),
     width: Number(dm[1]),
     height: Number(dm[2]),
@@ -141,7 +142,7 @@ export function describeKey(k: ParcelKey): string[] {
       ? `Hidden in motifs: ${MOTIFS[k.hide.motif].name}. ${MOTIFS[k.hide.motif].reading} The tiles form a grid of ${k.width} by ${k.height}, read like any chart from the lab: marker row at the bottom, right to left, bottom up.`
       : `Scattered: ${k.length} message cells along a route set by seed ${k.hide.seed}, over a field ${k.width} stitches wide and ${k.height} rows tall, with ${k.hide.filler === "texture" ? "random texture" : k.hide.filler} as filler.`,
     `Border: ${k.border} stitch${k.border === 1 ? "" : "es"} deep; ignore it.`,
-    `${k.carrier === "two-colour" ? "Colour B" : "A purl stitch"} is 1. The message is written in ${alphabet}.`,
+    `${k.carrier === "two-colour" ? "Colour B is 1" : k.carrier === "purl-relief" ? "A purl stitch is 1" : `Each ${k.carrier} block is one cell; mark it as 1 or 0 by the key in the pattern`}. The message is written in ${alphabet}.`,
     k.cipher && k.cipher.kind !== "none" ? `Then decipher: ${k.cipher.kind}, key ${k.cipher.key.toUpperCase()}. A historical / puzzle cipher.` : "No cipher.",
   ];
   return lines;
