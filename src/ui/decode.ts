@@ -34,7 +34,33 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
   const border = check("border", "Grid has a border", false);
-  const grid = h("div.dgrid", { role: "grid", "aria-label": "Grid to decode: press a cell to switch it" });
+  const grid = h("div.dgrid", { role: "group", "aria-label": "Grid to decode. Arrow keys move, space or enter switches a cell, Home and End jump along the row." });
+  // One tab stop for the whole grid; arrow keys move between cells.
+  let active: Cell = [7, 0];
+  const cellButton = ([r, c]: Cell) => grid.querySelector<HTMLButtonElement>(`[data-cell="${r},${c}"]`);
+  const moveTo = (next: Cell) => {
+    cellButton(active)?.setAttribute("tabindex", "-1");
+    active = next;
+    const btn = cellButton(active);
+    btn?.setAttribute("tabindex", "0");
+    btn?.focus();
+  };
+  grid.addEventListener("keydown", (ev) => {
+    const [r, c] = active;
+    const w = cells[0]!.length;
+    const next: Record<string, Cell> = {
+      ArrowUp: [Math.min(r + 1, cells.length - 1), c],
+      ArrowDown: [Math.max(r - 1, 0), c],
+      ArrowLeft: [r, Math.max(c - 1, 0)],
+      ArrowRight: [r, Math.min(c + 1, w - 1)],
+      Home: [r, 0],
+      End: [r, w - 1],
+    };
+    const to = next[ev.key];
+    if (!to) return;
+    ev.preventDefault();
+    moveTo(to);
+  });
   const out = h("ol.steps");
   const message = h("p.hint", { role: "status" });
 
@@ -50,6 +76,8 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     const w = cells[0]!.length;
     grid.classList.toggle("colour", colour);
     grid.style.setProperty("--cols", String(w + 1));
+    const hadFocus = grid.contains(document.activeElement);
+    active = [Math.min(active[0], cells.length - 1), Math.min(active[1], w - 1)];
     grid.replaceChildren();
     for (let r = cells.length - 1; r >= 0; r--) {
       cells[r]!.forEach((b, c) => {
@@ -59,6 +87,8 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
             type: "button",
             "data-cell": `${r},${c}`,
             "aria-label": `Row ${r + 1}, stitch ${w - c}: ${state}`,
+            tabindex: r === active[0] && c === active[1] ? 0 : -1,
+            onfocus: () => (active = [r, c]),
             onclick: () => {
               cells[r]![c] = (1 - cells[r]![c]!) as Bit;
               draw();
@@ -68,6 +98,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
       });
       grid.append(h("span.rownum.mono", { "aria-hidden": "true" }, r + 1));
     }
+    if (hadFocus) cellButton(active)?.focus();
     decode();
   };
 

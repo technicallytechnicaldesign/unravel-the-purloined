@@ -4,7 +4,7 @@ import { DEFAULT_OPTIONS } from "../src/engine/errorcontrol";
 import { transform } from "../src/engine/grid";
 import { FLAT } from "../src/engine/construction";
 import { createProject, type EncodingSettings, type ProjectSettings } from "../src/engine/project";
-import { decodeCells, describeStream } from "../src/engine/steps";
+import { decodeCells, describeCells, describeStream } from "../src/engine/steps";
 
 const settings = (encoding: EncodingSettings, message = "Meet at noon."): ProjectSettings => ({
   title: "t",
@@ -46,6 +46,13 @@ describe("decode steps", () => {
     expect(s.orientationText).toBe("upside down");
     const err = s.findings.find((f) => f.severity === "error" && /Possible error near character/.test(f.message))!;
     expect(err.cells).toContainEqual([r, c]);
+    expect(err.message).toMatch(/^Possible error near character \d+ \(row \d+, stitch(es)? [\d, to]+(; row \d+, stitch(es)? [\d, to]+)*\)\.$/);
+    expect(err.message).not.toMatch(/cells? \d/);
+  });
+
+  it("names cells by row and stitch, stitch 1 on the right", () => {
+    expect(describeCells([[5, 10], [5, 9], [5, 8], [5, 3]], 12)).toBe("row 6, stitches 2 to 4, 9");
+    expect(describeCells([[0, 11], [2, 0]], 12)).toBe("row 1, stitch 1; row 3, stitch 12");
   });
 
   it("Bacon notes its alphabet and the shared letters", () => {

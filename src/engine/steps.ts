@@ -103,6 +103,36 @@ export function describeStream(bits: readonly Bit[], encoding: EncodingSettings,
 
 type Span = [from: number, to: number];
 
+/** Cells as a knitter would say them: "row 6, stitches 3 to 8; row 7, stitch 1". Stitch 1 is on the right. */
+export function describeCells(cells: readonly Cell[], width: number): string {
+  const byRow = new Map<number, number[]>();
+  for (const [r, c] of cells) byRow.set(r, [...(byRow.get(r) ?? []), width - c]);
+  return [...byRow.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([r, sts]) => {
+      const sorted = [...new Set(sts)].sort((a, b) => a - b);
+      const runs: string[] = [];
+      for (let i = 0; i < sorted.length; ) {
+        let j = i;
+        while (j + 1 < sorted.length && sorted[j + 1] === sorted[j]! + 1) j++;
+        runs.push(i === j ? String(sorted[i]) : `${sorted[i]} to ${sorted[j]}`);
+        i = j + 1;
+      }
+      const many = sorted.length > 1;
+      return `row ${r + 1}, stitch${many ? "es" : ""} ${runs.join(", ")}`;
+    })
+    .join("; ");
+}
+
+/** Swap stream positions in an engine message ("cells 43 to 48", "cell 83", "unit 9") for rows and stitches. */
+function relocate(message: string, cells: readonly Cell[], width: number): string {
+  const where = cells.length ? describeCells(cells, width) : "";
+  const stream = /\b(?:cells? \d+(?: to \d+)?|unit \d+)\b/;
+  if (!stream.test(message)) return where ? `${message} (${where})` : message;
+  if (!where) return message.replace(/ \((?:cells? \d+(?: to \d+)?)\)/, "");
+  return message.replace(stream, where);
+}
+
 /** Read a grid of cells through every step back to text. */
 export function decodeCells(cells: readonly (readonly Bit[])[], border: boolean, encoding: EncodingSettings): DecodeSteps {
   const g = readGrid(cells, border);
@@ -130,14 +160,18 @@ export function decodeCells(cells: readonly (readonly Bit[])[], border: boolean,
         : i.kind === "trailing" ? [i.cell, g.bits.length]
         : i.kind === "framing" ? (i.region === "start" ? [Math.max(r.offset, 0), r.offset + W] : undefined)
         : [i.cell, i.cell + W];
-      findings.push({ severity: i.kind === "corrected" ? "note" : "error", message: i.message, cells: span ? toCells(span) : [] });
+      const at = span ? toCells(span) : [];
+      findings.push({ severity: i.kind === "corrected" ? "note" : "error", message: relocate(i.message, at, width), cells: at });
     }
   } else if (encoding.alphabet === "bacon") {
     const r = bacon.decode(g.bits, encoding.variant);
     text = r.text;
     symbols = describeStream(g.bits, encoding);
     findings.push({ severity: "note", message: r.label, cells: [] });
-    for (const grp of r.invalidGroups) findings.push({ severity: "error", message: `Group ${grp + 1} has no letter in this alphabet.`, cells: toCells([grp * 5, grp * 5 + 5]) });
+    for (const grp of r.invalidGroups) {
+      const at = toCells([grp * 5, grp * 5 + 5]);
+      findings.push({ severity: "error", message: relocate(`Group ${grp + 1} has no letter in this alphabet.`, at, width), cells: at });
+    }
     if (r.ambiguous.length) {
       findings.push({ severity: "note", message: `Could be either letter at ${r.ambiguous.map((a) => `${a.position} (${a.letters.split("").join("/")})`).join(", ")}.`, cells: [] });
     }
@@ -146,7 +180,10 @@ export function decodeCells(cells: readonly (readonly Bit[])[], border: boolean,
     const r = morse.decodeUnits(g.bits);
     text = r.text;
     symbols = describeStream(g.bits, encoding);
-    for (const i of r.issues) findings.push({ severity: "error", message: i.message, cells: i.unit === undefined ? [] : toCells([i.unit, i.unit + 1]) });
+    for (const i of r.issues) {
+      const at = i.unit === undefined ? [] : toCells([i.unit, i.unit + 1]);
+      findings.push({ severity: "error", message: relocate(i.message, at, width), cells: at });
+    }
   }
 
   return {
