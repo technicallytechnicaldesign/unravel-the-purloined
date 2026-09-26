@@ -545,3 +545,35 @@ a {
 .findings li.error {
   color: var(--red);
 }
+
+/* Print: only the pattern sheet, on white paper */
+.print-sheet {
+  display: none;
+}
+@media print {
+  body > *:not(.print-sheet) {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff;
+    color: #000;
+    max-width: none;
+    padding: 0;
+  }
+  .print-sheet {
+    display: block;
+    font-size: 11pt;
+  }
+  .print-sheet h1 {
+    font-size: 20pt;
+    margin: 4pt 0 8pt;
+  }
+  .print-chart svg {
+    width: min(100%, 15cm);
+    height: auto;
+  }
+  .print-sheet .instructions li {
+    break-inside: avoid;
+  }
+}
