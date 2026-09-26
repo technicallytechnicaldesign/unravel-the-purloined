@@ -153,13 +153,28 @@ export function readGrid(cells: readonly (readonly Bit[])[], border: boolean): G
   }
   if (score < max) issues.push({ kind: "marker", message: `${max - score} of ${max} marker, top and border cells do not match.` });
 
-  // Data rows sit between marker and top, read right to left, bottom up.
-  const bits: Bit[] = [];
-  for (let r = b + 1; r < grid.length - 1 - b; r++) for (let c = b + width - 1; c >= b; c--) bits.push(grid[r]![c]!);
+  const bits = dataCellOrder(grid.length, grid[0]!.length, border).map(([r, c]) => grid[r]![c]!);
   const lastOne = bits.lastIndexOf(1);
   if (lastOne < 0 || bits.length - lastOne > width) {
     issues.push({ kind: "padding", message: "End-of-message padding (a 1 then 0s in the last row) was not found; all data cells returned." });
     return { bits, orientation: o, issues };
   }
   return { bits: bits.slice(0, lastOne), orientation: o, issues };
+}
+
+export type Cell = [row: number, col: number];
+
+/** Upright positions of the data cells in reading order: between marker and top, right to left, bottom up. */
+export function dataCellOrder(height: number, width: number, border: boolean): Cell[] {
+  const b = border ? 1 : 0;
+  const out: Cell[] = [];
+  for (let r = b + 1; r < height - 1 - b; r++) for (let c = width - 1 - b; c >= b; c--) out.push([r, c]);
+  return out;
+}
+
+/** Where an upright cell sits in the grid as it was given. Every turn undoes itself, so this maps both ways. */
+export function mapCell([r, c]: Cell, o: Orientation, height: number, width: number): Cell {
+  if (o.rotated180) [r, c] = [height - 1 - r, width - 1 - c];
+  if (o.mirrored) c = width - 1 - c;
+  return [r, c];
 }
