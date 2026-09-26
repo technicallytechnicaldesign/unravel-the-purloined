@@ -9,11 +9,13 @@ import * as morse from "./morse";
 import * as bacon from "./bacon";
 import { type Dropped } from "./normalize";
 import { decodeFrame, encodeFrame, type ErrorControlOptions } from "./errorcontrol";
-import { layout, readGrid, type CellRole, type GridOptions } from "./grid";
+import { borderOf, layout, readGrid, type CellRole, type GridOptions } from "./grid";
 import { toChart, translate, type Construction, type Row, type Visible } from "./construction";
 import { longFloats, purlRelief, read, render, twoColour, type Carrier, type CarrierId, type ColourNames, type LegendEntry } from "./carrier";
 import { checkStitchCounts, writeRows } from "./pattern";
 import { CIPHERS, decipher, encipher, PUZZLE_LABEL, type CipherSettings } from "./ciphers";
+import { applyBorder, PATTERNS, type StitchPattern } from "./stitches";
+import { dimensions, evenRows, RECIPES, sectionRows, writeSection, type RecipeId } from "./recipes";
 
 export const PROJECT_FORMAT = "unravel-the-purloined/project";
 export const PROJECT_VERSION = 1;
@@ -32,6 +34,12 @@ export interface ProjectSettings {
   construction: Construction;
   /** Optional classical cipher, applied after normalizing and before encoding. */
   cipher?: CipherSettings;
+  /** The recipe the settings started from, for the cast-on and finishing words. */
+  recipe?: RecipeId;
+  /** Stitch pattern for the border cells; plain when unset. */
+  borderStyle?: StitchPattern;
+  /** Plain rows below and above the chart. Rounded up to even numbers. */
+  edges?: { below: number; above: number; pattern: StitchPattern };
 }
 
 export interface Project {
@@ -53,7 +61,14 @@ export interface Project {
     roles: CellRole[][];
     chart: Visible[][];
     rows: Row[];
+    /** Cast on and the plain section below the chart. */
+    preamble: string[];
+    /** Chart rows, written out. */
     instructions: string[];
+    /** The plain section above the chart, and finishing. */
+    finishing: string[];
+    /** Rough finished size. */
+    dimensions: string;
     legend: LegendEntry[];
     carrierNotes: string[];
     /** Stitch-count and float checks, one plain line each. Empty is good. */
@@ -114,7 +129,7 @@ function encodePlain(message: string, e: EncodingSettings): { normalized: string
 /** Read a finished pattern back to text, through every stage in reverse. */
 export function decodeRows(rows: readonly Row[], settings: ProjectSettings): string {
   const cells = read(toChart(rows), carrierFor(settings.carrier)).cells;
-  const bits = readGrid(cells, settings.layout.border).bits;
+  const bits = readGrid(cells, borderOf(settings.layout)).bits;
   const e = settings.encoding;
   const text = e.alphabet === "morse" ? morse.decodeUnits(bits).text : e.alphabet === "bacon" ? bacon.decode(bits, e.variant).text : decodeFrame(bits, e.errorControl).text;
   const cipher = activeCipher(settings.cipher);
@@ -128,8 +143,14 @@ export function createProject(settings: ProjectSettings, id: string = newId()): 
   const msg = encodeMessage(settings.message, settings.encoding, settings.cipher);
   const grid = layout(msg.bits, settings.layout);
   const carrier = carrierFor(settings.carrier);
-  const chart = render(grid.cells, carrier);
+  let chart = render(grid.cells, carrier);
+  const style = settings.borderStyle;
+  if (style && grid.roles.some((row) => row.includes("border"))) {
+    checkPattern(style, carrier.id, "border");
+    chart = applyBorder(chart, (r, c) => grid.roles[r]![c] === "border", style);
+  }
   const rows = translate(chart, settings.construction);
+  const words = writeAround(settings, chart);
   const floats =
     carrier.id === "two-colour"
       ? longFloats(chart).map((f) => `Row ${f.row}: ${f.length} stitches from stitch ${f.from} (counted from the left) float ${f.colour} behind; catch it.`)
@@ -146,13 +167,48 @@ export function createProject(settings: ProjectSettings, id: string = newId()): 
       roles: grid.roles,
       chart,
       rows,
+      preamble: words.preamble,
       instructions: writeRows(rows, settings.construction.method),
+      finishing: words.finishing,
+      dimensions: dimensions(chart[0]!.length, chart.length + words.plainRows, settings.construction.method),
       legend: carrier.legend,
       carrierNotes: carrier.notes,
       checks: [...checkStitchCounts(rows, chart[0]!.length), ...floats],
       decoded: decodeRows(rows, settings),
     },
   };
+}
+
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+
+function checkPattern(p: StitchPattern, carrier: string, where: string): void {
+  if (PATTERNS[p].carrier !== carrier) {
+    throw new Error(`${PATTERNS[p].name} is for ${PATTERNS[p].carrier === "two-colour" ? "two-colour" : "knit and purl"} work; choose another ${where} pattern for this carrier.`);
+  }
+}
+
+/** Cast on, plain sections and finishing: the words around the chart. */
+function writeAround(settings: ProjectSettings, chart: Visible[][]): { preamble: string[]; finishing: string[]; plainRows: number } {
+  const c = settings.construction;
+  const stitches = chart[0]!.length;
+  const round = c.method === "round";
+  const recipe = settings.recipe ? RECIPES[settings.recipe] : undefined;
+  const below = evenRows(settings.edges?.below ?? 0);
+  const above = evenRows(settings.edges?.above ?? 0);
+  const pattern = settings.edges?.pattern;
+  if (pattern && below + above > 0) checkPattern(pattern, settings.carrier.id, "edge");
+  const unit = round ? "Rounds" : "Rows";
+
+  const preamble = [
+    round ? `Cast on ${stitches} stitches and join to work in the round, taking care not to twist.` : `Cast on ${stitches} stitches.`,
+    ...(pattern && below ? writeSection(`Lower edge in ${lowerFirst(PATTERNS[pattern].name)}`, sectionRows(below, stitches, pattern, c, false), c.method) : []),
+    `Chart: work ${unit.toLowerCase()} 1 to ${chart.length}, from the chart or the written ${unit.toLowerCase()} below. ${unit} are numbered from the start of the chart.`,
+  ];
+  const finishing = [
+    ...(pattern && above ? writeSection(`Upper edge in ${lowerFirst(PATTERNS[pattern].name)}`, sectionRows(above, stitches, pattern, c, chart.length % 2 === 1), c.method) : []),
+    recipe?.finish ?? "Bind off.",
+  ];
+  return { preamble, finishing, plainRows: below + above };
 }
 
 export function exportProject(project: Project): string {

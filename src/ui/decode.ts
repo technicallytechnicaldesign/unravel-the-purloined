@@ -2,7 +2,8 @@
 // step from cells to text, with errors pointed at the cells they are about.
 
 import { h } from "./h";
-import { carrierControls, check, cipherControls, encodingControls, field } from "./controls";
+import { carrierControls, cipherControls, encodingControls, field } from "./controls";
+import { borderOf } from "../engine/grid";
 import { decipher } from "../engine/ciphers";
 import { decodeCells } from "../engine/steps";
 import { importProject, type Project } from "../engine/project";
@@ -34,12 +35,13 @@ export function parseRows(text: string): Bit[][] | string {
 export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
-  const border = check("border", "Grid has a border", false);
+  const border = h("input", { type: "number", name: "border-depth", value: 0, min: 0, max: 8, inputmode: "numeric" });
+  const depth = () => Math.max(0, Math.min(8, Math.round(Number(border.value)) || 0));
   const out = h("div");
   const message = h("p.hint", { role: "status" });
 
   const decode = () => {
-    const s = decodeCells(grid.get(), border.input.checked, enc.get());
+    const s = decodeCells(grid.get(), depth(), enc.get());
     const cipher = cip.get();
     out.replaceChildren(
       stepsView(s, enc.get(), grid),
@@ -66,7 +68,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const car = carrierControls(() => grid.setColour(car.get().id === "two-colour"), false);
   width.addEventListener("change", resize);
   height.addEventListener("change", resize);
-  border.input.addEventListener("change", decode);
+  border.addEventListener("input", decode);
 
   const typed = h("textarea", { rows: 6, spellcheck: "false", placeholder: "Top row first. 0 or . = knit / A, 1 or x = purl / B\n1111111\n0110100\n1101000" });
   const pasted = h("textarea", { rows: 4, spellcheck: "false", placeholder: "Paste a downloaded project file here" });
@@ -83,7 +85,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     cip.set(p.settings.cipher);
     car.set(p.settings.carrier.id);
     grid.setColour(p.settings.carrier.id === "two-colour");
-    border.input.checked = p.settings.layout.border;
+    border.value = String(borderOf(p.settings.layout));
     setCells(p.output.logicalGrid.map((r) => [...r]));
     message.textContent = `Loaded "${p.settings.title}". Click cells to add mistakes and watch the report.`;
     root.scrollIntoView({ behavior: "smooth" });
@@ -103,7 +105,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     h(
       "div.controls",
       {},
-      h("div.control-group", {}, h("div.pair", {}, field("STITCHES PER ROW", width), field("ROWS", height)), border.el),
+      h("div.control-group", {}, h("div.pair", {}, field("STITCHES PER ROW", width), field("ROWS", height)), field("BORDER DEPTH", border, "Stitches of border on each side; 0 for none. What the border holds does not matter.")),
       car.el,
       enc.el,
       cip.el,

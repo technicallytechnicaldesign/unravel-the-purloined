@@ -66,7 +66,7 @@ describe("reading a grid back", () => {
     const r = readGrid(cells, false);
     expect(r.orientation).toEqual(UPRIGHT);
     expect(r.bits).toEqual(bits);
-    expect(r.issues).toEqual([{ kind: "marker", message: "1 of 16 marker, top and border cells do not match.", cells: [[0, 0]] }]);
+    expect(r.issues).toEqual([{ kind: "marker", message: "1 of 16 marker and top-row cells do not match.", cells: [[0, 0]] }]);
   });
 
   it("reports missing padding and returns every data cell", () => {

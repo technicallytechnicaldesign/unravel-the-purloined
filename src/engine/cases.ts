@@ -7,7 +7,7 @@
 
 import { createProject, type EncodingSettings, type ProjectSettings } from "./project";
 import { type Visible } from "./construction";
-import { dataCellOrder, transform, type Orientation, UPRIGHT } from "./grid";
+import { borderOf, dataCellOrder, transform, type Orientation, UPRIGHT } from "./grid";
 import { blockLength } from "./errorcontrol";
 import { rng } from "./fabric";
 
@@ -177,7 +177,7 @@ export function makeCase(levelN: number, seed: number): Case {
     const B = e.alphabet === "fivebit" ? blockLength(e.errorControl) : 5;
     const k = 1 + Math.floor(r() * project.message.normalized.length);
     const index = k * B + Math.floor(r() * 5);
-    const [row, col] = dataCellOrder(shown.length, shown[0]!.length, settings.layout.border)[index]!;
+    const [row, col] = dataCellOrder(shown.length, shown[0]!.length, borderOf(settings.layout))[index]!;
     shown[row]![col] = shown[row]![col] === "knit" ? "purl" : "knit";
     mistake = [row, col];
   }

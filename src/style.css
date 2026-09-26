@@ -850,3 +850,34 @@ a {
 .sheet .evidence-img svg {
   margin: 6px 0;
 }
+
+/* Builder: the encoder's numbered stages */
+.builder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stage {
+  min-width: 0;
+  margin: 0;
+  padding: 8px 12px 10px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+}
+.stage legend {
+  padding: 0 6px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+}
+.stage .field {
+  margin-bottom: 8px;
+}
+.builder .btn-go {
+  justify-self: start;
+  align-self: end;
+}
+.section-line {
+  margin: 4px 0;
+}
