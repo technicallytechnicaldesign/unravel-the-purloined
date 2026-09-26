@@ -3,7 +3,10 @@
 
 import { h } from "./h";
 import { carrierControls, cipherControls, encodingControls, field } from "./controls";
-import { borderOf } from "../engine/grid";
+import { borderOf, unframe } from "../engine/grid";
+import { readGlyphs } from "../engine/glyphs";
+import { readStripes } from "../engine/stripes";
+import * as morse from "../engine/morse";
 import { describeKey, importKey, parseKeyCode, type ParcelKey } from "../engine/key";
 import { decodeWithKey } from "../engine/unhide";
 import { MOTIFS } from "../engine/motifs";
@@ -57,8 +60,14 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
       );
       return;
     }
-    const s = decodeCells(grid.get(), depth(), enc.get());
     const cipher = cip.get();
+    const glyphs = enc.glyphs();
+    if (glyphs || car.get().id === "stripes") {
+      grid.unmark("flag");
+      out.replaceChildren(simpleSteps(glyphs ? readGlyphsFrom(glyphs.pack) : readStripesFrom(), cipher));
+      return;
+    }
+    const s = decodeCells(grid.get(), depth(), enc.get());
     out.replaceChildren(
       stepsView(s, enc.get(), grid),
       cipher
@@ -70,6 +79,28 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
         : "",
     );
   };
+  const step = (n: number, name: string, ...body: (Node | string)[]) => h("li.step", {}, h("h3.step-title", {}, h("span.step-n.mono", {}, String(n).padStart(2, "0")), ` ${name}`), ...body);
+  /** Letters and stripes have no marker row or error checks; read them directly and list what did not fit. */
+  const readGlyphsFrom = (pack: Parameters<typeof readGlyphs>[1]) => {
+    const r = readGlyphs(unframe(grid.get(), depth()), pack);
+    // Note cells are in reading coordinates; only mark them when the fabric was read as knitted.
+    const o = r.orientation;
+    if (!o.rotated180 && !o.mirrored) grid.mark(r.notes.flatMap((n) => n.cells.map(([row, c]): [number, number] => [row + depth(), c + depth()])), "flag");
+    return { how: `Read as letters, ${r.orientation.rotated180 ? "turned" : "as knitted"}${r.orientation.mirrored ? ", mirrored" : ""}${r.orientation.inverted ? ", colours swapped" : ""}.`, text: r.text, notes: r.notes.map((n) => n.message) };
+  };
+  const readStripesFrom = () => {
+    const r = readStripes(unframe(grid.get(), depth()));
+    const m = morse.decodeUnits(r.units);
+    return { how: `Read as stripes from the cast-on edge: ${r.units.join("")}`, text: m.text, notes: r.notes.map((n) => n.message) };
+  };
+  const simpleSteps = (r: { how: string; text: string; notes: string[] }, cipher: ReturnType<typeof cip.get>) =>
+    h(
+      "ol.steps",
+      {},
+      step(1, "Read", h("p.mono.bits", {}, r.how)),
+      step(2, "Message", h("p.mono.big", {}, r.text || "(nothing yet)"), ...r.notes.map((n) => h("p.error.mono", {}, n))),
+      cipher ? step(3, "Decipher", h("p.mono.big", {}, decipher(r.text, cipher) || "(nothing yet)")) : "",
+    );
   const grid = cellGrid({ cells: Array.from({ length: 8 }, () => new Array<Bit>(8).fill(0)), label: "Grid to decode", onChange: () => decode() });
 
   const resize = () => {
@@ -81,7 +112,8 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
 
   const enc = encodingControls(decode);
   const cip = cipherControls(decode);
-  const car = carrierControls(() => grid.setColour(car.get().id === "two-colour"), false);
+  const colourGrid = (id: string) => id === "two-colour" || id === "stripes";
+  const car = carrierControls(() => (grid.setColour(colourGrid(car.get().id)), decode()), false);
   width.addEventListener("change", resize);
   height.addEventListener("change", resize);
   border.addEventListener("input", decode);
@@ -126,10 +158,10 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   };
 
   const load = (p: Project) => {
-    enc.set(p.settings.encoding);
+    enc.set(p.settings.encoding, p.settings.glyphs);
     cip.set(p.settings.cipher);
     car.set(p.settings.carrier.id);
-    grid.setColour(p.settings.carrier.id === "two-colour");
+    grid.setColour(colourGrid(p.settings.carrier.id));
     border.value = String(borderOf(p.settings.layout));
     setCells(p.output.logicalGrid.map((r) => [...r]));
     if (p.output.key) useKey(p.output.key);

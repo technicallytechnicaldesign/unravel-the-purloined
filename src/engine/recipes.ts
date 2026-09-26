@@ -6,7 +6,7 @@
 import { translate, type Construction, type Row } from "./construction";
 import { writeRow } from "./pattern";
 import { section, type StitchPattern } from "./stitches";
-import { type CarrierId } from "./carrier";
+import { family, type CarrierId } from "./carrier";
 
 export type RecipeId = "swatch" | "scarf" | "cowl" | "hat-band";
 
@@ -18,10 +18,10 @@ export interface Recipe {
   /** Message cells per row. */
   width: number;
   borderWidth: number;
-  border: Record<CarrierId, StitchPattern>;
+  border: Record<"purl-relief" | "two-colour", StitchPattern>;
   /** Plain rows below and above the chart (kept even so right and wrong sides line up). */
   edgeRows: { below: number; above: number };
-  edge: Record<CarrierId, StitchPattern>;
+  edge: Record<"purl-relief" | "two-colour", StitchPattern>;
   finish: string;
 }
 
@@ -124,7 +124,7 @@ export function fromRecipe(id: RecipeId, carrier: CarrierId) {
     recipe: id,
     layout: { width: r.width, border: r.borderWidth > 0, borderWidth: r.borderWidth },
     construction: { method: r.method, firstRow: "RS" } as Construction,
-    borderStyle: r.border[carrier],
-    edges: { below: r.edgeRows.below, above: r.edgeRows.above, pattern: r.edge[carrier] },
+    borderStyle: r.border[family(carrier)],
+    edges: { below: r.edgeRows.below, above: r.edgeRows.above, pattern: r.edge[family(carrier)] },
   };
 }

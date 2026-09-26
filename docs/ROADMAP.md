@@ -2,7 +2,7 @@
 
 Agents: take the first unticked task whose dependencies are ticked, unless your prompt names one. Each task lists what "done" means. Packet section numbers point into `docs/research/research-packet-v0.2.txt`.
 
-Phases follow packet section 36. This file covers Phases 0 to 3 in detail; later phases stay as headings until earlier ones land.
+Phases follow packet section 36. Phases 0 to 4, G and S are in detail below; later phases stay as headings until earlier ones land. `docs/HANDOFF.md` says where things stand and what to pick up next.
 
 ## Phase 1a: engine core
 
@@ -61,10 +61,21 @@ Hide that a message exists (packet 21, 27.12), with the filler as part of the ke
 - [x] **S4 Motif mutation.** Each message grid cell becomes a motif tile, centre empty for 0 and filled for 1: windows, diamonds, crosses, all designed here and symmetric so turned pieces read. Done when every motif reads back from all 8 turns with patterned borders, and tiles a stitch off are reported. (Done 2026-09-26: `src/engine/motifs.ts`.)
 - [x] **S5 Game level 7.** Hidden in plain sight: a window-motif parcel with the key card in the case file, copied one cell per square. Done when every seed is solvable from the picture and the ordinary decoder cannot read it. (Done 2026-09-26.)
 
+## Phase 4: more carriers
+
+Each logical cell becomes a block of real stitches (units), or the message takes another shape (stripes, letters). The logical grid stays underneath, so the marker, error checks, hiding and recipes keep working.
+
+- [x] **P4.1 Special stitches.** C4F, C4B, yo, k2tog, ssk, MB and PB as chart states, written one by one with an abbreviations key, cables as one 4-stitch action, specials only on right-side rows (a clear error otherwise). Done when stitch counts hold on every row, flat and round. (Done 2026-09-26: `src/engine/construction.ts`, `src/engine/pattern.ts`.)
+- [x] **P4.2 Unit carriers.** Cable (6 × 4), lace (4 × 2), bobble (3 × 2), bead (2 × 2), each block putting its special row on the right side. Done when every unit carrier round-trips flat from RS and WS and in the round, with borders, hiding and recipes. (Done 2026-09-26: `src/engine/units.ts`.)
+- [x] **P4.3 Stripe-interval code.** Morse in row counts, 2 rows per unit, plain lead rows, no floats. Done when stripes round-trip and uneven stripes are reported. (Done 2026-09-26: `src/engine/stripes.ts`.)
+- [x] **P4.4 Motif alphabet.** Pixel letters (5 × 5, readable) and geometric symbols (3 × 3, a secret alphabet, any two at least 2 stitches apart), both designed here. Done when both read back from all 8 turns and a slipped stitch is reported. (Done 2026-09-26: `src/engine/glyphs.ts`.)
+- [x] **P4.5 Charts and exports.** Chart symbols and key for every special stitch (cable drawn across 4 cells), spreadsheet and CSV codes, abbreviations in the knit step, print sheet and spreadsheet. (Done 2026-09-26.)
+- [x] **P4.6 Lab UI.** New carriers and motif alphabets in the encoder, one-cell-per-block marking and direct letter and stripe reading in the decoder, unit carriers in parcel key codes. (Done 2026-09-26.)
+- [ ] **P4.7 Knit a swatch of each.** A real swatch of every carrier, photographed, to check block sizes, cable pull-in, lace leans and whether the geometric symbols can be told apart in yarn. Needs the maker.
+
 ## Later phases (headings only)
 
-- Phase 4: cable, lace, bobble, bead, stripe-interval and motif-alphabet carriers.
-- Phase 6: secure mode with Web Crypto authenticated encryption.
+- Phase 6: secure mode with Web Crypto authenticated encryption. See `docs/HANDOFF.md` for a suggested first task list.
 - Phase 7: design-your-own textile language lab.
 - Phase 8: photo decoder.
 - Phase 9: community and archive features.

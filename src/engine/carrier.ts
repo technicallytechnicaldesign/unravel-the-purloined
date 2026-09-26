@@ -6,7 +6,10 @@
 import { type Bit } from "./fivebit";
 import { type Visible } from "./construction";
 
-export type CarrierId = "purl-relief" | "two-colour";
+export type CarrierId = "purl-relief" | "two-colour" | "cable" | "lace" | "bobble" | "bead" | "stripes";
+
+/** Which family of border and filler patterns a carrier takes: textures, or two colours. */
+export const family = (id: CarrierId): "purl-relief" | "two-colour" => (id === "two-colour" || id === "stripes" ? "two-colour" : "purl-relief");
 
 export interface LegendEntry {
   bit: Bit;
@@ -59,8 +62,6 @@ export function twoColour(colours: ColourNames = { A: "background", B: "contrast
     ],
   };
 }
-
-export const CARRIERS: Record<CarrierId, () => Carrier> = { "purl-relief": purlRelief, "two-colour": () => twoColour() };
 
 /** Logical grid to right-side chart. */
 export function render(cells: readonly (readonly Bit[])[], carrier: Carrier): Visible[][] {
