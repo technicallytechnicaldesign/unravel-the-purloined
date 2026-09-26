@@ -707,3 +707,146 @@ a {
 .coming {
   padding-left: 18px;
 }
+
+/* Folio: case files as tabbed dossiers */
+.folio-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ink);
+  color: var(--ink-2);
+}
+.folio-head p {
+  margin: 0;
+}
+.folio {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 26px 14px;
+}
+.dossier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-height: 8.5rem;
+  padding: 16px 14px 14px;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+.dossier:hover,
+.dossier:focus-visible {
+  background: var(--paper);
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+.dossier-tab {
+  position: absolute;
+  top: -1.45rem;
+  left: -1.5px;
+  padding: 2px 12px;
+  font-weight: 600;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-bottom: none;
+}
+.dossier-stamp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: rotate(4deg);
+}
+.dossier-name {
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  padding-right: 4.5rem;
+}
+.dossier-teaches {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* A case: one dossier sheet */
+.sheet {
+  padding: 12px 12px 16px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-left: 6px solid var(--red);
+}
+.sheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+}
+.sheet-head p {
+  margin: 0;
+  color: var(--ink-2);
+}
+.sheet-title {
+  margin: 10px 0 8px;
+}
+.btn-small {
+  padding: 4px 9px;
+  font-size: 0.72rem;
+}
+.memo {
+  max-width: 46rem;
+  padding: 8px 12px;
+  background: var(--paper);
+  border: 1px dashed var(--rule);
+}
+.memo p {
+  margin: 4px 0;
+}
+.sheet-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px 28px;
+  margin-top: 12px;
+}
+@media (min-width: 900px) {
+  .sheet-cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.sheet-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.sheet-label .step-title {
+  margin: 0;
+}
+.zoom {
+  display: flex;
+  gap: 4px;
+}
+.fold {
+  margin: 10px 0 0;
+  padding: 6px 10px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.fold summary {
+  color: var(--ink);
+  font-weight: 600;
+}
+.sheet .evidence-img svg {
+  margin: 6px 0;
+}

@@ -2,7 +2,8 @@
 // step from cells to text, with errors pointed at the cells they are about.
 
 import { h } from "./h";
-import { carrierControls, check, encodingControls, field } from "./controls";
+import { carrierControls, check, cipherControls, encodingControls, field } from "./controls";
+import { decipher } from "../engine/ciphers";
 import { decodeCells } from "../engine/steps";
 import { importProject, type Project } from "../engine/project";
 import { type Bit } from "../engine/fivebit";
@@ -37,7 +38,20 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const out = h("div");
   const message = h("p.hint", { role: "status" });
 
-  const decode = () => out.replaceChildren(stepsView(decodeCells(grid.get(), border.input.checked, enc.get()), enc.get(), grid));
+  const decode = () => {
+    const s = decodeCells(grid.get(), border.input.checked, enc.get());
+    const cipher = cip.get();
+    out.replaceChildren(
+      stepsView(s, enc.get(), grid),
+      cipher
+        ? h(
+            "ol.steps",
+            {},
+            h("li.step", {}, h("h3.step-title", {}, h("span.step-n.mono", {}, "06"), " Decipher"), h("p.mono.big", {}, decipher(s.text, cipher) || "(nothing yet)"), h("p.hint", {}, "The message above, run back through the cipher and key you chose.")),
+          )
+        : "",
+    );
+  };
   const grid = cellGrid({ cells: Array.from({ length: 8 }, () => new Array<Bit>(8).fill(0)), label: "Grid to decode", onChange: () => decode() });
 
   const resize = () => {
@@ -48,6 +62,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   };
 
   const enc = encodingControls(decode);
+  const cip = cipherControls(decode);
   const car = carrierControls(() => grid.setColour(car.get().id === "two-colour"), false);
   width.addEventListener("change", resize);
   height.addEventListener("change", resize);
@@ -65,6 +80,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
 
   const load = (p: Project) => {
     enc.set(p.settings.encoding);
+    cip.set(p.settings.cipher);
     car.set(p.settings.carrier.id);
     grid.setColour(p.settings.carrier.id === "two-colour");
     border.input.checked = p.settings.layout.border;
@@ -90,6 +106,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
       h("div.control-group", {}, h("div.pair", {}, field("STITCHES PER ROW", width), field("ROWS", height)), border.el),
       car.el,
       enc.el,
+      cip.el,
     ),
     h("div.actions", {}, h("button.btn", { type: "button", onclick: () => setCells(grid.get().map((r) => r.map(() => 0 as Bit))) }, "Clear")),
     h(

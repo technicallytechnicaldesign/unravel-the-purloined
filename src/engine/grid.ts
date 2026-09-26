@@ -93,6 +93,8 @@ export function describe(o: Orientation): string {
 export interface GridIssue {
   kind: "orientation" | "marker" | "ambiguous-orientation" | "padding" | "shape";
   message: string;
+  /** Cells concerned, in upright coordinates (as read, after undoing any turn). */
+  cells?: Cell[];
 }
 
 export interface GridReadResult {
@@ -106,26 +108,28 @@ const ORIENTATIONS: Orientation[] = [false, true].flatMap((rotated180) =>
 );
 
 /** Score how well an upright-candidate grid matches the fixed marker, top row and border. */
-function fit(cells: Bit[][], border: boolean): { score: number; max: number } {
+function fit(cells: Bit[][], border: boolean): { score: number; max: number; wrong: Cell[] } {
   const b = border ? 1 : 0;
   const width = cells[0]!.length - 2 * b;
   const rows = cells.length;
   let score = 0;
   let max = 0;
-  const check = (got: Bit | undefined, want: Bit) => {
+  const wrong: Cell[] = [];
+  const check = (r: number, c: number, want: Bit) => {
     max++;
-    if (got === want) score++;
+    if (cells[r]![c] === want) score++;
+    else wrong.push([r, c]);
   };
-  markerRow(width).forEach((want, i) => check(cells[b]![b + i], want));
-  for (let i = 0; i < width; i++) check(cells[rows - 1 - b]![b + i], 1);
+  markerRow(width).forEach((want, i) => check(b, b + i, want));
+  for (let i = 0; i < width; i++) check(rows - 1 - b, b + i, 1);
   if (border) {
     cells.forEach((row, r) =>
-      row.forEach((cell, c) => {
-        if (r === 0 || r === rows - 1 || c === 0 || c === row.length - 1) check(cell, 0);
+      row.forEach((_, c) => {
+        if (r === 0 || r === rows - 1 || c === 0 || c === row.length - 1) check(r, c, 0);
       }),
     );
   }
-  return { score, max };
+  return { score, max, wrong };
 }
 
 /**
@@ -144,14 +148,14 @@ export function readGrid(cells: readonly (readonly Bit[])[], border: boolean): G
   const scored = ORIENTATIONS.map((o) => ({ o, grid: transform(cells, o), ...fit(transform(cells, o), border) }));
   const best = scored.reduce((a, c) => (c.score > a.score ? c : a));
   const ties = scored.filter((s) => s.score === best.score);
-  const { o, grid, score, max } = best;
+  const { o, grid, score, max, wrong } = best;
 
   if (ties.length > 1) {
     issues.push({ kind: "ambiguous-orientation", message: `Marker fits ${ties.length} orientations equally well; read as ${describe(o)}.` });
   } else if (o !== ORIENTATIONS[0]) {
     issues.push({ kind: "orientation", message: `Grid was ${describe(o)}; read the right way round.` });
   }
-  if (score < max) issues.push({ kind: "marker", message: `${max - score} of ${max} marker, top and border cells do not match.` });
+  if (score < max) issues.push({ kind: "marker", message: `${max - score} of ${max} marker, top and border cells do not match.`, cells: wrong });
 
   const bits = dataCellOrder(grid.length, grid[0]!.length, border).map(([r, c]) => grid[r]![c]!);
   const lastOne = bits.lastIndexOf(1);
