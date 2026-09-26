@@ -1,0 +1,3326 @@
+STITCH / SIGNAL
+CRAFT, RESISTANCE, SECRET MESSAGES, AND INFORMATION IN THREAD
+
+Research Packet + Product / Website Brainstorm
+Version 0.2
+Prepared: 26 September 2026
+
+======================================================================
+PURPOSE OF THIS PACKET
+======================================================================
+
+This packet gathers the current research, historical leads, conceptual framework,
+cipher/steganography ideas, generator/decoder proposals, and development roadmap
+for a project about textiles as communication.
+
+The project began with a simple question:
+
+    Can a knitted object carry a secret message?
+
+It quickly expanded into a much richer set of questions:
+
+    - When has craft itself functioned as resistance?
+    - When has a textile been a public political signal?
+    - When has thread carried literal information?
+    - What is the difference between encoding, ciphering, encryption,
+      and steganography?
+    - Which historical "secret textile" stories are well documented,
+      and which are folklore?
+    - What kinds of messages could intentionally be built into knitting today?
+    - How can an app turn text into a genuinely knittable project?
+    - How can the website teach both textile history and information theory?
+    - How can users experiment with their own textile languages?
+
+The current working vision is therefore not just "a Morse-code knitting app."
+
+It is closer to:
+
+    DIGITAL MUSEUM
+    + CRAFT-RESISTANCE ARCHIVE
+    + TEXTILE COMMUNICATION PRIMER
+    + CIPHER / STEGANOGRAPHY LAB
+    + KNITTING PATTERN GENERATOR
+    + DECODER
+
+Possible working titles include:
+
+    STITCH / SIGNAL
+    PURL//CODE
+    THE HIDDEN STITCH
+    KNIT CIPHER
+    THREAD SIGNAL
+    THREAD / CODE
+    PURL RESISTANCE
+
+STITCH / SIGNAL is used throughout this document as the placeholder title.
+
+
+======================================================================
+CONTENTS
+======================================================================
+
+01. Project thesis
+02. A taxonomy of textile communication
+03. Historical evidence labels
+04. Historical core: Norway and resistance knitting
+05. Grini: clandestine making as resistance
+06. Agnes "Aggi" Klønig: message-smuggling and clandestine needlework
+07. Belgium, WWI, and the "knitting spy" story
+08. Wartime handwork codes as a historical research lead
+09. Homespun, spinning, and economic resistance
+10. Khadi and anti-colonial textile production
+11. Suffrage banners and public textile messaging
+12. Chilean arpilleras: textile as testimony
+13. The AIDS Memorial Quilt: accumulation as communication
+14. Pussyhats: distributed pattern as political infrastructure
+15. Knitting Nannas: craft as presence and duration
+16. Khipu / quipu: thread as structured data
+17. The Underground Railroad quilt-code story: evidence vs folklore
+18. General information theory for the project
+19. Encoding vs decoding
+20. Codes, ciphers, encryption, cryptography, and cryptanalysis
+21. Steganography
+22. Classical cipher families
+23. Modern cryptography: what the site should and should not claim
+24. Error detection, correction, and noisy textile channels
+25. Ways textiles can physically store information
+26. Information density and textile capacity
+27. Proposed encoder / generator families
+28. Proposed decoder system
+29. "Design your own textile language" lab
+30. Historical reconstruction lab
+31. Pattern-generation architecture
+32. Flat knitting, round knitting, and fabric orientation
+33. Website information architecture
+34. Editorial and visual language
+35. Evidence and citation system
+36. Development roadmap
+37. Suggested data model
+38. Research questions still to resolve
+39. Core source shelf
+40. Possible future expansion
+
+
+======================================================================
+01. PROJECT THESIS
+======================================================================
+
+The central editorial question is:
+
+    WHAT CAN A PIECE OF THREAD COMMUNICATE?
+
+The answer is broader than "a hidden sentence."
+
+A textile can communicate through:
+
+    - its colour,
+    - its shape,
+    - its material,
+    - the labour required to make it,
+    - who made it,
+    - who wears it,
+    - when it is worn,
+    - where it is displayed,
+    - repeated visual motifs,
+    - literal written or pictorial content,
+    - stitch structure,
+    - knots,
+    - spacing,
+    - orientation,
+    - intentional mistakes,
+    - and information encoded beneath the visible design.
+
+The broader thesis of STITCH / SIGNAL could be:
+
+Textiles have repeatedly functioned as communication technologies.
+Sometimes they communicate openly. Sometimes indirectly. Sometimes secretly.
+Sometimes the act of making is itself the political message.
+
+A useful underlying idea is that textiles have historically been underestimated
+as communication media partly because textile work itself has often been treated
+as domestic, decorative, feminine, ordinary, or apolitical.
+
+Yet thread can:
+
+    - carry a slogan,
+    - identify a movement,
+    - enact a boycott,
+    - preserve a prisoner's agency,
+    - record testimony,
+    - memorialize the dead,
+    - coordinate strangers,
+    - carry numbers,
+    - encode words,
+    - hide ciphertext,
+    - and physically store data.
+
+A knitting needle can therefore be framed, somewhat cheekily but usefully, as:
+
+    A VERY SLOW WRITING DEVICE.
+
+
+======================================================================
+02. A TAXONOMY OF TEXTILE COMMUNICATION
+======================================================================
+
+To keep the site conceptually clear, it is useful to separate several different
+ways craft can communicate.
+
+----------------------------------------------------------------------
+2.1 TEXTILE AS SYMBOL
+----------------------------------------------------------------------
+
+The textile itself has a collectively understood meaning.
+
+Examples:
+    - a red cap associated with Norwegian resistance,
+    - a Pussyhat at the 2017 Women's March,
+    - movement colours,
+    - political banners,
+    - garments tied to national or collective identity.
+
+No hidden code is necessary.
+
+The object effectively says:
+
+    "I am part of this."
+    "I oppose this."
+    "I remember this."
+    "I stand with these people."
+
+----------------------------------------------------------------------
+2.2 TEXTILE AS TESTIMONY OR DOCUMENT
+----------------------------------------------------------------------
+
+The textile records experiences, people, events, losses, or claims.
+
+Examples:
+    - Chilean arpilleras,
+    - memorial quilts,
+    - embroidered political scenes,
+    - commemorative samplers.
+
+The message is not necessarily secret.
+
+The textile functions as an alternative archive.
+
+----------------------------------------------------------------------
+2.3 TEXTILE AS ECONOMIC ACTION
+----------------------------------------------------------------------
+
+The politics are embedded in production and consumption.
+
+Examples:
+    - homespun cloth used in anti-import campaigns,
+    - spinning bees,
+    - khadi and Swadeshi.
+
+The message may be:
+
+    "I refuse the supply chain you depend on."
+    "I can make locally instead."
+    "My clothing participates in a boycott."
+
+----------------------------------------------------------------------
+2.4 TEXTILE AS PUBLIC PERFORMANCE
+----------------------------------------------------------------------
+
+The visible act of making, gathering, knitting, spinning, sewing, or displaying
+textiles becomes part of a protest.
+
+Examples:
+    - spinning bees,
+    - knit-ins,
+    - Knitting Nannas,
+    - collective quilt displays.
+
+Here, craft can communicate duration and persistence:
+
+    WE ARE STILL HERE.
+    WE HAVE TIME.
+    WE ARE NOT LEAVING.
+
+----------------------------------------------------------------------
+2.5 TEXTILE AS COVERT CARRIER
+----------------------------------------------------------------------
+
+Literal information is embedded in the textile structure.
+
+Possible carriers:
+    - knit vs purl,
+    - dropped stitch vs intact stitch,
+    - knot vs no knot,
+    - colour A vs colour B,
+    - left cable vs right cable,
+    - motif variant A vs motif variant B,
+    - spacing between features.
+
+This is where the project begins to overlap strongly with encoding and
+steganography.
+
+----------------------------------------------------------------------
+2.6 TEXTILE AS CIPHERTEXT
+----------------------------------------------------------------------
+
+The textile may contain a message that has already been cryptographically
+transformed.
+
+For example:
+
+    MEET AT NOON
+        ->
+    encrypted bytes
+        ->
+    binary
+        ->
+    knit/purl pattern
+
+Someone who discovers the data still cannot necessarily understand the message.
+
+----------------------------------------------------------------------
+2.7 TEXTILE AS MEMORY / DATA STRUCTURE
+----------------------------------------------------------------------
+
+Thread can carry structured information without representing prose.
+
+Examples:
+    - counts,
+    - quantities,
+    - sequences,
+    - ownership,
+    - identity,
+    - dates,
+    - pattern instructions,
+    - event records.
+
+This category is especially useful when discussing khipu.
+
+
+======================================================================
+03. HISTORICAL EVIDENCE LABELS
+======================================================================
+
+One of the strongest editorial decisions for the website would be to make the
+quality of historical evidence visible rather than smoothing everything into a
+single confident narrative.
+
+Recommended labels:
+
+[A] PRIMARY / OBJECT EVIDENCE
+    Surviving object, regulation, contemporary text, archival document,
+    testimony, or other direct historical evidence.
+
+[B] STRONG HISTORICAL RECONSTRUCTION
+    Supported by archival scholarship or multiple reliable sources.
+
+[C] LATER ACCOUNT / ORAL HISTORY
+    Potentially valuable and meaningful, but harder to independently verify.
+
+[D] DISPUTED / INSUFFICIENT EVIDENCE
+    A claim exists but historians disagree, or the documentation is weak.
+
+[X] EXPERIMENTAL RECONSTRUCTION
+    A modern system built by STITCH / SIGNAL from a historical principle.
+
+Possible user-facing badges:
+
+    DOCUMENTED
+    ARCHIVAL
+    CONTEMPORARY SOURCE
+    LATER ACCOUNT
+    ORAL HISTORY
+    DISPUTED
+    FOLKLORE / UNVERIFIED
+    MODERN RECONSTRUCTION
+    EXPERIMENTAL
+
+This evidence layer is especially important because secret communication stories
+are naturally prone to romantic retelling. A good story can migrate from
+"possible" to "everyone knows this happened" surprisingly quickly.
+
+
+======================================================================
+04. HISTORICAL CORE: NORWAY AND RESISTANCE KNITTING
+======================================================================
+
+The Norwegian story is a very strong starting point, but it should be presented
+accurately.
+
+The clearest documented connection is not currently "Norwegian resistance women
+knitted Morse code into garments."
+
+Instead, Norway gives us a powerful history of textiles as:
+
+    - national symbolism,
+    - community identity,
+    - self-production,
+    - prohibited political expression,
+    - and resistance.
+
+The red knitted topplue / nisselue became associated with Norwegian identity and
+resistance during the German occupation.
+
+Store norske leksikon describes the red topplue as a symbol of Norwegian
+identity and resistance. It also records a police prohibition that took effect
+on 26 February 1942 after the use of red caps had become so widespread that
+authorities treated wearing them as a demonstration. [S01]
+
+The importance of this example lies in how little technology it required.
+
+There is no cipher.
+
+There is no secret key.
+
+The transformation is social:
+
+    ordinary cap
+        ->
+    shared symbol
+        ->
+    political signal
+        ->
+    prohibited symbol
+
+That is an excellent introductory case for the website because it immediately
+shows that "communication" does not have to mean literal written language.
+
+A possible interactive page could ask:
+
+    WHEN DOES AN OBJECT BECOME A MESSAGE?
+
+and visually walk through:
+
+    warm hat
+    -> national association
+    -> widespread coordinated use
+    -> political recognition
+    -> prohibition
+
+
+======================================================================
+05. GRINI: CLANDESTINE MAKING AS RESISTANCE
+======================================================================
+
+MiA's material on Grini provides one of the strongest sources for the broader
+idea of craft as resistance. [S02]
+
+Women prisoners made tiny knitted and embroidered objects using extremely
+limited means.
+
+Documented techniques and materials include:
+
+    - very small mittens and socks,
+    - improvised knitting tools such as hairpins or sewing pins,
+    - thread salvaged from clothing, bedding, and other available material,
+    - patriotic motifs and statements,
+    - hidden manufacture because some objects were dangerous to possess.
+
+MiA's interpretation is particularly useful because it goes beyond overt
+political iconography.
+
+The museum frames hidden handwork as a way prisoners could preserve:
+
+    - concentration,
+    - imagination,
+    - a feeling of competence,
+    - control,
+    - self-respect,
+    - and inner freedom.
+
+This suggests an important website theme:
+
+    RESISTANCE DOES NOT REQUIRE AN AUDIENCE.
+
+An object can function as resistance even if nobody outside the prison sees it.
+
+Making can preserve identity against a system designed to strip identity away.
+
+This gives STITCH / SIGNAL a much deeper scope than secret codes alone.
+
+
+======================================================================
+06. AGNES "AGGI" KLØNIG:
+    MESSAGE-SMUGGLING AND CLANDESTINE NEEDLEWORK
+======================================================================
+
+Agnes Klønig is an especially useful case because she connects two themes:
+
+    clandestine communication
+    +
+    clandestine textile work
+
+Available museum material and earlier research leads describe Klønig as involved
+in carrying messages through her Red Cross access before imprisonment, and as
+later making clandestine needlework while imprisoned.
+
+IMPORTANT HISTORICAL CAUTION:
+
+These are two documented or reported activities that must not automatically be
+collapsed into the stronger claim:
+
+    "Klønig encoded her smuggled messages in knitting."
+
+At present, that stronger claim has not been established in this project.
+
+For publication, the site should say something like:
+
+    "Klønig's story brings message-smuggling and clandestine needlework into the
+    same biography, but we have not found evidence that her messages themselves
+    were encoded in stitches."
+
+This is exactly the kind of distinction the evidence-badge system is designed
+to preserve.
+
+
+======================================================================
+07. BELGIUM, WWI, AND THE "KNITTING SPY" STORY
+======================================================================
+
+The famous story of women watching trains while knitting is much more strongly
+associated with occupied Belgium during the First World War than with Norway in
+the Second.
+
+Belgian intelligence networks, including La Dame Blanche / The White Lady,
+monitored German transport and passed information to British intelligence.
+
+Historian Helen Fry's recent history of the White Lady network is based on newly
+available archival material and provides a strong modern research route into
+the network as a whole. [S03]
+
+Popular and educational retellings also describe knitting being used to record
+train movements, with different stitch types marking different observations.
+
+However, the exact, widely repeated anecdote of an anonymous woman sitting by a
+window and dropping stitches for certain trains should be treated carefully.
+
+Recommended site treatment:
+
+[B] WELL-SUPPORTED:
+    Belgian intelligence networks monitored railway activity and transmitted
+    information.
+
+[C/D] NEEDS PRECISE SOURCE VERIFICATION BEFORE STRONG PUBLICATION CLAIM:
+    specific stitch-by-stitch systems attributed to particular anonymous
+    knitters.
+
+This could become a wonderful "how history mutates" page:
+
+    ARCHIVE
+    ->
+    RETELLING
+    ->
+    POPULAR ANECDOTE
+    ->
+    INTERNET FACTOID
+
+The page could invite users to inspect which parts are documented and which are
+still being researched.
+
+
+======================================================================
+08. WARTIME HANDWORK CODES AS A HISTORICAL RESEARCH LEAD
+======================================================================
+
+The Smithsonian catalog confirms the existence of:
+
+    Gordon A. J. Petersen and Marshall McClintock
+    A Guide to Codes and Signals
+    1942
+
+The book covers signals, Morse, signs, symbols, and ciphers. [S04]
+
+Earlier secondary research around the project points toward a section on codes
+in handwork, including techniques involving knitting, embroidery, rugs, and
+knot placement.
+
+Before quoting or presenting any specific knot system as established fact on
+the final website, the relevant original pages should be obtained and checked
+directly.
+
+That makes this a HIGH-PRIORITY PRIMARY-SOURCE TASK.
+
+Why this source is exciting:
+
+It suggests a form of textile steganography where the completed object is not
+necessarily what is decoded.
+
+One reported concept is:
+
+    mark yarn with knots at meaningful intervals
+    ->
+    knit it into an ordinary object
+    ->
+    recipient unravels the object
+    ->
+    read the knot spacing against a key
+
+That inspires an excellent experimental tool even if we ultimately label our
+specific implementation [X] MODERN RECONSTRUCTION.
+
+Possible feature name:
+
+    DESTRUCTIVE DECODE MODE
+
+Possible warning:
+
+    DECRYPTION REQUIRES FROGGING.
+
+
+======================================================================
+09. HOMESPUN, SPINNING, AND ECONOMIC RESISTANCE
+======================================================================
+
+In colonial North America, political resistance to British taxation and trade
+policy included non-importation and non-consumption campaigns.
+
+Textiles mattered because imported cloth could be replaced through household
+production.
+
+Smithsonian and National Park Service material documents homespun production,
+spinning bees, and the political significance of women increasing domestic
+textile production during boycotts. [S05] [S06]
+
+This provides a distinct mechanism of textile resistance:
+
+    not "the cloth says something"
+    but
+    "making the cloth changes the economic relationship"
+
+The act of spinning becomes part of a boycott.
+
+Possible website concept:
+
+    RESISTANCE IN THE SUPPLY CHAIN
+
+Questions:
+    - Who made the material?
+    - Who normally profits from the purchase?
+    - What happens when consumers deliberately substitute local production?
+    - Can labour itself become a political signal?
+
+
+======================================================================
+10. KHADI AND ANTI-COLONIAL TEXTILE PRODUCTION
+======================================================================
+
+The Indian Swadeshi movement promoted rejection of foreign goods and support for
+domestic production.
+
+The V&A describes Gandhi's call to spin, weave, and wear khadi, and notes that
+khadi became a symbol of resistance. In 1921, Indian nationalists incorporated
+the spinning wheel into their flag. [S07]
+
+Again, the textile does several things simultaneously:
+
+    economic substitution,
+    visible political symbolism,
+    material self-reliance,
+    mass participation.
+
+This makes khadi an important counterpoint to secret-message stories.
+
+It shows that a textile can function politically without hiding anything.
+
+
+======================================================================
+11. SUFFRAGE BANNERS AND PUBLIC TEXTILE MESSAGING
+======================================================================
+
+Textile banners were highly visible elements of the British women's suffrage
+movement.
+
+London Museum preserves examples from the 1908 NUWSS procession, including the
+Women Writers' Suffrage League banner designed by Mary Lowndes and embroidered
+by Christiana Herringham. [S08]
+
+The medium matters.
+
+Textile techniques associated with domestic or decorative labour were brought
+into public political demonstration.
+
+Mechanism:
+
+    domestic skill
+    ->
+    monumental public object
+    ->
+    procession
+    ->
+    mass political visibility
+
+This deserves a section on:
+
+    WHEN PRIVATE TECHNIQUES ENTER PUBLIC SPACE
+
+
+======================================================================
+12. CHILEAN ARPILLERAS: TEXTILE AS TESTIMONY
+======================================================================
+
+During Chile's dictatorship, arpilleras became a medium through which women
+depicted experiences including repression, disappearance, poverty, detention,
+and daily life.
+
+The Museo de la Memoria y los Derechos Humanos treats arpilleras as part of
+resistance, organization, and testimony. [S09]
+
+The textile becomes:
+
+    image,
+    witness,
+    portable archive,
+    social record.
+
+This suggests another website category:
+
+    WHEN THE TEXTILE IS THE DOCUMENT.
+
+The message is not necessarily encrypted.
+
+Its power lies in what it records and how it travels.
+
+
+======================================================================
+13. THE AIDS MEMORIAL QUILT:
+    ACCUMULATION AS COMMUNICATION
+======================================================================
+
+The AIDS Memorial Quilt demonstrates a completely different communication
+mechanism.
+
+The first major National Mall display in 1987 contained 1,920 panels. [S10]
+
+Each panel memorialized a person.
+
+The combined work transformed individual handmade objects into a physical
+representation of collective loss.
+
+Communication mechanism:
+
+    one maker
+    -> one person
+    -> one panel
+
+then:
+
+    thousands of panels
+    -> scale itself becomes the message
+
+This is a useful category for STITCH / SIGNAL:
+
+    ACCUMULATION AS COMMUNICATION.
+
+A single handmade object can be intimate.
+
+Thousands together become impossible to ignore.
+
+
+======================================================================
+14. PUSSYHATS:
+    DISTRIBUTED PATTERN AS POLITICAL INFRASTRUCTURE
+======================================================================
+
+The Pussyhat Project is especially relevant because the pattern itself was a
+distribution technology.
+
+The V&A records the knitted pink hat as a major symbol of the 21 January 2017
+Women's March and describes the deliberate goal of creating a visible "sea of
+pink." It also documents the public sharing of the simple pattern so people
+could make or donate hats. [S11]
+
+Mechanism:
+
+    pattern
+    ->
+    distributed makers
+    ->
+    repeated object
+    ->
+    mass visual field
+
+This parallels the architecture of STITCH / SIGNAL.
+
+Our own generated pattern is also an instruction set capable of turning
+information into a distributed physical object.
+
+
+======================================================================
+15. KNITTING NANNAS:
+    CRAFT AS PRESENCE AND DURATION
+======================================================================
+
+The Australian Knitting Nannas began in 2012 in opposition to coal-seam gas
+development.
+
+Their own history describes knitting accompanying observation of company
+activity and evolving into an element of public environmental activism. [S12]
+
+This creates another communication mechanism:
+
+    craft as a way to remain present.
+
+Knitting is slow.
+
+That can be a disadvantage if the goal is fast production.
+
+It can be an advantage if the goal is:
+
+    occupation,
+    observation,
+    persistence,
+    visibility,
+    refusing to leave.
+
+Possible website theme:
+
+    CRAFT AS DURATION.
+
+
+======================================================================
+16. KHIPU / QUIPU:
+    THREAD AS STRUCTURED DATA
+======================================================================
+
+Khipu are a crucial example for the project's broader "thread as information"
+theme.
+
+Inka khipu use cords, knots, arrangement, and other material properties to
+record structured information. Surviving museum examples are preserved by
+institutions including the Smithsonian's National Museum of the American Indian.
+[S13]
+
+The project should NOT imply that khipu are direct ancestors of coded European
+knitting.
+
+Instead, the lesson is broader:
+
+Humans have repeatedly discovered that thread offers multiple variables that can
+store information.
+
+Possible variables include:
+
+    knot type,
+    knot position,
+    cord colour,
+    cord hierarchy,
+    spacing,
+    direction,
+    grouping.
+
+This is conceptually powerful because it moves the project beyond the idea that
+"data must look like writing."
+
+
+======================================================================
+17. UNDERGROUND RAILROAD QUILT CODES:
+    EVIDENCE VS FOLKLORE
+======================================================================
+
+The commonly repeated story that standardized quilt patterns were used to
+communicate routes and instructions on the Underground Railroad is disputed.
+
+The Smithsonian Center for Folklife gives a nuanced overview of the story's
+modern popularity and the lack of strong contemporary documentation for a
+standardized code system. [S14]
+
+This should become a flagship evidence-literacy page.
+
+Suggested title:
+
+    GOOD STORY. WHERE'S THE EVIDENCE?
+
+The point should not be to ridicule oral tradition.
+
+The point is to distinguish:
+
+    "This story exists and matters culturally"
+
+from:
+
+    "We can prove this system was widely used historically."
+
+This is exactly why STITCH / SIGNAL should expose evidence grades.
+
+
+======================================================================
+18. GENERAL INFORMATION THEORY FOR THE PROJECT
+======================================================================
+
+The experimental half of the site becomes much clearer if users first understand
+that several different operations can happen between a human message and a
+finished textile.
+
+A useful general pipeline is:
+
+    HUMAN MESSAGE
+        ->
+    NORMALIZATION
+        ->
+    OPTIONAL CRYPTOGRAPHIC TRANSFORMATION
+        ->
+    DATA ENCODING
+        ->
+    ERROR-PROTECTION LAYER
+        ->
+    TEXTILE SYMBOL MAPPING
+        ->
+    LAYOUT / CAMOUFLAGE
+        ->
+    KNITTING TRANSLATION
+        ->
+    PHYSICAL OBJECT
+
+Example:
+
+    "MEET AT NOON"
+        ->
+    "MEET AT NOON"
+        ->
+    Vigenere ciphertext
+        ->
+    letter values
+        ->
+    binary
+        ->
+    parity/check symbols
+        ->
+    knit/purl cells
+        ->
+    chart
+        ->
+    flat-knitting row instructions
+        ->
+    scarf
+
+Every arrow is a different process.
+
+That matters because users often use words like "code," "cipher," and
+"encryption" interchangeably even though they describe different things.
+
+
+======================================================================
+19. ENCODING VS DECODING
+======================================================================
+
+ENCODING is a representation problem.
+
+It answers:
+
+    "How do I represent this information using another symbol system?"
+
+Examples:
+    - text -> Morse
+    - letter -> 5-bit value
+    - byte -> binary
+    - binary 0 -> knit
+    - binary 1 -> purl
+
+Encoding does not automatically provide secrecy.
+
+If everyone knows the mapping, anyone can decode it.
+
+DECODING reverses the representation.
+
+Example:
+
+    K P K P P
+        ->
+    0 1 0 1 1
+        ->
+    value 11
+        ->
+    letter L
+
+The site should repeatedly reinforce:
+
+    ENCODED != ENCRYPTED.
+
+
+======================================================================
+20. CODES, CIPHERS, ENCRYPTION, CRYPTOGRAPHY, AND CRYPTANALYSIS
+======================================================================
+
+----------------------------------------------------------------------
+20.1 CODE
+----------------------------------------------------------------------
+
+Historically, "code" can mean many things.
+
+One useful distinction is:
+
+A CODE may map whole units of meaning to other units.
+
+Example:
+
+    APPLE = "attack"
+    BRIDGE = "retreat"
+    4821 = "train leaving at dawn"
+
+Codebooks historically allowed phrases or concepts to be replaced by shorter or
+less obvious tokens.
+
+In casual usage, "code" is also used much more broadly for any systematic
+representation.
+
+For STITCH / SIGNAL, it is fine to use "code" conversationally, but educational
+pages should distinguish it from a cipher.
+
+----------------------------------------------------------------------
+20.2 CIPHER
+----------------------------------------------------------------------
+
+A cipher systematically transforms symbols according to a rule.
+
+Examples:
+    - Caesar shift,
+    - monoalphabetic substitution,
+    - Vigenere,
+    - transposition systems,
+    - modern encryption algorithms.
+
+The result is CIPHERTEXT.
+
+The original message is PLAINTEXT.
+
+----------------------------------------------------------------------
+20.3 ENCRYPTION
+----------------------------------------------------------------------
+
+NIST defines encryption as a cryptographic transformation that turns plaintext
+into ciphertext, typically using a cryptographic algorithm and key. [S15]
+
+Encryption aims to protect the meaning of the information.
+
+Modern encryption should rely on established, reviewed algorithms rather than
+home-made substitution schemes.
+
+----------------------------------------------------------------------
+20.4 CRYPTOGRAPHY
+----------------------------------------------------------------------
+
+NIST describes cryptography as the discipline concerned with transforming and
+protecting information, including goals such as confidentiality, integrity, and
+authentication. [S16]
+
+For this project, a simplified explanation is:
+
+    Cryptography changes information in order to protect or verify it.
+
+----------------------------------------------------------------------
+20.5 CRYPTANALYSIS
+----------------------------------------------------------------------
+
+Cryptanalysis is the study of recovering information from cryptographic systems,
+especially without already possessing the intended key.
+
+On the educational site, classical cipher-breaking activities could include:
+
+    - frequency analysis,
+    - looking for repeated patterns,
+    - guessing common words,
+    - comparing probable plaintext,
+    - exploiting short or repeated keys.
+
+----------------------------------------------------------------------
+20.6 CRYPTOLOGY
+----------------------------------------------------------------------
+
+Cryptology is the broader field that includes both:
+
+    cryptography
+    +
+    cryptanalysis.
+
+
+======================================================================
+21. STEGANOGRAPHY
+======================================================================
+
+NIST describes steganography as communicating in a way that hides the existence
+of the communication. [S17]
+
+This distinction is central to the project.
+
+CRYPTOGRAPHY says:
+
+    "You can see that a message exists, but you should not be able to understand
+    it."
+
+STEGANOGRAPHY says:
+
+    "Ideally, you do not realize there is a message at all."
+
+These can be combined.
+
+Example:
+
+    plaintext
+        ->
+    encrypt
+        ->
+    ciphertext
+        ->
+    hide ciphertext inside a decorative knitting motif
+
+Now the observer must first notice that data is present before even reaching the
+encrypted content.
+
+This layered model should be one of the main educational diagrams on the site.
+
+
+======================================================================
+22. CLASSICAL CIPHER FAMILIES
+======================================================================
+
+This section provides candidate methods for educational generators.
+
+IMPORTANT:
+These are excellent for history, puzzle-solving, and experimentation.
+They should not be presented as secure modern encryption.
+
+----------------------------------------------------------------------
+22.1 CAESAR / SHIFT CIPHER
+----------------------------------------------------------------------
+
+Each letter is shifted by a fixed amount.
+
+Example with shift +3:
+
+    A -> D
+    B -> E
+    C -> F
+
+Advantages:
+    - extremely easy to teach,
+    - very easy to implement,
+    - useful for demonstrating the concept of a key.
+
+Weakness:
+    - trivial to break.
+
+Textile use:
+    plaintext -> Caesar -> 5-bit -> knit/purl
+
+----------------------------------------------------------------------
+22.2 MONOALPHABETIC SUBSTITUTION
+----------------------------------------------------------------------
+
+Each plaintext letter maps to a different ciphertext symbol or letter.
+
+Example:
+
+    A -> Q
+    B -> M
+    C -> T
+
+The substitution alphabet becomes the key.
+
+Advantages:
+    - intuitive,
+    - fun for puzzles,
+    - can generate a custom "secret alphabet."
+
+Weakness:
+    - vulnerable to frequency analysis on longer messages.
+
+Textile use:
+    ideal for a "make your own knitted alphabet" tool.
+
+----------------------------------------------------------------------
+22.3 KEYWORD SUBSTITUTION
+----------------------------------------------------------------------
+
+A keyword is used to construct a reordered alphabet.
+
+Useful because the user can remember the key more easily than a fully random
+substitution table.
+
+Again:
+    educational, not secure.
+
+----------------------------------------------------------------------
+22.4 HOMOPHONIC SUBSTITUTION
+----------------------------------------------------------------------
+
+Common letters can map to several possible symbols.
+
+Example:
+
+    E -> 04 / 17 / 62
+    T -> 11 / 29
+    Q -> 81
+
+This flattens obvious letter-frequency patterns.
+
+Textile potential:
+    the same letter could be represented by several visually related motif
+    variants, making repetition less obvious.
+
+----------------------------------------------------------------------
+22.5 POLYALPHABETIC CIPHERS
+----------------------------------------------------------------------
+
+Instead of one substitution alphabet, several alphabets are used.
+
+The Vigenere cipher is the best-known educational example.
+
+A repeating key changes how each successive letter is transformed.
+
+Textile use:
+    a historically flavored "keyword cipher" mode.
+
+Educational value:
+    demonstrates why repeated keys are better than one fixed shift but still
+    create patterns an analyst can exploit.
+
+----------------------------------------------------------------------
+22.6 TRANSPOSITION CIPHERS
+----------------------------------------------------------------------
+
+The symbols are not replaced.
+
+Their positions are rearranged.
+
+Simple examples:
+    - rail fence,
+    - columnar transposition,
+    - route ciphers.
+
+This maps wonderfully to textiles because textiles already have a physical grid.
+
+Possible textile interpretation:
+
+    write message bits into a grid row-wise
+    but read them according to a secret route:
+        spiral,
+        columns,
+        diagonal,
+        serpentine,
+        checkerboard,
+        outside-in.
+
+This could produce a very satisfying "route cipher scarf."
+
+----------------------------------------------------------------------
+22.7 BACON'S BILITERAL CIPHER
+----------------------------------------------------------------------
+
+Francis Bacon described a system based on groups of five binary choices:
+traditionally A/B forms.
+
+NSA historical material describes the cipher as representing alphabetic letters
+using five-position A/B combinations. [S18]
+
+This is extremely relevant to knitting.
+
+Map:
+
+    A-form = knit
+    B-form = purl
+
+or:
+
+    A-form = colour 1
+    B-form = colour 2
+
+The resulting textile can use a historically grounded five-state structure while
+still being a modern textile reconstruction.
+
+This is one of the best candidate "history -> interactive generator" links.
+
+----------------------------------------------------------------------
+22.8 POLYBIUS-SQUARE-STYLE FRACTIONATION
+----------------------------------------------------------------------
+
+Letters are placed into a grid and represented by coordinates.
+
+Example:
+
+    A = 11
+    B = 12
+    ...
+
+Textile potential:
+
+    row coordinate = colour
+    column coordinate = stitch texture
+
+or:
+
+    first digit = motif family
+    second digit = orientation
+
+This lets one character be split across multiple visual properties.
+
+----------------------------------------------------------------------
+22.9 NULL CIPHERS
+----------------------------------------------------------------------
+
+The visible message contains an apparently ordinary text, but hidden information
+is extracted by a rule.
+
+Example:
+    read every third word,
+    read first letter of each sentence,
+    read every nth character.
+
+Textile analogue:
+
+    only every fifth motif matters,
+    only stitches at the edge matter,
+    only the first purl after each cable matters.
+
+This is very close to textile steganography.
+
+----------------------------------------------------------------------
+22.10 GRILLE / MASK CIPHERS
+----------------------------------------------------------------------
+
+A physical or conceptual mask determines which positions in a larger field are
+meaningful.
+
+Textile version:
+
+    a decorative colourwork field
+    +
+    a printable decoder overlay
+    ->
+    only selected cells reveal the message
+
+Possible tool:
+
+    GENERATE DECODER GRILLE
+
+This could be visually spectacular.
+
+----------------------------------------------------------------------
+22.11 BOOK / REFERENCE CIPHERS
+----------------------------------------------------------------------
+
+Numbers point to positions in a shared text.
+
+Example:
+    page / line / word.
+
+Textile version:
+
+    knitted numbers refer to a shared book or pattern.
+
+This would dramatically reduce the amount of textile data required because the
+garment stores references rather than the entire sentence.
+
+It is also historically interesting because codebooks and reference systems were
+widely used in communications.
+
+----------------------------------------------------------------------
+22.12 ONE-TIME PAD CONCEPT
+----------------------------------------------------------------------
+
+A true one-time pad combines plaintext with a genuinely random key that:
+
+    - is at least as long as the message,
+    - is never reused,
+    - remains secret.
+
+Correctly used, it offers exceptional theoretical secrecy.
+
+For the site:
+    teach the concept,
+    perhaps demonstrate it,
+    but do not casually call improvised pseudo-random textile keys a "one-time
+    pad" unless they actually meet the requirements.
+
+Possible delightful textile experiment:
+
+    knit one half of the key into one object
+    and the ciphertext into another.
+
+Educational, not operational advice.
+
+
+======================================================================
+23. MODERN CRYPTOGRAPHY:
+    WHAT THE SITE SHOULD AND SHOULD NOT CLAIM
+======================================================================
+
+If STITCH / SIGNAL ever includes a mode labelled "secure encryption," the
+cryptography should not be invented by us.
+
+The system should use a standard browser cryptography implementation.
+
+Conceptually:
+
+    message
+        ->
+    established authenticated encryption
+        ->
+    ciphertext bytes
+        ->
+    binary/textile representation
+
+A strong web implementation could eventually use established Web Crypto
+primitives.
+
+A likely design direction would involve:
+
+    - authenticated encryption,
+    - a properly derived key,
+    - random salt / nonce values as required by the algorithm,
+    - all cryptographic processing in the browser where practical,
+    - no claim that the textile carrier itself adds meaningful cryptographic
+      strength.
+
+A crucial wording distinction:
+
+    HANDMADE CIPHER MODE
+        = puzzle / education / historical experimentation
+
+    MODERN ENCRYPTION MODE
+        = uses established cryptographic primitives
+
+Avoid phrases such as:
+
+    "unbreakable knitting cipher"
+
+unless the statement is very carefully scoped.
+
+The textile is a STORAGE / TRANSMISSION MEDIUM.
+
+The security should come from the cryptography, not from the obscurity of
+knitting.
+
+
+======================================================================
+24. ERROR DETECTION, CORRECTION, AND NOISY TEXTILE CHANNELS
+======================================================================
+
+Textiles are physical media.
+
+Physical media are noisy.
+
+A knitter can:
+
+    - miss a stitch,
+    - add a stitch,
+    - swap colours,
+    - twist a cable,
+    - misread a chart,
+    - accidentally repeat a row,
+    - drop a stitch,
+    - rotate the finished object,
+    - start decoding from the wrong edge.
+
+That makes communications engineering unexpectedly relevant.
+
+----------------------------------------------------------------------
+24.1 FRAMING
+----------------------------------------------------------------------
+
+Use distinctive START and END markers.
+
+Purpose:
+    tell the decoder where the message begins and ends.
+
+----------------------------------------------------------------------
+24.2 ORIENTATION MARKERS
+----------------------------------------------------------------------
+
+Add an asymmetric marker that identifies:
+
+    top,
+    bottom,
+    left,
+    right,
+    right side,
+    wrong side.
+
+This prevents accidental decoding upside down or backwards.
+
+----------------------------------------------------------------------
+24.3 CHARACTER SEPARATORS
+----------------------------------------------------------------------
+
+Fixed spacing between symbols reduces synchronization errors.
+
+Example:
+
+    five data cells
+    + one separator cell
+
+----------------------------------------------------------------------
+24.4 PARITY
+----------------------------------------------------------------------
+
+Add one extra bit that records whether the number of 1s is odd or even.
+
+Parity cannot repair an error, but it can detect many single-bit errors.
+
+Textile example:
+
+    five letter bits
+    + one check stitch.
+
+----------------------------------------------------------------------
+24.5 CHECKSUM
+----------------------------------------------------------------------
+
+Generate a final value from the message.
+
+The decoder recomputes the checksum and compares it.
+
+If it differs:
+
+    SOMETHING WENT WRONG.
+
+----------------------------------------------------------------------
+24.6 REDUNDANCY
+----------------------------------------------------------------------
+
+Repeat critical information.
+
+Examples:
+    - each character twice,
+    - repeat the key at both ends,
+    - majority vote across three copies.
+
+This costs space but makes hand-made communication much more robust.
+
+----------------------------------------------------------------------
+24.7 ERROR-CORRECTING CODES
+----------------------------------------------------------------------
+
+More advanced versions could use actual error-correcting codes.
+
+A future research branch could experiment with Hamming-style codes.
+
+This would allow the system not merely to say:
+
+    "there is probably an error"
+
+but potentially:
+
+    "this specific bit is wrong."
+
+That is hilariously appropriate for knitting:
+
+    ERROR NEAR STITCH 83.
+
+----------------------------------------------------------------------
+24.8 SYNCHRONIZATION
+----------------------------------------------------------------------
+
+Missing or added stitches can shift every subsequent symbol.
+
+Fixed-width blocks and frequent framing markers are therefore extremely useful.
+
+Possible robust format:
+
+    START
+    [5 data + parity + separator]
+    [5 data + parity + separator]
+    ...
+    ROW MARKER
+    ...
+    END
+    CHECKSUM
+
+
+======================================================================
+25. WAYS TEXTILES CAN PHYSICALLY STORE INFORMATION
+======================================================================
+
+This is the heart of the experimental design space.
+
+A textile unit can carry information through many independent variables.
+
+----------------------------------------------------------------------
+25.1 PRESENCE / ABSENCE
+----------------------------------------------------------------------
+
+    bobble / no bobble
+    bead / no bead
+    eyelet / no eyelet
+    knot / no knot
+
+Binary by nature.
+
+----------------------------------------------------------------------
+25.2 TEXTURE
+----------------------------------------------------------------------
+
+    knit / purl
+    seed / stockinette
+    raised / recessed
+    smooth / fuzzy material
+
+----------------------------------------------------------------------
+25.3 COLOUR
+----------------------------------------------------------------------
+
+    colour A / colour B
+    multiple colours
+    brightness categories
+    stripe lengths
+
+Two colours = 1 bit per controlled unit.
+
+Four reliably distinguishable states can represent 2 bits.
+
+Eight states can represent 3 bits.
+
+----------------------------------------------------------------------
+25.4 ORIENTATION
+----------------------------------------------------------------------
+
+    left cable / right cable
+    slash / backslash
+    leaf left / leaf right
+    diagonal NW-SE / NE-SW
+
+----------------------------------------------------------------------
+25.5 SIZE
+----------------------------------------------------------------------
+
+    small bobble / large bobble
+    short stripe / long stripe
+    2-stitch motif / 4-stitch motif
+
+Potentially useful, but harder to read reliably.
+
+----------------------------------------------------------------------
+25.6 SPACING
+----------------------------------------------------------------------
+
+The distance between features carries information.
+
+Examples:
+    knot spacing,
+    rows between stripes,
+    stitches between beads.
+
+Excellent for destructive yarn codes.
+
+----------------------------------------------------------------------
+25.7 COUNT
+----------------------------------------------------------------------
+
+A number of repeated elements represents a value.
+
+Example:
+    1 bobble = A
+    2 bobbles = B
+    3 bobbles = C
+
+Simple but low-density.
+
+----------------------------------------------------------------------
+25.8 ORDER
+----------------------------------------------------------------------
+
+A sequence of otherwise ordinary motifs can be significant.
+
+Example:
+    flower / leaf / leaf / star.
+
+----------------------------------------------------------------------
+25.9 MATERIAL
+----------------------------------------------------------------------
+
+Different fibres or yarns could encode categories.
+
+Example:
+    wool / cotton
+    matte / reflective
+    conductive / ordinary yarn
+
+Potentially difficult for visual decoding but interesting conceptually.
+
+----------------------------------------------------------------------
+25.10 TWIST / DIRECTION
+----------------------------------------------------------------------
+
+Yarn twist, cable direction, or ply direction can theoretically carry state.
+
+Likely too subtle for a basic knitting app, but worth documenting.
+
+----------------------------------------------------------------------
+25.11 STRUCTURAL CHOICE
+----------------------------------------------------------------------
+
+Two techniques that appear visually similar could encode different values.
+
+Example:
+    left-leaning decrease / right-leaning decrease.
+
+This is particularly promising for lace steganography.
+
+----------------------------------------------------------------------
+25.12 LOCATION
+----------------------------------------------------------------------
+
+The information is determined by WHERE something appears rather than WHAT it is.
+
+Examples:
+    motif appears in one of two possible columns,
+    bead is above/below centre,
+    hidden symbol appears only along one edge.
+
+----------------------------------------------------------------------
+25.13 MULTIPLE CHANNELS
+----------------------------------------------------------------------
+
+Several properties can operate simultaneously.
+
+Example:
+
+    colour       = bit 1
+    knit/purl    = bit 2
+    cable lean   = bit 3
+
+Eight possible combinations:
+
+    2 x 2 x 2 = 8 states = 3 bits per unit
+
+This leads to the deliberately ridiculous concept of:
+
+    MULTI-CHANNEL TEXTILE DATA.
+
+
+======================================================================
+26. INFORMATION DENSITY AND TEXTILE CAPACITY
+======================================================================
+
+A useful educational lab could calculate how much theoretical information a
+textile carrier can store.
+
+Basic rule:
+
+    bits per unit = log2(number of distinguishable states)
+
+Examples:
+
+2 states:
+    knit / purl
+    = 1 bit per cell
+
+4 states:
+    black / white x knit / purl
+    = 2 bits per cell
+
+8 states:
+    2 colours x 2 textures x 2 directions
+    = 3 bits per cell
+
+The site should then introduce the important difference between:
+
+    THEORETICAL CAPACITY
+    and
+    PRACTICAL CAPACITY.
+
+A system with 16 tiny distinctions may mathematically store more information,
+but if humans cannot reliably knit or distinguish them, it is useless.
+
+A proposed comparison panel:
+
+    METHOD              DENSITY   KNIT DIFFICULTY   READABILITY   CAMOUFLAGE
+    knit/purl            low      easy              high          low
+    2-colour             low      easy-medium       high          low
+    cable direction      low      medium            medium        medium
+    motif mutation       medium   medium-high       medium        high
+    multi-channel        high     cursed            low           high
+
+Yes, "cursed" can remain an internal working classification.
+
+
+======================================================================
+27. PROPOSED ENCODER / GENERATOR FAMILIES
+======================================================================
+
+----------------------------------------------------------------------
+27.1 MORSE RELIEF GENERATOR
+----------------------------------------------------------------------
+
+Purpose:
+    easiest entry point.
+
+Input:
+    text
+
+Logical output:
+    Morse dots and dashes.
+
+Possible textile mappings:
+
+    dot  = one purl bump
+    dash = three purl bumps
+    gap  = knit space
+
+Alternative carriers:
+
+    colour,
+    bobble,
+    bead,
+    lace hole,
+    stripe length.
+
+Outputs:
+    - Morse transcription,
+    - stitch chart,
+    - written rows,
+    - visual preview,
+    - optional decoder key.
+
+Potential issue:
+    Morse is variable-length.
+
+Solution:
+    clear symbol and letter spacing.
+
+----------------------------------------------------------------------
+27.2 FIVE-BIT KNIT/PURL GENERATOR
+----------------------------------------------------------------------
+
+Purpose:
+    core general-purpose textile alphabet.
+
+Five binary positions give:
+
+    2^5 = 32 states.
+
+Enough for:
+    26 letters
+    + space
+    + several control symbols.
+
+Example custom mapping:
+
+    00000 = A
+    00001 = B
+    00010 = C
+    ...
+
+Carrier:
+
+    0 = knit
+    1 = purl
+
+Major advantage:
+    EVERY CHARACTER HAS THE SAME WIDTH.
+
+This is excellent for charts.
+
+Possible control values:
+
+    SPACE
+    START
+    END
+    NEW LINE
+    punctuation
+    escape / shift
+
+----------------------------------------------------------------------
+27.3 BACON-STYLE BILITERAL MODE
+----------------------------------------------------------------------
+
+A historically framed five-position A/B mode.
+
+Carrier examples:
+
+    A = knit
+    B = purl
+
+or:
+
+    A = dark
+    B = light
+
+This is an ideal "learn history -> make a textile" generator.
+
+----------------------------------------------------------------------
+27.4 COLOURWORK BINARY GENERATOR
+----------------------------------------------------------------------
+
+Same underlying bits as five-bit mode.
+
+Carrier:
+
+    0 = background colour
+    1 = contrast colour
+
+Project types:
+
+    scarf
+    cowl
+    hat
+    mitten band
+    sock band
+    square swatch
+
+Potential implementation techniques:
+
+    stranded colourwork
+    double knitting
+    mosaic/slip stitch
+    duplicate stitch
+
+Duplicate stitch is especially attractive because the base object can be knitted
+first and the data added afterward.
+
+----------------------------------------------------------------------
+27.5 BRAILLE / TACTILE MODE
+----------------------------------------------------------------------
+
+Two distinct modes should exist.
+
+MODE A: ACTUAL BRAILLE
+    educational / accessibility-oriented.
+
+Possible textile dots:
+    bobble
+    bead
+    raised knot
+
+MODE B: SIX-DOT CUSTOM CIPHER
+    uses the same 2x3 geometry but a custom alphabet.
+
+Important:
+    do not label arbitrary raised dots as readable Braille.
+    Real tactile accessibility has spacing, height, and usability requirements
+    that require dedicated research and testing.
+
+----------------------------------------------------------------------
+27.6 CABLE CIPHER
+----------------------------------------------------------------------
+
+Simple binary:
+
+    left cable  = 0
+    right cable = 1
+
+This may look more naturally decorative than blocky knit/purl data.
+
+More advanced possibilities:
+
+    cable width,
+    crossing frequency,
+    number of strands.
+
+Potential issue:
+    increases knitting complexity rapidly.
+
+----------------------------------------------------------------------
+27.7 LACE CIPHER
+----------------------------------------------------------------------
+
+Candidate binary states:
+
+    left-leaning decrease  = 0
+    right-leaning decrease = 1
+
+or:
+
+    eyelet position left / right.
+
+Challenge:
+    maintain stitch count and fabric stability.
+
+Strength:
+    very good potential for visual camouflage.
+
+----------------------------------------------------------------------
+27.8 BOBBLE / BEAD CIPHER
+----------------------------------------------------------------------
+
+Presence / absence coding.
+
+Advantages:
+    - visually obvious,
+    - tactile,
+    - easy to decode manually.
+
+Disadvantages:
+    - relatively low density,
+    - may alter drape.
+
+----------------------------------------------------------------------
+27.9 STRIPE-INTERVAL CODE
+----------------------------------------------------------------------
+
+Information stored in row counts.
+
+Example:
+
+    1 row  = value 1
+    2 rows = value 2
+    etc.
+
+Or Morse:
+
+    short stripe = dot
+    long stripe  = dash
+
+Excellent for:
+    scarves,
+    socks,
+    hats,
+    sleeves.
+
+----------------------------------------------------------------------
+27.10 KNOT-SPACING / DESTRUCTIVE CODE
+----------------------------------------------------------------------
+
+Message determines distances between knots in the working yarn.
+
+The yarn is then knitted into an apparently ordinary item.
+
+Decoder:
+
+    unravel object
+    ->
+    measure intervals
+    ->
+    convert distances to symbols
+
+Possible UI label:
+
+    DESTRUCTIVE DECODE
+
+Possible warning:
+
+    THIS MESSAGE WILL REQUIRE FROGGING.
+
+----------------------------------------------------------------------
+27.11 MOTIF ALPHABET
+----------------------------------------------------------------------
+
+Each character is represented by a small graphic motif.
+
+Possible grids:
+
+    3x3
+    4x4
+    5x5
+
+Style packs:
+
+    geometric
+    botanical
+    pixel
+    angular
+    Nordic-inspired geometric
+    glitch
+    goblin mode
+
+Important:
+    do not call invented motifs "traditional" unless they are actually sourced
+    from a documented tradition.
+
+----------------------------------------------------------------------
+27.12 STEGANOGRAPHIC MOTIF MUTATION
+----------------------------------------------------------------------
+
+This is one of the most promising long-term systems.
+
+Start with a decorative repeating pattern.
+
+Each motif has two visually plausible versions.
+
+Example:
+
+    0 = leaf leans left
+    1 = leaf leans right
+
+or:
+
+    0 = centre empty
+    1 = centre filled
+
+or:
+
+    0 = branch has 3 cells
+    1 = branch has 4 cells
+
+The user sees:
+
+    decorative irregularity.
+
+The decoder sees:
+
+    bits.
+
+This is much closer to true steganography than obvious binary colour blocks.
+
+----------------------------------------------------------------------
+27.13 ROUTE-CIPHER CHART
+----------------------------------------------------------------------
+
+Write data into a rectangular field.
+
+Use a secret route to determine reading order.
+
+Routes:
+
+    row
+    column
+    snake
+    spiral
+    diagonal
+    clockwise border
+    centre-out
+    checkerboard
+
+The textile can look like a generic grid while the reading path acts as a key.
+
+----------------------------------------------------------------------
+27.14 GRILLE CIPHER TEXTILE
+----------------------------------------------------------------------
+
+Generate a decorative field and a separate decoder mask.
+
+Only cells visible through the grille matter.
+
+Outputs:
+
+    garment chart
+    +
+    printable decoder grille
+
+A very tactile, physical cipher experience.
+
+----------------------------------------------------------------------
+27.15 MULTI-CHANNEL MODE
+----------------------------------------------------------------------
+
+Use multiple independent textile properties.
+
+Example:
+
+    texture = data stream A
+    colour  = data stream B
+
+Potentially:
+
+    data stream A = encrypted message
+    data stream B = checksum
+    border motifs  = key identifier
+
+This should be a late-stage experimental mode because usability could collapse
+very quickly.
+
+
+======================================================================
+28. PROPOSED DECODER SYSTEM
+======================================================================
+
+The decoder should not simply output plaintext.
+
+It should expose intermediate steps.
+
+Example:
+
+    TEXTILE GRID
+        ->
+    K P K P P
+        ->
+    0 1 0 1 1
+        ->
+    01011
+        ->
+    value 11
+        ->
+    L
+
+That makes the decoder educational.
+
+Recommended modes:
+
+----------------------------------------------------------------------
+28.1 MANUAL GRID ENTRY
+----------------------------------------------------------------------
+
+Click cells to mark:
+
+    knit / purl
+    colour A / B
+    left / right
+    filled / empty
+
+----------------------------------------------------------------------
+28.2 PASTE PROJECT DATA
+----------------------------------------------------------------------
+
+Generated projects can include a compact machine-readable project code.
+
+----------------------------------------------------------------------
+28.3 DECODER KEY MODE
+----------------------------------------------------------------------
+
+User enters:
+
+    alphabet,
+    key,
+    route,
+    motif mapping,
+    or password.
+
+----------------------------------------------------------------------
+28.4 ERROR REPORT
+----------------------------------------------------------------------
+
+Decoder should identify:
+
+    probable framing error,
+    invalid character block,
+    parity failure,
+    checksum mismatch,
+    unexpected row width.
+
+Better:
+
+    "Possible error near character 14"
+
+rather than:
+
+    "INVALID."
+
+----------------------------------------------------------------------
+28.5 PHOTO DECODER - FUTURE
+----------------------------------------------------------------------
+
+Potential computer-vision pipeline:
+
+    upload image
+        ->
+    perspective correction
+        ->
+    detect textile grid
+        ->
+    segment rows / stitches
+        ->
+    classify symbol states
+        ->
+    extract bits
+        ->
+    apply error correction
+        ->
+    decode
+
+This will be difficult.
+
+It is therefore obviously irresistible.
+
+
+======================================================================
+29. "DESIGN YOUR OWN TEXTILE LANGUAGE" LAB
+======================================================================
+
+This could become one of the strongest interactive parts of the site.
+
+Users define their own symbol system.
+
+Option A:
+
+    assign a motif to each letter.
+
+Option B:
+
+    define binary state pairs.
+
+Example:
+
+    left cable  = 0
+    right cable = 1
+
+Option C:
+
+    create a multi-state alphabet.
+
+Example:
+
+    flower = 00
+    leaf   = 01
+    star   = 10
+    moon   = 11
+
+The site automatically builds:
+
+    encoder
+    decoder
+    legend
+    printable key
+    sample message
+    project chart
+
+Possible page title:
+
+    MAKE A TEXTILE LANGUAGE.
+
+
+======================================================================
+30. HISTORICAL RECONSTRUCTION LAB
+======================================================================
+
+Historical pages can link directly to experiments inspired by them.
+
+Examples:
+
+NORWAY / RED TOPPLUE
+    ->
+    DESIGN A SHARED SIGNAL
+    Explore how repetition and colour make a symbol recognizable.
+
+BELGIAN RAILWAY INTELLIGENCE
+    ->
+    BUILD A TRAIN-WATCHER CODE
+    Assign stitch events to categories of observations.
+
+BACON
+    ->
+    BILITERAL KNITTING GENERATOR
+
+WARTIME HANDWORK CODES
+    ->
+    DESTRUCTIVE KNOT MESSAGE
+
+KHIPU
+    ->
+    EXPERIMENT WITH POSITION / COUNT / KNOT STRUCTURE
+    Clearly labelled as a modern information experiment, not an imitation of
+    Inka cultural practice.
+
+PUSSYHAT
+    ->
+    DISTRIBUTED SIGNAL SIMULATOR
+    See how one repeated pattern scales into a visual field.
+
+This connection keeps HISTORY and TOOL from feeling like separate websites.
+
+
+======================================================================
+31. PATTERN-GENERATION ARCHITECTURE
+======================================================================
+
+Recommended software pipeline:
+
+    PLAINTEXT
+        ->
+    NORMALIZER
+        ->
+    OPTIONAL CIPHER / ENCRYPTION
+        ->
+    SYMBOL ENCODER
+        ->
+    ERROR-PROTECTION LAYER
+        ->
+    LOGICAL GRID
+        ->
+    TEXTILE CARRIER
+        ->
+    PROJECT LAYOUT
+        ->
+    KNITTING TRANSLATOR
+        ->
+    OUTPUT
+
+Why this matters:
+
+The same logical message should be able to render as:
+
+    knit/purl
+    colourwork
+    cable
+    lace
+    bobble
+    motif mutation
+
+without rewriting the cryptography.
+
+Likewise, the same carrier should accept:
+
+    plaintext encoding
+    Caesar ciphertext
+    Bacon
+    modern encrypted bytes
+
+without rewriting the knitting engine.
+
+Keep DATA and TEXTILE separate until late in the pipeline.
+
+
+======================================================================
+32. FLAT KNITTING, ROUND KNITTING, AND FABRIC ORIENTATION
+======================================================================
+
+This is a critical implementation detail.
+
+A logical cell means:
+
+    "the finished right-side surface should show state X"
+
+It does NOT necessarily mean:
+
+    "perform physical knitting action X."
+
+When knitting flat:
+
+    row 1 is worked in one direction,
+    row 2 in the opposite direction.
+
+The wrong-side operation may need to be inverted to create the intended
+right-side texture.
+
+Therefore:
+
+    WRONG:
+        bit 0 -> knit
+        bit 1 -> purl
+
+    BETTER:
+        bit
+        ->
+        desired visible fabric state
+        ->
+        project construction
+        ->
+        physical stitch instruction
+
+The translator needs to know:
+
+    - knit flat or in the round,
+    - right-side / wrong-side row,
+    - chart reading direction,
+    - desired visible face,
+    - carrier technique,
+    - whether chart cells represent actions or outcomes.
+
+This distinction is one of the things that will make the app genuinely useful
+rather than just a novelty text converter.
+
+
+======================================================================
+33. WEBSITE INFORMATION ARCHITECTURE
+======================================================================
+
+Suggested top-level structure:
+
+HOME
+|
++-- HISTORY
+|   |
+|   +-- Cloth as resistance
+|   +-- Norway / red topplue
+|   +-- Grini
+|   +-- Knitting and espionage
+|   +-- Homespun
+|   +-- Khadi
+|   +-- Suffrage textiles
+|   +-- Arpilleras
+|   +-- AIDS Memorial Quilt
+|   +-- Pussyhat
+|   +-- Knitting Nannas
+|   +-- Textile myths / disputed histories
+|
++-- THREAD AS INFORMATION
+|   |
+|   +-- What is encoding?
+|   +-- What is a cipher?
+|   +-- What is encryption?
+|   +-- What is steganography?
+|   +-- Morse
+|   +-- Binary
+|   +-- Bacon
+|   +-- Knots and structured data
+|   +-- Errors and checksums
+|   +-- How much information can yarn hold?
+|
++-- ENCODE
+|   |
+|   +-- Morse
+|   +-- 5-bit knit/purl
+|   +-- Bacon
+|   +-- Colourwork
+|   +-- Cable
+|   +-- Lace
+|   +-- Motif
+|   +-- Experimental
+|
++-- DECODE
+|
++-- CIPHER LAB
+|   |
+|   +-- Caesar
+|   +-- substitution
+|   +-- Vigenere
+|   +-- transposition
+|   +-- custom alphabet
+|   +-- grille
+|
++-- STEGANOGRAPHY LAB
+|   |
+|   +-- motif mutation
+|   +-- spacing
+|   +-- hidden route
+|   +-- multi-channel
+|
++-- MAKE
+|   |
+|   +-- Swatch
+|   +-- Scarf
+|   +-- Hat
+|   +-- Cowl
+|   +-- Mitten border
+|   +-- Sock band
+|   +-- Custom grid
+|
++-- SOURCES / ARCHIVE
+
+
+======================================================================
+34. EDITORIAL AND VISUAL LANGUAGE
+======================================================================
+
+Avoid:
+    generic yarn-shop pastel,
+    twee cottage aesthetic,
+    over-romanticized "secret grandmas" framing.
+
+Possible visual language:
+
+    museum archive
+    +
+    clandestine field manual
+    +
+    technical knitting chart
+    +
+    punch card
+    +
+    resistance leaflet
+    +
+    clean modern interface
+
+Palette:
+
+    cream / paper
+    black
+    white
+    strong red accent
+    optional secondary archival colours
+
+Typography:
+
+    clean grotesk for reading
+    monospace for code / evidence / charts
+    strong condensed display type for section labels
+
+Graphic system:
+
+    square grid
+    chart cells
+    numbered archive labels
+    source stamps
+    evidence badges
+    punched / perforated dividers
+    red annotations
+
+Example:
+
+    ARCHIVE 04.2
+    NORWAY / 1942
+
+    STATUS:
+    DOCUMENTED
+
+Interactive tool aesthetic:
+
+    MESSAGE
+    [________________________]
+
+    TRANSFORM
+    [ BACON v ]
+
+    CARRIER
+    [ PURL RELIEF v ]
+
+    CONSTRUCTION
+    [ FLAT v ]
+
+    GENERATE SIGNAL ->
+
+
+======================================================================
+35. EVIDENCE AND CITATION SYSTEM
+======================================================================
+
+Every historical story page should contain:
+
+    CLAIM
+    DATE / PLACE
+    EVIDENCE GRADE
+    PRIMARY SOURCE OR OBJECT IF AVAILABLE
+    SECONDARY SOURCE
+    WHAT WE KNOW
+    WHAT WE DO NOT KNOW
+    RELATED EXPERIMENT
+
+This will make the project unusually rigorous while remaining fun.
+
+An explicit "MYTH / EVIDENCE" interface could use:
+
+    CONFIRMED
+    PROBABLE
+    REPORTED
+    DISPUTED
+    UNKNOWN
+    RECONSTRUCTION
+
+Potentially allow visitors to expand:
+
+    WHY THIS LABEL?
+
+This is especially important for:
+
+    - Belgian knitting-spy anecdotes,
+    - handwork-code retellings,
+    - Underground Railroad quilt codes,
+    - claims that blur symbolic resistance and literal coded messages.
+
+
+======================================================================
+36. DEVELOPMENT ROADMAP
+======================================================================
+
+----------------------------------------------------------------------
+PHASE 0 - RESEARCH FOUNDATION
+----------------------------------------------------------------------
+
+Build source database.
+
+For every historical story record:
+
+    title
+    place
+    period
+    claim
+    evidence grade
+    source
+    source type
+    notes
+    image rights
+    publication status
+
+Resolve the most fragile historical claims before launch.
+
+Priority:
+    obtain primary pages from the 1942 codes/signals handbook.
+
+----------------------------------------------------------------------
+PHASE 1 - HISTORY + PROOF OF CONCEPT
+----------------------------------------------------------------------
+
+Build static website skeleton.
+
+Publish initial history pages:
+
+    Norway
+    Grini
+    Belgium / espionage
+    craft resistance overview
+    textile myth page
+
+Build three encoders:
+
+    1. Morse relief
+    2. 5-bit knit/purl
+    3. 5-bit two-colour
+
+Build one universal manual decoder.
+
+No user accounts required.
+
+Prefer local browser processing.
+
+----------------------------------------------------------------------
+PHASE 2 - KNITTING ENGINE
+----------------------------------------------------------------------
+
+Add:
+
+    flat / round
+    RS / WS translation
+    row wrapping
+    project width
+    orientation markers
+    checksums
+    chart generation
+    written instructions
+    project dimensions
+
+Exports:
+
+    SVG
+    PNG
+    printable pattern
+    project JSON
+
+----------------------------------------------------------------------
+PHASE 3 - CIPHER LAB
+----------------------------------------------------------------------
+
+Add educational ciphers:
+
+    Caesar
+    substitution
+    keyword substitution
+    Bacon
+    Vigenere
+    transposition
+    custom alphabet
+
+Clearly label:
+
+    HISTORICAL / PUZZLE CIPHER
+    NOT MODERN SECURITY
+
+----------------------------------------------------------------------
+PHASE 4 - MORE TEXTILE CARRIERS
+----------------------------------------------------------------------
+
+Add:
+
+    cable
+    lace
+    bobble
+    bead
+    stripe interval
+    motif alphabet
+
+----------------------------------------------------------------------
+PHASE 5 - STEGANOGRAPHY ENGINE
+----------------------------------------------------------------------
+
+Build base-pattern system.
+
+Each motif exposes controlled variants.
+
+Example:
+
+    BASE MOTIF
+        +
+    MESSAGE BIT
+        ->
+    VARIANT A OR B
+
+Goal:
+
+    finished pattern should still read as decorative textile design.
+
+This is where the system becomes truly distinctive.
+
+----------------------------------------------------------------------
+PHASE 6 - SECURE ENCRYPTION MODE
+----------------------------------------------------------------------
+
+Use established browser cryptography.
+
+Pipeline:
+
+    message
+    ->
+    authenticated encryption
+    ->
+    bytes
+    ->
+    textile encoding
+
+Do not design a proprietary security algorithm.
+
+----------------------------------------------------------------------
+PHASE 7 - CUSTOM LANGUAGE LAB
+----------------------------------------------------------------------
+
+Allow users to build symbol alphabets and mappings.
+
+Generate:
+
+    encoder
+    decoder
+    printable key
+    pattern legend
+
+----------------------------------------------------------------------
+PHASE 8 - PHOTO DECODER
+----------------------------------------------------------------------
+
+Research computer vision for:
+
+    colour grids,
+    knit/purl recognition,
+    bobbles,
+    lace,
+    motif classification.
+
+Expect this to be substantially harder than the earlier phases.
+
+----------------------------------------------------------------------
+PHASE 9 - COMMUNITY / ARCHIVE FEATURES
+----------------------------------------------------------------------
+
+Possible later additions:
+
+    public pattern gallery
+    user-created cipher alphabets
+    educational lesson plans
+    museum partnerships
+    downloadable history packs
+    exhibitions
+    collaborative encoded textile projects
+
+
+======================================================================
+37. SUGGESTED DATA MODEL
+======================================================================
+
+A generated project should ideally be serializable.
+
+Example conceptual project object:
+
+PROJECT
+    id
+    version
+    title
+
+MESSAGE
+    plaintext
+    normalized_text
+
+TRANSFORMATION
+    type
+    key_reference
+    parameters
+
+ENCODING
+    alphabet
+    bits_per_symbol
+    symbol_stream
+
+ERROR_CONTROL
+    framing
+    parity
+    checksum
+    correction_scheme
+
+CARRIER
+    type
+    state_mapping
+    colours
+    motif_pack
+
+CONSTRUCTION
+    flat_or_round
+    width
+    gauge
+    RS_start
+    reading_direction
+
+LAYOUT
+    rows
+    columns
+    border
+    padding
+    repeats
+
+OUTPUT
+    logical_grid
+    knitting_grid
+    instructions
+    decoder_key
+
+This would make future export / import much easier.
+
+
+======================================================================
+38. RESEARCH QUESTIONS STILL TO RESOLVE
+======================================================================
+
+HIGH PRIORITY:
+
+1. Obtain the actual relevant pages of Petersen & McClintock's 1942
+   "A Guide to Codes and Signals."
+
+2. Verify exactly what that book says about:
+       knitting,
+       embroidery,
+       hooked rugs,
+       knots,
+       hidden handwork codes.
+
+3. Locate page-level archival or scholarly evidence for the specific
+   Belgium / train / plain-purl knitting system.
+
+4. Separate:
+       White Lady network documentation
+   from:
+       later "grandmother knitting by the window" anecdotes.
+
+5. Gather more primary Norwegian material:
+       police notices,
+       surviving red caps,
+       Christmas cards,
+       Grini objects,
+       prisoner testimony.
+
+6. Research actual Braille tactile dimensions before making an accessibility
+   mode.
+
+7. Research intellectual-property / museum-image licensing for any historical
+   object imagery used on the public site.
+
+8. Find additional global examples that avoid making the project too narrowly
+   European / North American.
+
+9. Research textile signalling traditions that are not necessarily political:
+       maritime flags,
+       bandanas,
+       tartans,
+       woven identity systems,
+       beadwork,
+       military insignia,
+       ceremonial cloth.
+
+10. Research other material information systems:
+       tally cords,
+       knot records,
+       bead sequences,
+       prayer beads,
+       rosaries,
+       memory devices.
+
+11. Explore craft under incarceration beyond Grini.
+
+12. Research protest embroidery and prison samplers.
+
+13. Investigate historical commercial codebooks as a useful parallel:
+       shorthand + secrecy + transmission cost.
+
+14. Research censorship workarounds using decorative or domestic media.
+
+15. Document the difference between:
+       symbolic association
+   and:
+       deliberately designed encoded communication.
+
+
+======================================================================
+39. CORE SOURCE SHELF
+======================================================================
+
+[S01]
+Store norske leksikon
+"Nisselue"
+https://snl.no/nisselue
+
+Useful for:
+    - red topplue as Norwegian symbol,
+    - resistance context,
+    - 26 February 1942 prohibition,
+    - broader historical symbolism.
+
+--------------------------------------------------
+
+[S02]
+MiA / Museumstjenesten
+"Grini motstandsbroderi og strikk"
+https://mia.no/museumstjenesten/grini-motstandsbroderi-og-strikk
+
+Useful for:
+    - clandestine prison handwork,
+    - miniature knitting,
+    - improvised tools/materials,
+    - patriotic motifs,
+    - making as control / inner freedom / resistance.
+
+--------------------------------------------------
+
+[S03]
+Yale University Press
+Helen Fry, "The White Lady"
+https://yalebooks.yale.edu/book/9780300275117/the-white-lady/
+
+Useful for:
+    - Belgian intelligence networks,
+    - White Lady / Clarence context,
+    - recent archive-based scholarship.
+
+NOTE:
+    Use page-level scholarship before publishing any precise stitch-code claim.
+
+--------------------------------------------------
+
+[S04]
+Smithsonian Libraries and Archives
+Gordon A. J. Petersen and Marshall McClintock,
+"A Guide to Codes and Signals" (1942)
+https://www.si.edu/object/siris_sil_523835
+
+Useful for:
+    - confirming publication,
+    - wartime codes/signals context,
+    - research lead for handwork-code section.
+
+--------------------------------------------------
+
+[S05]
+Smithsonian Institution
+"American Revolutionaries and Patriotism"
+https://www.si.edu/stories/american-revolutionaries-and-patriotism
+
+Useful for:
+    - non-importation,
+    - household production,
+    - homespun,
+    - economic resistance.
+
+--------------------------------------------------
+
+[S06]
+U.S. National Park Service
+"Women During the Lead Up To War"
+https://www.nps.gov/articles/000/alyssa-kariofyllis-women-of-the-battle-road-paper4.htm
+
+Useful for:
+    - spinning bees,
+    - women and non-importation,
+    - domestic production as political participation.
+
+--------------------------------------------------
+
+[S07]
+Victoria and Albert Museum
+"Indian textiles"
+https://www.vam.ac.uk/articles/indian-textiles
+
+Useful for:
+    - Swadeshi,
+    - khadi,
+    - Gandhi,
+    - spinning / textile production as resistance.
+
+--------------------------------------------------
+
+[S08]
+London Museum
+Women Writers' Suffrage League banner
+https://www.londonmuseum.org.uk/collections/v/object-91772/banner-suffrage-banner/
+
+Useful for:
+    - Mary Lowndes,
+    - Christiana Herringham,
+    - 1908 NUWSS procession,
+    - suffrage banners as political textile communication.
+
+--------------------------------------------------
+
+[S09]
+Museo de la Memoria y los Derechos Humanos
+"Arpilleras: Pobladores, Resistencia y Organización"
+https://mmdh.cl/exposiciones/itinerantes/arpilleras-pobladores-resistencia-y-organizacion
+
+Useful for:
+    - arpilleras,
+    - testimony,
+    - resistance,
+    - political textile documentation.
+
+--------------------------------------------------
+
+[S10]
+National AIDS Memorial
+"Quilt History"
+https://www.aidsmemorial.org/quilt-history
+
+Useful for:
+    - AIDS Memorial Quilt history,
+    - 1987 National Mall display,
+    - scale and collective memorialization.
+
+--------------------------------------------------
+
+[S11]
+Victoria and Albert Museum
+"The Pussyhat"
+https://www.vam.ac.uk/articles/the-pussyhat
+
+Useful for:
+    - 2017 Women's March,
+    - distributed pattern,
+    - mass visual identity,
+    - contemporary protest craft.
+
+--------------------------------------------------
+
+[S12]
+Knitting Nannas
+"History"
+https://knitting-nannas.com/about-us/history/
+
+Useful for:
+    - origin in 2012,
+    - observation / "guerrilla surveillance",
+    - knitting as environmental activism,
+    - persistent public presence.
+
+--------------------------------------------------
+
+[S13]
+Smithsonian National Museum of the American Indian
+"Quipu / Counting record"
+https://americanindian.si.edu/collections-search/object/NMAI_154591
+
+Useful for:
+    - thread / knots as structured information,
+    - material data systems.
+
+--------------------------------------------------
+
+[S14]
+Smithsonian Center for Folklife and Cultural Heritage
+"Underground Railroad Quilt Codes: What We Know, What We Believe,
+and What Inspires Us"
+https://folklife.si.edu/magazine/underground-railroad-quilt-codes
+
+Useful for:
+    - disputed quilt-code story,
+    - oral history vs documentary evidence,
+    - historical methodology.
+
+--------------------------------------------------
+
+[S15]
+NIST Computer Security Resource Center
+"Encryption"
+https://csrc.nist.gov/glossary/term/encryption
+
+Useful for:
+    - encryption terminology.
+
+--------------------------------------------------
+
+[S16]
+NIST Computer Security Resource Center
+"Cryptography"
+https://csrc.nist.gov/glossary/term/cryptography
+
+Useful for:
+    - cryptography terminology,
+    - confidentiality / integrity / authentication context.
+
+--------------------------------------------------
+
+[S17]
+NIST Computer Security Resource Center
+"Steganography"
+https://csrc.nist.gov/glossary/term/steganography
+
+Useful for:
+    - definition of steganography,
+    - hiding the existence of communication.
+
+--------------------------------------------------
+
+[S18]
+National Security Agency / Center for Cryptologic History
+"Dawn of American Cryptology" / section discussing Bacon's Biliteral Cipher
+https://www.nsa.gov/portals/75/documents/about/cryptologic-heritage/historical-figures-publications/publications/pre-modern/DawnAmericanCryptology_Hatch.pdf
+
+Useful for:
+    - Bacon's five-position A/B cipher,
+    - history of cryptology.
+
+--------------------------------------------------
+
+[S19]
+National Cryptologic Museum / NSA
+Museum information and educational programs
+https://www.nsa.gov/History/National-Cryptologic-Museum/
+
+Useful for:
+    - cryptologic history,
+    - substitution and transposition education,
+    - cipher-machine history.
+
+--------------------------------------------------
+
+[S20]
+Smithsonian Institution Archives
+"A Forgotten History: Alfred Vail and Samuel Morse"
+https://siarchives.si.edu/blog/forgotten-history-alfred-vail-and-samuel-morse
+
+Useful for:
+    - telegraph,
+    - Morse/Vail code history,
+    - dots/dashes as a communication encoding.
+
+--------------------------------------------------
+
+[S21]
+National Cryptologic Museum / NSA
+"18th Century Cipher Device"
+https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2718496/18th-century-cipher-device/
+
+Useful for:
+    - physical cipher devices,
+    - scrambled alphabets,
+    - keys embodied in mechanical arrangement.
+
+--------------------------------------------------
+
+[S22]
+National Cryptologic Museum / NSA
+"World War 2: Enigma"
+https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2719176/world-war-2-enigma/
+
+Useful for:
+    - rotor-machine cryptography,
+    - machine ciphers,
+    - historical transition toward mechanized encryption.
+
+--------------------------------------------------
+
+[S23]
+National Museum of American History / Smithsonian
+"Organizing as Patriots"
+https://americanhistory.si.edu/explore/exhibitions/american-democracy/online/great-leap/revolution/organizing-patriots
+
+Useful for:
+    - boycotts,
+    - home manufacturing,
+    - homespun textiles.
+
+--------------------------------------------------
+
+FOLLOW-UP SOURCE LEADS TO VERIFY BEFORE PUBLICATION:
+
+- National WWI Museum educational material on knitting spies.
+- Exact pages of the 1942 codes-and-signals handbook.
+- Page-level citations from Helen Fry's White Lady research for knitted railway
+  observations.
+- Norwegian museum/object records for red-cap Christmas-card adaptations.
+- Primary police notices where digitized.
+- First-person Grini prisoner accounts.
+- Additional scholarship on coded handwork and prison textiles.
+
+
+======================================================================
+40. POSSIBLE FUTURE EXPANSION
+======================================================================
+
+The project could eventually branch far beyond knitting while keeping the same
+core engine.
+
+OTHER CRAFT CARRIERS:
+
+    crochet
+    embroidery
+    cross-stitch
+    weaving
+    beadwork
+    quilting
+    macramé
+    friendship bracelets
+    tablet weaving
+    loom bands
+    tapestry
+    visible mending
+
+Each has different native information properties.
+
+Example:
+
+EMBROIDERY
+    stitch direction
+    thread colour
+    knot presence
+    stitch type
+    placement
+
+WEAVING
+    warp / weft colour
+    float length
+    pickup pattern
+    structure
+
+BEADWORK
+    colour
+    sequence
+    size
+    orientation
+
+QUILTING
+    block selection
+    rotation
+    placement
+    stitch path
+
+MACRAMÉ
+    knot family
+    knot direction
+    spacing
+
+The software architecture should therefore avoid hard-coding:
+
+    "bit = knitting stitch"
+
+Instead it should think in terms of:
+
+    LOGICAL SYMBOL
+        ->
+    CRAFT CARRIER STATE
+
+That would allow STITCH / SIGNAL to grow into something larger:
+
+    A LABORATORY FOR PHYSICAL INFORMATION.
+
+
+======================================================================
+FINAL PROJECT STATEMENT - WORKING DRAFT
+======================================================================
+
+STITCH / SIGNAL explores the long and strange relationship between thread,
+information, protest, memory, and secrecy.
+
+It begins with historical textiles: red caps banned as resistance symbols,
+clandestine prison embroidery, homespun boycotts, anti-colonial khadi,
+suffrage banners, arpilleras, memorial quilts, protest hats, and the disputed
+stories that grow around supposedly secret cloth.
+
+It then asks what happens if we treat textiles deliberately as information
+systems.
+
+A purl can become a bit.
+A cable can become a direction.
+A knot can become a number.
+A colour can become a symbol.
+A motif can hide another motif.
+A scarf can become ciphertext.
+
+The project is therefore both archive and experiment:
+
+    part history of resistance through craft,
+    part introduction to codes and cryptography,
+    part steganography playground,
+    and part tool for turning messages into things you can actually knit.
+
+The goal is not to prove that every old story about secret knitting is true.
+
+The more interesting goal is to show what is documented, what is uncertain,
+what people have imagined, and what thread is genuinely capable of carrying.
+
+Because sometimes the craft contains the message.
+
+Sometimes the craft IS the message.
+
+And sometimes the scarf is encrypted.
+
+======================================================================
+END OF PACKET
+======================================================================
