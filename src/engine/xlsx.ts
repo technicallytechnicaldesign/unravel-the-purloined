@@ -29,6 +29,9 @@ export function columnName(i: number): string {
   return s;
 }
 
+// What a chart cell shows in the spreadsheet: a dot for purl, a short mark for special stitches.
+const CELL_TEXT: Record<Visible, string> = { knit: "", purl: "•", A: "", B: "", c4f: "\\", c4b: "/", yo: "o", k2tog: "/", ssk: "\\", mb: "●", pb: "◆" };
+
 // Style ids, matching cellXfs in STYLES.
 const S = { plain: 0, knit: 1, ink: 2, title: 3, small: 4 } as const;
 
@@ -92,7 +95,7 @@ function chartSheet(input: SheetInput): string {
   const top = 3;
   input.chart.forEach((row, r) => {
     const xr = top + (h - 1 - r); // row 1 at the bottom
-    row.forEach((v, c) => g.set(xr, c + 1, { text: v === "purl" ? "•" : "", style: v === "B" ? S.ink : S.knit }));
+    row.forEach((v, c) => g.set(xr, c + 1, { text: CELL_TEXT[v], style: v === "B" ? S.ink : S.knit }));
     const side = input.method === "round" ? "RS" : input.rows[r]?.side ?? "RS";
     const label = input.method === "round" ? String(r + 1) : `${r + 1} ${side}`;
     g.set(xr, side === "RS" ? w + 1 : 0, { text: label, style: S.small });
@@ -112,7 +115,7 @@ function keySheet(input: SheetInput): string {
   const g = new Grid();
   g.set(1, 0, { text: "Key", style: S.title });
   input.legend.forEach((l, i) => {
-    g.set(i + 3, 0, { text: l.visible === "purl" ? "•" : "", style: l.visible === "B" ? S.ink : S.knit });
+    g.set(i + 3, 0, { text: CELL_TEXT[l.visible], style: l.visible === "B" ? S.ink : S.knit });
     g.set(i + 3, 1, { text: l.label, style: S.plain });
   });
   const start = input.legend.length + 4;
@@ -151,9 +154,9 @@ export function workbook(input: SheetInput): Uint8Array {
   ]);
 }
 
-/** CSV of the chart: one line per row, top row first, row number first. k, p, A or B per stitch. */
+/** CSV of the chart: one line per row, top row first, row number first. k, p, A, B or a special stitch per cell. */
 export function chartCsv(chart: readonly (readonly Visible[])[]): string {
-  const code: Record<Visible, string> = { knit: "k", purl: "p", A: "A", B: "B" };
+  const code: Record<Visible, string> = { knit: "k", purl: "p", A: "A", B: "B", c4f: "C4F", c4b: "C4B", yo: "yo", k2tog: "k2tog", ssk: "ssk", mb: "MB", pb: "PB" };
   const w = chart[0]?.length ?? 0;
   const header = ["row", ...Array.from({ length: w }, (_, c) => `st ${w - c}`)].join(",");
   const lines = [...chart].map((row, r) => [r + 1, ...row.map((v) => code[v])].join(",")).reverse();
