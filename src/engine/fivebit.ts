@@ -14,6 +14,8 @@
 //   30     question mark
 //   31     reserved (future shift/escape)
 
+import { normalizeWith, type Normalized } from "./normalize";
+
 export type Bit = 0 | 1;
 
 export const BITS_PER_SYMBOL = 5;
@@ -29,43 +31,11 @@ for (const [v, ch] of Object.entries(EXTRA)) VALUE_TO_CHAR[Number(v)] = ch;
 
 const CHAR_TO_VALUE = new Map<string, number>(VALUE_TO_CHAR.map((ch, v) => [ch, v]));
 
-export interface Normalized {
-  text: string;
-  /** Characters removed because the alphabet cannot carry them, with their index in the input. */
-  dropped: { char: string; index: number }[];
-}
-
-// Letters outside A-Z that have an honest plain-Latin spelling. Norwegian and
-// Danish letters matter here: the history pages start in Norway.
-const TRANSLITERATE: Record<string, string> = {
-  "Æ": "AE",
-  "Ø": "OE",
-  "Å": "AA",
-  "ß": "SS",
-  "Œ": "OE",
-};
+export type { Normalized } from "./normalize";
 
 /** Uppercase, transliterate, collapse whitespace, and report anything the alphabet cannot carry. */
 export function normalize(input: string): Normalized {
-  const dropped: Normalized["dropped"] = [];
-  let out = "";
-  const chars = Array.from(input.toUpperCase());
-  chars.forEach((raw, index) => {
-    const mapped =
-      TRANSLITERATE[raw] ??
-      // Strip combining accents: É -> E, Ü -> U.
-      raw.normalize("NFD").replace(/[̀-ͯ]/g, "");
-    for (const ch of mapped) {
-      if (/\s/.test(ch)) {
-        if (out.length > 0 && !out.endsWith(" ")) out += " ";
-      } else if (CHAR_TO_VALUE.has(ch) && ch !== START && ch !== END) {
-        out += ch;
-      } else {
-        dropped.push({ char: raw, index });
-      }
-    }
-  });
-  return { text: out.trimEnd(), dropped };
+  return normalizeWith(input, (ch) => CHAR_TO_VALUE.has(ch) && ch !== START && ch !== END);
 }
 
 /** Encode already-normalized text to a flat bit stream, most significant bit first. */
