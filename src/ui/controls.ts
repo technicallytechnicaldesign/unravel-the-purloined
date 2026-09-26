@@ -7,6 +7,8 @@ import { type EncodingSettings } from "../engine/project";
 import { type SymbolCode } from "../engine/errorcontrol";
 import { type Construction } from "../engine/construction";
 import { type CarrierId } from "../engine/carrier";
+import { UNITS, type UnitId } from "../engine/units";
+import { type GlyphPack } from "../engine/glyphs";
 import { CIPHERS, keyProblem, PUZZLE_LABEL, type CipherKind, type CipherSettings } from "../engine/ciphers";
 
 export function field(label: string, control: HTMLElement, hint?: string): HTMLLabelElement {
@@ -30,6 +32,8 @@ export function encodingControls(onChange: () => void) {
     ["morse", "Morse code"],
     ["bacon-historical24", "Bacon, historical 24-letter"],
     ["bacon-modern26", "Bacon, modern 26-letter"],
+    ["glyph-pixel5", "Motif alphabet: pixel letters (5 × 5)"],
+    ["glyph-geometric3", "Motif alphabet: geometric symbols (3 × 3)"],
   ]);
   const code = select("code", [
     ["parity", "Parity cell per letter"],
@@ -43,7 +47,11 @@ export function encodingControls(onChange: () => void) {
 
   const sync = () => {
     checks.hidden = transform.value !== "fivebit";
-    note.textContent = transform.value.startsWith("bacon")
+    note.textContent = transform.value === "glyph-pixel5"
+      ? "The letters themselves, knitted as small pictures. Anyone can read them; they carry A to Z, 0 to 9, space, full stop and question mark."
+      : transform.value === "glyph-geometric3"
+        ? "A secret alphabet designed here: 38 symbols, each 3 stitches square. Any two differ by at least two stitches, so a single slip is noticed, but it may not be clear which symbol was meant."
+        : transform.value.startsWith("bacon")
       ? "Historical / puzzle cipher, not modern security. Bacon's alphabet has no space, so words run together."
       : transform.value === "morse"
         ? "Morse has no error checks of its own; gaps carry the letter breaks."
@@ -54,12 +62,14 @@ export function encodingControls(onChange: () => void) {
 
   const get = (): EncodingSettings => {
     const t = transform.value;
-    if (t === "morse") return { alphabet: "morse" };
+    if (t === "morse" || t.startsWith("glyph-")) return { alphabet: "morse" };
     if (t.startsWith("bacon-")) return { alphabet: "bacon", variant: t.slice(6) as "historical24" | "modern26" };
     return { alphabet: "fivebit", errorControl: { code: code.value as SymbolCode, separator: separator.input.checked, checksum: checksum.input.checked } };
   };
-  const set = (e: EncodingSettings) => {
-    transform.value = e.alphabet === "bacon" ? `bacon-${e.variant}` : e.alphabet;
+  /** The motif alphabet pack, when one is chosen. Letters are then normalized as for Morse. */
+  const glyphs = (): { pack: GlyphPack } | undefined => (transform.value.startsWith("glyph-") ? { pack: transform.value.slice(6) as GlyphPack } : undefined);
+  const set = (e: EncodingSettings, g?: { pack: GlyphPack }) => {
+    transform.value = g ? `glyph-${g.pack}` : e.alphabet === "bacon" ? `bacon-${e.variant}` : e.alphabet;
     if (e.alphabet === "fivebit") {
       code.value = e.errorControl.code;
       separator.input.checked = e.errorControl.separator;
@@ -67,23 +77,42 @@ export function encodingControls(onChange: () => void) {
     }
     sync();
   };
-  return { el: h("div.control-group", {}, field("TRANSFORM", transform), note, checks), get, set };
+  return { el: h("div.control-group", {}, field("TRANSFORM", transform), note, checks), get, set, glyphs };
 }
 
 export function carrierControls(onChange: () => void, withColours: boolean) {
   const carrier = select("carrier", [
     ["purl-relief", "Purl relief (knit / purl)"],
     ["two-colour", "Two-colour (A / B)"],
+    ["cable", "Cables (left or right cross)"],
+    ["lace", "Lace (left or right lean)"],
+    ["bobble", "Bobbles"],
+    ["bead", "Beads"],
+    ["stripes", "Stripes (Morse in row counts)"],
   ]);
+  const note = h("p.hint", {});
   const a = h("input", { type: "text", name: "colour-a", value: "cream", maxlength: 20 });
   const b = h("input", { type: "text", name: "colour-b", value: "red", maxlength: 20 });
   const colours = h("div.pair", {}, field("COLOUR A", a), field("COLOUR B", b));
-  const sync = () => (colours.hidden = !withColours || carrier.value !== "two-colour");
+  const sync = () => {
+    const id = carrier.value as CarrierId;
+    colours.hidden = !withColours || (id !== "two-colour" && id !== "stripes");
+    const u = id in UNITS ? UNITS[id as UnitId] : undefined;
+    note.textContent = u
+      ? withColours
+        ? `Each cell of the grid becomes a block of ${u.width} stitches by ${u.height} rows, so the piece is ${u.width} times wider than the message width.`
+        : `Mark one cell for each ${u.width} by ${u.height} block: 0 or 1, as the chart key says.`
+      : id === "stripes"
+        ? withColours
+          ? "Morse only. Every row is one colour; the width is up to you."
+          : "Mark each row by its colour, cast-on edge at the bottom: colour B is 1."
+        : "";
+  };
   for (const el of [carrier, a, b]) el.addEventListener(el === carrier ? "change" : "input", () => (sync(), onChange()));
   sync();
   return {
-    el: h("div.control-group", {}, field("CARRIER", carrier), colours),
-    get: () => ({ id: carrier.value as CarrierId, ...(carrier.value === "two-colour" ? { colours: { A: a.value || "A", B: b.value || "B" } } : {}) }),
+    el: h("div.control-group", {}, field("CARRIER", carrier), note, colours),
+    get: () => ({ id: carrier.value as CarrierId, ...(carrier.value === "two-colour" || carrier.value === "stripes" ? { colours: { A: a.value || "A", B: b.value || "B" } } : {}) }),
     set: (id: CarrierId) => ((carrier.value = id), sync()),
   };
 }

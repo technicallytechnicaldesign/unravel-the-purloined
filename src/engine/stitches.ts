@@ -5,7 +5,7 @@
 // Names differ between the US and the UK; both are given.
 
 import { type Visible } from "./construction";
-import { type CarrierId } from "./carrier";
+import { family, type CarrierId } from "./carrier";
 
 export type StitchPattern =
   | "stockinette"
@@ -45,7 +45,7 @@ export const PATTERNS: Record<StitchPattern, PatternInfo> = {
 };
 
 export const patternsFor = (carrier: CarrierId): StitchPattern[] =>
-  (Object.keys(PATTERNS) as StitchPattern[]).filter((p) => PATTERNS[p].carrier === carrier);
+  (Object.keys(PATTERNS) as StitchPattern[]).filter((p) => PATTERNS[p].carrier === family(carrier));
 
 /** Restyle the border cells of a chart with a pattern. Other cells are untouched. */
 export function applyBorder(chart: readonly (readonly Visible[])[], isBorder: (r: number, c: number) => boolean, pattern: StitchPattern): Visible[][] {

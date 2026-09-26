@@ -23,11 +23,55 @@ const LEGEND_LINE = 20;
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+const line = (x1: number, y1: number, x2: number, y2: number, w = 1.4, stroke = INK) =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round"/>`;
+
+/** A cable symbol across `n` cells: the front strand drawn over the back one. C4F leans "\\", C4B "/". */
+function cable(v: "c4f" | "c4b", x: number, y: number, n: number): string {
+  const [l, r, t, b] = [x + 2, x + n * CELL - 2, y + 3, y + CELL - 3];
+  const [back, front] = v === "c4f" ? [[l, b, r, t], [l, t, r, b]] : [[l, t, r, b], [l, b, r, t]];
+  return (
+    `<rect x="${x}" y="${y}" width="${n * CELL}" height="${CELL}" fill="${KNIT}"/>` +
+    line(back[0]!, back[1]!, back[2]!, back[3]!, 1) +
+    line(front[0]!, front[1]!, front[2]!, front[3]!, 6, KNIT) +
+    line(front[0]!, front[1]!, front[2]!, front[3]!, 2.4)
+  );
+}
+
 function cell(v: Visible, x: number, y: number): string {
+  if (v === "c4f" || v === "c4b") return cable(v, x, y, 1);
   const fill = v === "B" ? INK : KNIT;
+  const [cx, cy, m] = [x + CELL / 2, y + CELL / 2, 4];
   let out = `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${fill}"/>`;
-  if (v === "purl") out += `<circle cx="${x + CELL / 2}" cy="${y + CELL / 2}" r="3" fill="${INK}"/>`;
+  if (v === "purl") out += `<circle cx="${cx}" cy="${cy}" r="3" fill="${INK}"/>`;
+  if (v === "yo") out += `<circle cx="${cx}" cy="${cy}" r="4" fill="none" stroke="${INK}" stroke-width="1.3"/>`;
+  if (v === "k2tog") out += line(x + m, y + CELL - m, x + CELL - m, y + m);
+  if (v === "ssk") out += line(x + m, y + m, x + CELL - m, y + CELL - m);
+  if (v === "mb") out += `<circle cx="${cx}" cy="${cy}" r="5" fill="${INK}"/>`;
+  if (v === "pb") out += `<path d="M${cx} ${y + 3}L${x + CELL - 3} ${cy}L${cx} ${y + CELL - 3}L${x + 3} ${cy}Z" fill="${INK}"/>`;
   return out;
+}
+
+/** Short key lines for stitches the chart uses that the carrier legend does not name. */
+const STITCH_KEY: Partial<Record<Visible, string>> = {
+  purl: "purl on the right side",
+  yo: "yo: yarn over, an eyelet",
+  k2tog: "k2tog: knit 2 together, leans right",
+  ssk: "ssk: slip, slip, knit, leans left",
+  c4f: "C4F: cable 4, crossing to the left",
+  c4b: "C4B: cable 4, crossing to the right",
+  mb: "MB: make a bobble",
+  pb: "PB: place a bead",
+};
+
+/** The carrier legend plus a line for every other symbol in the chart. */
+export function keyFor(chart: readonly (readonly Visible[])[], legend: readonly LegendEntry[]): LegendEntry[] {
+  const used = new Set(chart.flat());
+  const named = new Set(legend.map((l) => l.visible));
+  const extra = (Object.keys(STITCH_KEY) as Visible[])
+    .filter((v) => used.has(v) && !named.has(v))
+    .map((v): LegendEntry => ({ bit: 0, visible: v, symbol: "", label: STITCH_KEY[v]! }));
+  return [...legend, ...extra];
 }
 
 export interface ChartSvgInput {
@@ -38,7 +82,8 @@ export interface ChartSvgInput {
   legend: readonly LegendEntry[];
 }
 
-export function chartSvg({ title, chart, rows, method, legend }: ChartSvgInput): string {
+export function chartSvg({ title, chart, rows, method, legend: carrierLegend }: ChartSvgInput): string {
+  const legend = keyFor(chart, carrierLegend);
   const h = chart.length;
   const w = chart[0]?.length ?? 0;
   const gridW = w * CELL;
@@ -56,7 +101,14 @@ export function chartSvg({ title, chart, rows, method, legend }: ChartSvgInput):
 
   chart.forEach((row, r) => {
     const y = y0 + (h - 1 - r) * CELL;
-    row.forEach((v, c) => parts.push(cell(v, x0 + c * CELL, y)));
+    for (let c = 0; c < row.length; c++) {
+      const v = row[c]!;
+      // A cable covers four cells; draw it as one symbol.
+      if ((v === "c4f" || v === "c4b") && row.slice(c, c + 4).every((x) => x === v)) {
+        parts.push(cable(v, x0 + c * CELL, y, 4));
+        c += 3;
+      } else parts.push(cell(v, x0 + c * CELL, y));
+    }
     const side = rows[r]?.side ?? "RS";
     const right = method === "round" || side === "RS";
     parts.push(text(right ? x0 + gridW + 6 : x0 - 6, y + CELL - 4, String(r + 1), right ? "start" : "end"));
