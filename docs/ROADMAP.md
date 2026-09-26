@@ -21,8 +21,8 @@ Phases follow packet section 36. This file covers Phases 0 to 3 in detail; later
 
 ## Phase 1c: the site
 
-- [ ] **T09 Encode tool UI** (packet 34, tool aesthetic block). Message, transform, carrier, construction selects, then "generate signal": shows every pipeline stage in order. Mobile first at 375px. Depends on T02, T05, T06, T07.
-- [ ] **T10 Manual grid decoder** (packet 28.1, 28.4). Click cells to mark knit/purl or colour A/B, pick width and mode, see bits, values and letters with the error report inline. Depends on T02, T05.
+- [x] **T09 Encode tool UI** (packet 34, tool aesthetic block). Message, transform, carrier, construction selects, then "generate signal": shows every pipeline stage in order. Mobile first at 375px. Depends on T02, T05, T06, T07. (Done 2026-09-26: `lab.html`, `src/ui/encode.ts`; six steps from normalize to a read-back check, SVG and project downloads, checked at 375px.)
+- [x] **T10 Manual grid decoder** (packet 28.1, 28.4). Click cells to mark knit/purl or colour A/B, pick width and mode, see bits, values and letters with the error report inline. Depends on T02, T05. (Done 2026-09-26: `src/ui/decode.ts`, `src/engine/steps.ts`; clickable or typed grid, project file import, errors marked on the cells they concern in any orientation.)
 - [ ] **T11 Source verification pass** (packet 39). For each of S01 to S23: confirm the URL resolves, record what the page actually supports, and assign an evidence grade. Output `src/content/sources.json` (id, title, url, checked date, supports, grade, notes). Anything needing a library, a purchase or the physical 1942 book goes in a "needs a human" list in the PR. No new claims from memory.
 - [ ] **T12 First history pages** (packet 04 to 07, 17, 35). Norway / red topplue, Grini, Belgium and espionage, a craft-resistance overview, and "Good story. Where's the evidence?". Each page uses the claim / date and place / grade / sources / what we know / what we do not know / related experiment template. Depends on T11 for the sources used.
 
