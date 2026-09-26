@@ -10,7 +10,7 @@ The name comes from Poe's *The Purloined Letter*, where the letter stays hidden 
 
 ## Status
 
-Early. The five-bit knit/purl alphabet works and is on the live page. See `docs/ROADMAP.md` for what comes next.
+Early. The five-bit knit/purl alphabet and the error control layer (framing, parity or Hamming codes, checksum, slip detection) work in the engine. See `docs/ROADMAP.md` for what comes next.
 
 ## Develop
 
