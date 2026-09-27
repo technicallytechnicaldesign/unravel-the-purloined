@@ -3,6 +3,7 @@
 // getter, so the two tools read settings the same way.
 
 import { h } from "./h";
+import { choiceHelp, transformGuide, carrierGuide } from "./choicehelp";
 import { type EncodingSettings, type GlyphSettings } from "../engine/project";
 import { type Alphabet } from "../engine/alphabet";
 import { type SymbolCode } from "../engine/errorcontrol";
@@ -28,7 +29,7 @@ export function check(name: string, label: string, checked: boolean): { el: HTML
   return { el: h("label.check.mono", {}, input, " ", label), input };
 }
 
-export function encodingControls(onChange: () => void) {
+export function encodingControls(onChange: () => void, withGuide = false) {
   const transform = select("transform", [
     ["fivebit", "Five-bit alphabet"],
     ["morse", "Morse code"],
@@ -50,6 +51,7 @@ export function encodingControls(onChange: () => void) {
 
   // An alphabet designed in the lab, offered as one more transform once there is one.
   let custom: Alphabet | undefined;
+  const help = withGuide ? choiceHelp("Transform", () => transformGuide(transform.value, custom)) : undefined;
   const setCustom = (a: Alphabet | undefined, choose = true) => {
     custom = a;
     transform.querySelector('option[value="glyph-custom"]')?.remove();
@@ -60,6 +62,7 @@ export function encodingControls(onChange: () => void) {
   };
   const sync = () => {
     checks.hidden = transform.value !== "fivebit";
+    help?.update();
     note.textContent = transform.value === "glyph-custom"
       ? "Your own symbols, from the alphabet designer below. Characters without a symbol are left out and listed."
       : transform.value === "glyph-pixel5"
@@ -96,10 +99,11 @@ export function encodingControls(onChange: () => void) {
     }
     sync();
   };
-  return { el: h("div.control-group", {}, field("TRANSFORM", transform), note, checks), get, set, glyphs, setCustom };
+  const transformField = field("TRANSFORM", transform);
+  return { el: h("div.control-group", {}, withGuide ? h("div.guide-field", {}, transformField, help!.el) : transformField, note, checks), get, set, glyphs, setCustom };
 }
 
-export function carrierControls(onChange: () => void, withColours: boolean) {
+export function carrierControls(onChange: () => void, withColours: boolean, withGuide = false) {
   const carrier = select("carrier", [
     ["purl-relief", "Purl relief (knit / purl)"],
     ["two-colour", "Two-colour (A / B)"],
@@ -110,11 +114,13 @@ export function carrierControls(onChange: () => void, withColours: boolean) {
     ["stripes", "Stripes (Morse in row counts)"],
   ]);
   const note = h("p.hint", {});
+  const help = withGuide ? choiceHelp("Carrier", () => carrierGuide(carrier.value)) : undefined;
   const a = h("input", { type: "text", name: "colour-a", value: "cream", maxlength: 20 });
   const b = h("input", { type: "text", name: "colour-b", value: "red", maxlength: 20 });
   const colours = h("div.pair", {}, field("COLOUR A", a), field("COLOUR B", b));
   const sync = () => {
     const id = carrier.value as CarrierId;
+    help?.update();
     colours.hidden = !withColours || (id !== "two-colour" && id !== "stripes");
     const u = id in UNITS ? UNITS[id as UnitId] : undefined;
     note.textContent = u
@@ -129,8 +135,9 @@ export function carrierControls(onChange: () => void, withColours: boolean) {
   };
   for (const el of [carrier, a, b]) el.addEventListener(el === carrier ? "change" : "input", () => (sync(), onChange()));
   sync();
+  const carrierField = field("CARRIER", carrier);
   return {
-    el: h("div.control-group", {}, field("CARRIER", carrier), note, colours),
+    el: h("div.control-group", {}, withGuide ? h("div.guide-field", {}, carrierField, help!.el) : carrierField, note, colours),
     get: () => ({ id: carrier.value as CarrierId, ...(carrier.value === "two-colour" || carrier.value === "stripes" ? { colours: { A: a.value || "A", B: b.value || "B" } } : {}) }),
     set: (id: CarrierId) => ((carrier.value = id), sync()),
   };

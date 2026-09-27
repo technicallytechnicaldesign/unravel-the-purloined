@@ -14,23 +14,6 @@ import { decipher, encipher } from "../engine/ciphers";
 import { primer } from "./tutorial";
 
 const STORE = "purloined-parcel";
-const PRIMER = "purloined-parcel-primer-seen";
-
-const primerSeen = (): boolean => {
-  try {
-    return localStorage.getItem(PRIMER) === "1";
-  } catch {
-    return false;
-  }
-};
-const markPrimerSeen = (): void => {
-  try {
-    localStorage.setItem(PRIMER, "1");
-  } catch {
-    /* not kept: the primer simply opens again next time */
-  }
-};
-
 interface Progress {
   solved: Record<string, boolean>;
 }
@@ -58,13 +41,13 @@ export function mountGame(root: HTMLElement): void {
 
   const showList = () => {
     const solved = LEVELS.filter((l) => progress.solved[l.n]).length;
-    // The primer opens by itself the first time, and folds away once read.
+    // The guide stays available above the case files and opens on request.
     const guide = h(
       "details.primer-box",
-      { open: !primerSeen() },
+      {},
       h("summary", {}, h("h2.mono.primer-title", {}, "HOW TO READ A PARCEL")),
       primer(),
-      h("div.actions", {}, h("button.btn.btn-go", { type: "button", onclick: () => (markPrimerSeen(), (guide.open = false), guide.querySelector("summary")!.focus()) }, "Got it: show me the cases")),
+      h("div.actions", {}, h("button.btn.btn-go", { type: "button", onclick: () => { guide.open = false; guide.querySelector("summary")!.focus(); } }, "Got it: show me the cases")),
     );
     root.replaceChildren(
       guide,

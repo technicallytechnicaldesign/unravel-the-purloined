@@ -14,6 +14,7 @@ export function mountWordmark(host: HTMLElement, text = TITLE): void {
   chart.style.setProperty("--cols", String(text.length));
   [...text].forEach((ch, i) => {
     const col = h(`span.wm-col${ch === " " ? ".wm-space" : ""}`);
+    col.style.setProperty("--delay", `${i * 85}ms`);
     for (const b of bits.slice(i * BITS_PER_SYMBOL, (i + 1) * BITS_PER_SYMBOL)) col.append(h(`i.wm-cell${b ? ".purl" : ""}`));
     col.append(h("b.wm-letter", {}, ch === " " ? "˽" : ch));
     chart.append(col);
