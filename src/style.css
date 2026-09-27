@@ -1294,3 +1294,274 @@ a {
 .photo-lens.on {
   display: block;
 }
+
+/* A small site map above one knitted title per inner page. */
+.masthead-small {
+  padding-top: 12px;
+}
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.site-nav a {
+  display: inline-block;
+  padding: 7px 0;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  color: var(--red);
+  border-color: var(--red);
+}
+.site-nav a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+.site-nav a[aria-current="page"] {
+  color: var(--red);
+  border-color: var(--red);
+  font-weight: 600;
+}
+.site-nav .nav-home {
+  font-weight: 600;
+  padding-right: 16px;
+  border-right: 1px solid var(--rule);
+}
+.page-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 18px;
+  color: var(--ink-2);
+}
+.masthead-small .has-wordmark.title {
+  margin: 18px 0;
+}
+
+/* Selected-option field notes stay beside their controls. */
+.guide-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px;
+  align-items: end;
+  gap: 10px;
+  max-width: 38rem;
+  margin-bottom: 10px;
+}
+.guide-field > .field {
+  min-width: 0;
+  max-width: none;
+  margin-bottom: 0;
+}
+.guide-help {
+  position: relative;
+  margin-bottom: 1px;
+}
+.guide-trigger {
+  width: 38px;
+  height: 43px;
+  color: var(--red);
+  background: var(--paper);
+  border: 2px solid var(--red);
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1rem;
+  cursor: help;
+}
+.guide-trigger:hover,
+.guide-trigger[aria-expanded="true"] {
+  color: var(--on-red);
+  background: var(--red);
+}
+.guide-trigger:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+.guide-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(26rem, calc(100vw - 40px));
+  padding: 14px 16px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--red);
+  box-shadow: 5px 5px 0 var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.guide-panel p {
+  margin: 0 0 8px;
+}
+.guide-panel .guide-title {
+  color: var(--red);
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+.guide-cells,
+.guide-morse,
+.guide-pair {
+  display: flex;
+  align-items: end;
+  gap: 5px;
+  margin-top: 12px;
+}
+.guide-cell,
+.guide-morse span,
+.guide-swatch {
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  color: var(--ink);
+  background: var(--knit);
+  border: 1.5px solid var(--ink);
+  font: 600 0.9rem var(--mono);
+}
+.guide-cell.on::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.guide-cells.letters .guide-cell.on::after {
+  display: none;
+}
+.guide-morse span {
+  font-size: 1.5rem;
+}
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--guide-cols), 18px);
+  gap: 2px;
+  margin-top: 12px;
+}
+.guide-grid-cell {
+  width: 18px;
+  height: 18px;
+  background: var(--knit);
+  border: 1px solid var(--ink);
+}
+.guide-grid-cell.on {
+  background: var(--ink);
+}
+.guide-pair {
+  gap: 18px;
+}
+.guide-pair > div {
+  display: grid;
+  grid-template-columns: auto 34px;
+  align-items: end;
+  gap: 5px;
+}
+.guide-state {
+  color: var(--red);
+}
+.guide-swatch.two-colour.one,
+.guide-swatch.stripes.one {
+  color: var(--on-red);
+  background: var(--red);
+  border-color: var(--red);
+}
+.guide-swatch.purl-relief.zero {
+  font-size: 1.3rem;
+}
+.guide-swatch.purl-relief.one {
+  font-size: 1.2rem;
+}
+
+/* The entrance reads the title before the site opens. */
+.intro {
+  display: none;
+}
+.intro-pending .intro {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--ink);
+  background: var(--paper);
+  animation: intro-failsafe 0s 6s forwards;
+}
+.intro-inner {
+  width: min(100%, 820px);
+}
+.intro-kicker,
+.intro-caption {
+  color: var(--ink-2);
+}
+.intro-kicker {
+  margin-bottom: 28px;
+}
+.intro-wordmark .wordmark {
+  max-width: none;
+}
+.intro-wordmark .wm-letter {
+  opacity: 0;
+}
+.intro-running .intro-wordmark .wm-letter {
+  animation: intro-letter 1ms step-end forwards;
+  animation-delay: calc(280ms + var(--delay));
+}
+.intro-caption {
+  margin: 30px 0 8px;
+}
+.intro-track {
+  height: 10px;
+  border: 1.5px solid var(--ink);
+}
+.intro-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--red);
+}
+.intro-running .intro-track span {
+  animation: intro-progress 2.35s linear forwards;
+}
+.intro-skip {
+  margin-top: 16px;
+  padding: 8px 0;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.intro-skip:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 4px;
+}
+.intro-leaving .intro {
+  opacity: 0;
+  transition: opacity 320ms ease;
+  pointer-events: none;
+}
+@keyframes intro-letter { to { opacity: 1; } }
+@keyframes intro-progress { to { width: 100%; } }
+@keyframes intro-failsafe { to { visibility: hidden; pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .intro-pending .intro { display: none; }
+}
+@media (max-width: 600px) {
+  .site-nav { gap: 0 14px; }
+  .site-nav a { padding: 7px 0; }
+  .site-nav .nav-home { padding-right: 12px; }
+  .page-kicker { margin-top: 14px; }
+  .guide-field { position: relative; }
+  .guide-help { position: static; }
+  .guide-panel { left: 0; right: auto; width: 100%; }
+  .intro-wordmark .wm-letter { font-size: 0.5rem; }
+}

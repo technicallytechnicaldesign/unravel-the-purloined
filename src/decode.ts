@@ -1,8 +1,10 @@
 import "./style.css";
 import { mountWordmarks } from "./ui/wordmark";
+import { markSessionSeen } from "./ui/intro";
 import { mountDecoder } from "./ui/decode";
 import { takeProject, usableDraft } from "./ui/handover";
 
+markSessionSeen();
 mountWordmarks();
 const decoder = mountDecoder(document.querySelector<HTMLElement>("#decoder")!);
 // Offer the alphabet being designed in the lab, without choosing it.
