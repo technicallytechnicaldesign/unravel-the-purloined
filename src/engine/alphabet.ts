@@ -115,7 +115,9 @@ export function checkAlphabet(a: Alphabet): AlphabetCheck {
   if (!Number.isFinite(minDistance)) minDistance = 0;
   if (!Number.isFinite(turnDistance)) turnDistance = 0;
   const slip =
-    minDistance <= 1
+    good.length < 2
+      ? "Nothing to compare yet: draw a symbol."
+      : minDistance <= 1
       ? "One slipped stitch can turn one symbol into another unnoticed."
       : minDistance === 2
         ? "One slipped stitch is always noticed, but it may be too close to call which symbol was meant."

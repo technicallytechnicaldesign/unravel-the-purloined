@@ -899,3 +899,63 @@ a {
     font-size: 16pt;
   }
 }
+
+/* Alphabet designer: symbol tiles, the drawing grid, the check report */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 6px;
+  margin: 16px 0;
+}
+.tile {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  background: var(--knit);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  cursor: pointer;
+}
+.tile.empty {
+  border-style: dashed;
+}
+.tile.flagged {
+  box-shadow: inset 0 0 0 2px var(--red);
+}
+.tile[aria-pressed="true"] {
+  outline: 3px solid var(--ink);
+  outline-offset: -1px;
+}
+.tile:focus-visible {
+  outline: 3px solid var(--red);
+}
+.mini {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 5px);
+  gap: 1px;
+}
+.mini i {
+  width: 5px;
+  height: 5px;
+  background: var(--paper-2);
+}
+.mini i.on {
+  background: var(--ink);
+}
+.findings {
+  padding-left: 0;
+  list-style: none;
+}
+.findings li {
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--rule);
+}
+.findings li.problem .mono {
+  color: var(--red);
+  font-weight: 600;
+}
+.findings li.note .mono {
+  color: var(--ink-2);
+}
