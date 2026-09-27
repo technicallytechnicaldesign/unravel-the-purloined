@@ -72,7 +72,7 @@ Each logical cell becomes a block of real stitches (units), or the message takes
 - [x] **P4.5 Charts and exports.** Chart symbols and key for every special stitch (cable drawn across 4 cells), spreadsheet and CSV codes, abbreviations in the knit step, print sheet and spreadsheet. (Done 2026-09-26.)
 - [x] **P4.6 Lab UI.** New carriers and motif alphabets in the encoder, one-cell-per-block marking and direct letter and stripe reading in the decoder, unit carriers in parcel key codes. (Done 2026-09-26.)
 - [ ] **P4.7 Knit a swatch of each.** A real swatch of every carrier, photographed, to check block sizes, cable pull-in, lace leans and whether the geometric symbols can be told apart in yarn. Needs the maker.
-- [ ] **P4.8 Geometric alphabet that repairs a slip.** A 4 × 4 pack beside the 3 × 3 one, with every pair of symbols at least 3 stitches apart, so one slipped stitch is read correctly and reported, not just reported. Done when every symbol with any single stitch flipped reads back as itself from all 8 turns, and the lab offers both packs. (Asked for by the maker 2026-09-26.)
+- [x] **P4.8 Geometric alphabet that repairs a slip.** A 4 × 4 pack beside the 3 × 3 one, with every pair of symbols at least 3 stitches apart, so one slipped stitch is read correctly and reported, not just reported. Done when every symbol with any single stitch flipped reads back as itself from all 8 turns, and the lab offers both packs. (Asked for by the maker 2026-09-26.) (Done 2026-09-27: `geometric4` in `src/engine/glyphs.ts`; distance 3 holds after any turn or inversion too, so a slip never reads as another symbol seen the other way up.)
 
 ## Later phases (headings only)
 
