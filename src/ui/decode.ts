@@ -2,7 +2,8 @@
 // step from cells to text, with errors pointed at the cells they are about.
 
 import { h } from "./h";
-import { carrierControls, cipherControls, encodingControls, field } from "./controls";
+import { carrierControls, cipherControls, encodingControls, field, secureControls } from "./controls";
+import { decrypt, fromLetters } from "../engine/secure";
 import { borderOf, unframe } from "../engine/grid";
 import { readGlyphs } from "../engine/glyphs";
 import { readStripes } from "../engine/stripes";
@@ -49,27 +50,53 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   let key: ParcelKey | undefined;
   const keyStatus = h("p.hint", { role: "status" }, "No key open. Without one, the decoder reads ordinary grids from the lab.");
 
+  // Secure mode: the decoded letters go back to bytes and through AES-GCM. Decrypting is async
+  // and slow on purpose, so it waits for clicks and typing to pause; the newest request wins.
+  let ticket = 0;
+  let pending: ReturnType<typeof setTimeout> | undefined;
+  const decryptStep = (letters: string): HTMLElement => {
+    const result = h("div", { role: "status" }, h("p.hint", {}, "Opening..."));
+    const el = h("ol.steps", {}, h("li.step", {}, h("h3.step-title", {}, h("span.step-n.mono", {}, "06"), " Decrypt (AES-GCM)"), result));
+    const { bytes, issues } = fromLetters(letters);
+    const mine = ++ticket;
+    clearTimeout(pending);
+    pending = setTimeout(async () => {
+      const r = await decrypt(bytes, sec.passphrase());
+      if (mine !== ticket) return;
+      result.replaceChildren(
+        ...issues.map((i) => h("p.error.mono", {}, i.message)),
+        r.ok ? h("p.mono.big", {}, r.text || "(empty)") : h("p.error", {}, r.message),
+        h("p.hint", {}, r.ok ? "Sealed and opened intact: not one letter changed since it was encrypted." : "Nothing is shown until every letter is right and the passphrase matches."),
+      );
+    }, 400);
+    return el;
+  };
+
   const decode = () => {
+    cip.el.hidden = sec.on();
     if (key) {
       const s = decodeWithKey(grid.get(), key);
       out.replaceChildren(
         stepsView(s, key.encoding, grid),
+        sec.on() ? decryptStep(s.text) : "",
         s.deciphered !== undefined
           ? h("ol.steps", {}, h("li.step", {}, h("h3.step-title", {}, h("span.step-n.mono", {}, "06"), " Decipher"), h("p.mono.big", {}, s.deciphered || "(nothing yet)"), h("p.hint", {}, "With the cipher and key from the parcel key.")))
           : "",
       );
       return;
     }
-    const cipher = cip.get();
+    const cipher = sec.on() ? undefined : cip.get();
     const glyphs = enc.glyphs();
     if (glyphs || car.get().id === "stripes") {
       grid.unmark("flag");
-      out.replaceChildren(simpleSteps(glyphs ? readGlyphsFrom(glyphs.pack) : readStripesFrom(), cipher));
+      const r = glyphs ? readGlyphsFrom(glyphs.pack) : readStripesFrom();
+      out.replaceChildren(simpleSteps(r, cipher), sec.on() ? decryptStep(r.text) : "");
       return;
     }
     const s = decodeCells(grid.get(), depth(), enc.get());
     out.replaceChildren(
       stepsView(s, enc.get(), grid),
+      sec.on() ? decryptStep(s.text) : "",
       cipher
         ? h(
             "ol.steps",
@@ -112,6 +139,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
 
   const enc = encodingControls(decode);
   const cip = cipherControls(decode);
+  const sec = secureControls(decode, "The letters are read first, with every error check; only then does the passphrase open them.");
   const colourGrid = (id: string) => id === "two-colour" || id === "stripes";
   const car = carrierControls(() => (grid.setColour(colourGrid(car.get().id)), decode()), false);
   width.addEventListener("change", resize);
@@ -160,13 +188,14 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
   const load = (p: Project) => {
     enc.set(p.settings.encoding, p.settings.glyphs);
     cip.set(p.settings.cipher);
+    sec.set(!!p.settings.secure);
     car.set(p.settings.carrier.id);
     grid.setColour(colourGrid(p.settings.carrier.id));
     border.value = String(borderOf(p.settings.layout));
     setCells(p.output.logicalGrid.map((r) => [...r]));
     if (p.output.key) useKey(p.output.key);
     else if (key) forgetKey();
-    message.textContent = `Loaded "${p.settings.title}". Click cells to add mistakes and watch the report.`;
+    message.textContent = `Loaded "${p.settings.title}". ${p.settings.secure ? "It is sealed: type the passphrase under secure mode. " : ""}Click cells to add mistakes and watch the report.`;
     root.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -188,6 +217,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
       car.el,
       enc.el,
       cip.el,
+      sec.el,
     ),
     h("div.actions", {}, h("button.btn", { type: "button", onclick: () => setCells(grid.get().map((r) => r.map(() => 0 as Bit))) }, "Clear")),
     h(
