@@ -14,99 +14,29 @@
     />
   </head>
   <body>
-    <header class="masthead">
+    <header class="masthead masthead-home">
       <div class="labels">
         <span class="mono">ARCHIVE 00.1</span>
-        <span class="mono">WORKING DRAFT / 2026</span>
         <span class="stamp">IN THE MAKING</span>
       </div>
-      <h1 class="title">Unravel<br />the Purloined</h1>
+      <h1 class="title" data-wordmark>Unravel the Purloined</h1>
       <p class="lede">
-        A museum of craft resistance, and a lab for hiding messages in thread. Named for Poe's letter, which stayed hidden
-        by sitting in plain sight.
+        Textiles that carry messages: a museum of craft as testimony and resistance, a lab that turns words into
+        something you can knit, and a small game of finding what is hidden in plain sight.
       </p>
+      <p class="hint mono">The title above is knitted: one column of five stitches per letter, a dot for each purl.</p>
     </header>
 
     <main>
-      <section class="panel" aria-labelledby="chart-h">
-        <div class="panel-head">
-          <h2 id="chart-h" class="section-label">01 / The title, knitted</h2>
-          <span class="badge badge-x">MODERN RECONSTRUCTION</span>
-        </div>
-        <p class="note">
-          Each letter becomes five stitches, one column per letter, read top to bottom. An empty cell is a knit stitch
-          (0), a dot is a purl (1). The letter L is <span class="mono">01011</span>, value 11.
-        </p>
-        <label class="field">
-          <span class="mono field-label">MESSAGE</span>
-          <input id="msg" type="text" maxlength="80" value="Unravel the Purloined" autocomplete="off" spellcheck="false" />
-        </label>
-        <div id="chart" class="chart" role="img" aria-label="Knit and purl chart of the message"></div>
-        <p id="dropped" class="dropped mono" hidden></p>
-        <div class="legend mono">
-          <span><i class="cell knit"></i> knit = 0</span>
-          <span><i class="cell purl"></i> purl = 1</span>
-          <span id="count"></span>
-        </div>
-        <p class="warning mono">ENCODED IS NOT ENCRYPTED. Anyone with the table can read this scarf.</p>
-      </section>
-
-      <section class="panel" aria-labelledby="evidence-h">
-        <div class="panel-head">
-          <h2 id="evidence-h" class="section-label">02 / Every story carries its evidence</h2>
-        </div>
-        <p class="note">
-          Secret-message stories drift from "possible" to "everyone knows" quickly. Each history page will show how
-          strong its evidence is.
-        </p>
-        <ul class="evidence">
-          <li>
-            <span class="badge badge-b">STRONG RECONSTRUCTION</span>
-            <b>Norway, 1942.</b> Red knitted caps became a resistance symbol and police banned them from 26 February 1942.
-            <span class="src mono">[S01]</span>
-          </li>
-          <li>
-            <span class="badge badge-c">NEEDS A PAGE-LEVEL SOURCE</span>
-            <b>Belgium, WWI.</b> Railway watching by intelligence networks is well supported; the knitter dropping stitches
-            for passing trains is not yet traced to a source. <span class="src mono">[S03]</span>
-          </li>
-          <li>
-            <span class="badge badge-d">DISPUTED</span>
-            <b>Underground Railroad quilt codes.</b> A story that matters culturally, without contemporary documentation of a
-            standard code. <span class="src mono">[S14]</span>
-          </li>
-          <li>
-            <span class="badge badge-x">MODERN RECONSTRUCTION</span>
-            <b>The chart above.</b> A system built here from a historical principle, not a historical artefact.
-          </li>
-        </ul>
-        <p class="actions"><a class="btn" href="./archive.html">Visit the archive &rarr;</a></p>
-      </section>
-
-      <section class="panel" aria-labelledby="build-h">
-        <div class="panel-head">
-          <h2 id="build-h" class="section-label">03 / What is being built</h2>
-        </div>
-        <ol class="pipeline mono">
-          <li>Message</li>
-          <li>Normalize</li>
-          <li>Cipher (optional)</li>
-          <li>Encode</li>
-          <li>Error checks</li>
-          <li>Logical grid</li>
-          <li>Carrier</li>
-          <li>Knitting instructions</li>
-        </ol>
-        <p class="note">
-          Data and textile stay separate until late in the pipeline, so the same message can become knit and purl,
-          colourwork, cables or lace without touching the cipher.
-        </p>
-        <p class="actions"><a class="btn btn-go" href="./lab.html">Open the lab &rarr;</a> <a class="btn" href="./game.html">Play The Purloined Parcel &rarr;</a></p>
-      </section>
+      <nav class="doors" aria-label="Where to go">
+        <a class="door" href="./lab.html"><span class="mono">01</span><b>Open the lab</b><span>Turn a message into a knitting pattern, or design your own alphabet.</span></a>
+        <a class="door" href="./archive.html"><span class="mono">02</span><b>Visit the archive</b><span>Stories of cloth that spoke, each with its evidence.</span></a>
+        <a class="door" href="./game.html"><span class="mono">03</span><b>Play The Purloined Parcel</b><span>Read the messages hidden in knitted parcels.</span></a>
+      </nav>
     </main>
 
     <footer class="foot mono">
-      <span>UNRAVEL THE PURLOINED / v0.1</span>
+      <span>UNRAVEL THE PURLOINED</span>
       <span>Decryption may require frogging.</span>
     </footer>
 

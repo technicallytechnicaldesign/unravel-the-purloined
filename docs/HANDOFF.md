@@ -2,7 +2,7 @@
 
 Where things stand, what is loose, and what to pick up next. Read `CLAUDE.md` first, then this. Update this file at the end of any session that changes the picture; keep it short.
 
-Last updated 2026-09-27 (Phase 8 research), project version 0.5.
+Last updated 2026-09-27 (playtest round 1), project version 0.5.
 
 ## Where things stand
 
@@ -15,15 +15,16 @@ Last updated 2026-09-27 (Phase 8 research), project version 0.5.
 | Secure mode | PBKDF2 + AES-GCM via Web Crypto; bytes as letters A to P through the normal alphabets and error checks. | `secure.ts` |
 | Alphabets | Design your own: checks (duplicates, one-stitch pairs, turned look-alikes, blanks), suggestions, JSON files, printable legend; stored inside project files. | `alphabet.ts` |
 | Photo (spike) | Four-corner homography, cell sampling, two-group split with doubtful cells, corner settling. Not in the UI yet. | `photo.ts`, `scripts/photo-experiment.ts` |
-| Lab | Encoder in seven stages, manual grid decoder, secure mode in both, alphabet designer. | `src/ui/encode.ts`, `decode.ts`, `designer.ts` |
-| Game | The Purloined Parcel, seven levels, drawn fabric. | `src/ui/game.ts`, `cases.ts`, `fabric.ts` |
+| Lab | `lab.html`: two paths (a message first, or a piece to knit first) with stages that fold to summaries; alphabet designer folded below. `decode.html`: the decoder, fed from the lab by `handover.ts`. | `src/ui/encode.ts`, `decode.ts`, `designer.ts`, `handover.ts` |
+| Site frame | Knitted wordmark title on every page; the home page is only the three ways in. | `wordmark.ts`, `index.html` |
+| Game | The Purloined Parcel, seven levels, drawn fabric, a primer on knit, purl and the marker row. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
 Tests: `npm test` (about 285). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
 
 ## Waiting on the maker (do not decide these)
 
-- **Playtest** of the game (G3, G4) and of the Phase 4 carriers. The maker is testing now.
+- **Playtest.** First notes arrived 2026-09-27 and are done (Phase P1). The game plays well; G3 and G4 can be ticked once the maker confirms every level was tried.
 - **Museum writing.** The maker wants to write exhibits personally. Leave `content/exhibits/` alone unless asked.
 - **P4.7 swatches.** The maker has agreed to knit these; it will take a while. Real knitting to check block sizes, cable pull-in, lace leans and whether geometric symbols can be told apart in yarn.
 - **Motif sizes stay as they are.** Motif hiding and the unit carriers multiply the size of the piece; they are meant for big projects (a blanket, a jumper, a shirt), and the lab says so. Do not shrink them.
@@ -58,5 +59,5 @@ Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteri
 
 ## Where to start next time
 
-1. Read the maker's playtest notes (they may arrive as issues or in the session prompt) and fix what they found first.
-2. Then 8.4 (read a photo in the lab), or Phase 9 once the maker has decided on hosting.
+1. Any new playtest notes first.
+2. Then 8.4 (read a photo in the lab, with the corner-tap and knitted-frame toggle of 8.6 in mind), or Phase 9 once the maker has decided on hosting.
