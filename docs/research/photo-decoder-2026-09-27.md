@@ -110,6 +110,12 @@ An earlier run with five seeds, stopped before it finished, also tried parity in
 - A "light" reading compares lightness only, for lace held against a window.
 - End to end in Chromium: a drawn two-colour piece with a 2-stitch frame was tilted in 3D, saved as JPEG at quality 80 and opened on the decoder page. The frame was found with no taps, all 270 cells were read with none marked doubtful, and the message decoded. Drawn fabric again, so real photos (8.3) are still the test that counts.
 
+### Knit/purl frames
+
+- The first frame finder took the frame to be the darker of two yarns in the middle of the photo, which fails on a single-yarn knit/purl piece. It now splits the whole photo's colours into four groups using each channel's share of the brightness (shade scales all channels together, so one yarn stays one group across a shadow). It bridges the small dark gaps between stitches, and fits a straight line to each side of the biggest patch clear of the photo's edges. A plain piece on a contrasting table therefore counts as its own frame.
+- With a frame, the knit/purl readings settle the corners on the frame (every border cell should be frame yarn, the ring inside should not) and read only the cells inside it.
+- End to end in Chromium, a drawn knit/purl piece in a 2-stitch red frame, tilted and saved as JPEG: the frame was found with no taps and the "shape" reading decoded the message with Hamming, leaving 9 cells marked doubtful. The "edges" reading did not decode on this photo. Both two-colour and knit/purl framed photos now decode with no taps.
+
 ## Proposed tasks
 
 See `docs/ROADMAP.md`, Phase 8.

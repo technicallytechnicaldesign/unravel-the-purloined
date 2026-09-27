@@ -11,6 +11,7 @@ import { borderOf, dataCellOrder, transform, type Orientation, UPRIGHT } from ".
 import { blockLength } from "./errorcontrol";
 import { rng } from "./fabric";
 import { MOTIFS, reduce, type MotifId } from "./motifs";
+import { reduceUnits, UNITS, type UnitId } from "./units";
 
 export interface Level {
   n: number;
@@ -27,7 +28,24 @@ export const LEVELS: Level[] = [
   { n: 5, name: "A slipped stitch", teaches: "The knitter made a mistake. Let the checks find it." },
   { n: 6, name: "The detective's key", teaches: "A Vigenère cipher on top of the stitches. The key is a name from Poe." },
   { n: 7, name: "Hidden in plain sight", teaches: "A pattern of little windows. The key card says how to read them." },
+  { n: 8, name: "Crossed cables", teaches: "Each cable crosses one way or the other. The lean is the bit." },
+  { n: 9, name: "Holes in the lace", teaches: "Eyelets and decreases in pairs: which way does the pair lean?" },
+  { n: 10, name: "A trail of bobbles", teaches: "A bobble or none, block by block." },
 ];
+
+/** Levels whose stitches come in blocks: one cell of the copy per block. */
+const BLOCK_LEVELS: Record<number, UnitId> = { 8: "cable", 9: "lace", 10: "bobble" };
+
+/** What each block looks like, for the words-only description: never what it means. */
+const BLOCK_WORDS: Record<UnitId, [string, string]> = {
+  cable: ["cable crossing to the left", "cable crossing to the right"],
+  lace: ["decrease leaning left, hole on its right", "hole, then a decrease leaning right"],
+  bobble: ["plain", "bobble"],
+  bead: ["plain", "bead"],
+};
+
+// Block levels knit every cell as several stitches, so their messages are short.
+const SHORT = ["BLUE DOOR", "TEA AT FOUR", "SIX SHARP", "UNDER THE MAT", "BY THE GATE", "AT NOON", "ASK DUPIN", "MORE WOOL"];
 
 // Short, gentle messages in the spirit of Poe's letter: things hidden in plain sight.
 const MESSAGES = [
@@ -60,6 +78,8 @@ export interface Case {
   /** Level 5: the stitch the knitter got wrong, in `shown` coordinates. */
   mistake?: [row: number, col: number];
   hints: string[];
+  /** Block levels (cables, lace, bobbles): the copy has one cell per block of stitches. */
+  blocks?: { unit: UnitId; rows: number; cols: number };
   /** Motif cases: the image is made of tiles, and the copy has one cell per tile. */
   tiles?: { size: number; rows: number; cols: number };
   /** How many hints before the decoder machine switches on. */
@@ -87,6 +107,12 @@ function settingsFor(level: number, message: string): ProjectSettings {
       return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" }, cipher: { kind: "vigenere", key: "DUPIN" } };
     case 7:
       return { ...base, encoding: FIVE_PLAIN, layout: { width: 8, border: false }, carrier: { id: "purl-relief" }, hide: { mode: "motif", motif: "window" } };
+    case 8:
+      return { ...base, encoding: FIVE_PLAIN, layout: { width: 6, border: false }, carrier: { id: "cable" } };
+    case 9:
+      return { ...base, encoding: FIVE_PLAIN, layout: { width: 8, border: false }, carrier: { id: "lace" } };
+    case 10:
+      return { ...base, encoding: FIVE_PLAIN, layout: { width: 8, border: false }, carrier: { id: "bobble" } };
     default:
       return { ...base, encoding: FIVE_PLAIN, carrier: { id: "purl-relief" } };
   }
@@ -110,6 +136,24 @@ function briefingFor(level: number): string[] {
         "This parcel held the end of a scarf covered in little squares, and nothing else. Tucked into the lining was a key card.",
         "KEY CARD / WINDOWS. An open window (a knit stitch in the middle) is 0, a filled square is 1. Read the squares like a chart from the lab: marker row at the bottom, right to left, bottom up, five to a letter.",
         "Steganography hides that a message is there at all. Without the card, this is just a pattern.",
+      ];
+    case 8:
+      return [
+        "This parcel held a thick cabled cuff. Every block of six stitches has one cable, crossing once.",
+        "A crossing that leans left (the front strand climbs to the left) is 0; one that leans right is 1.",
+        "The blocks make the usual grid: the bottom row of blocks is a marker (1 1 0 1 from the left), the top row is all 1. Between them, read right to left from the bottom, five blocks to a letter.",
+      ];
+    case 9:
+      return [
+        "A lace sleeve, full of little holes. Each block pairs an eyelet with a decrease.",
+        "A decrease leaning left, with the hole on its right, is 0; the hole first, then a decrease leaning right, is 1.",
+        "The blocks make the usual grid: the bottom row of blocks is a marker (1 1 0 1 from the left), the top row is all 1. Between them, read right to left from the bottom, five blocks to a letter.",
+      ];
+    case 10:
+      return [
+        "A cuff with a scattering of bobbles, like a trail of berries.",
+        "Each block of three stitches either has a bobble (1) or does not (0).",
+        "The blocks make the usual grid: the bottom row of blocks is a marker (1 1 0 1 from the left), the top row is all 1. Between them, read right to left from the bottom, five blocks to a letter.",
       ];
     default:
       return [
@@ -142,6 +186,17 @@ function hintsFor(level: number): string[] {
         table,
         "Your copy has one cell per square: switch it on for a filled square. The decoder machine is on.",
       ];
+    case 8:
+    case 9:
+    case 10: {
+      const what = level === 8 ? "each cable: leaning right is 1" : level === 9 ? "each pair: leaning right is 1" : "each block with a bobble as 1";
+      return [
+        "Mark one cell per block, not per stitch. Start with the bottom row of blocks: it is the marker, 1 1 0 1 then 0s from the left.",
+        `Then mark ${what}, row by row. The top row of blocks should come out all 1.`,
+        table,
+        "Put your reading into the decoder machine.",
+      ];
+    }
     default:
       return ["Find the marker row 1 1 0 1 at one edge. That edge is the bottom; the row of all purl is the top.", table, "Put your reading into the decoder machine."];
   }
@@ -165,6 +220,23 @@ function describeTiles(shown: Visible[][], motif: MotifId): string {
   return [`The image shows little ${size} by ${size} squares, ${tiles.length} rows of ${tiles[0]?.length ?? 0}. Each square is either open, with a knit stitch in the middle, or filled.`, ...lines.reverse()].join("\n");
 }
 
+/** Block by block, for cable, lace and bobble cases: what each block looks like, never what it means. */
+function describeBlocks(shown: Visible[][], unit: UnitId): string {
+  const u = UNITS[unit];
+  const grid = reduceUnits(shown, u, 0).cells;
+  const lines = grid.map((row, r) => {
+    const runs: string[] = [];
+    for (let i = 0; i < row.length; ) {
+      let j = i;
+      while (j + 1 < row.length && row[j + 1] === row[i]) j++;
+      runs.push(`${j - i + 1} × ${BLOCK_WORDS[unit][row[i]!]}`);
+      i = j + 1;
+    }
+    return `Row ${r + 1} of blocks (counting from the bottom), left to right: ${runs.join("; ")}.`;
+  });
+  return [`The image shows blocks of ${u.width} stitches by ${u.height} rows, ${grid.length} rows of ${grid[0]?.length ?? 0} blocks.`, ...lines.reverse()].join("\n");
+}
+
 function describe(shown: Visible[][]): string {
   const name: Record<Visible, string> = { knit: "knit", purl: "purl", A: "cream", B: "red", c4f: "left cable", c4b: "right cable", yo: "eyelet", k2tog: "right lean", ssk: "left lean", mb: "bobble", pb: "bead" };
   const w = shown[0]?.length ?? 0;
@@ -186,7 +258,8 @@ function describe(shown: Visible[][]): string {
 export function makeCase(levelN: number, seed: number): Case {
   const level = LEVELS.find((l) => l.n === levelN) ?? LEVELS[0]!;
   const r = rng(seed * 31 + level.n);
-  const message = pick(r, MESSAGES);
+  const unit = BLOCK_LEVELS[level.n];
+  const message = pick(r, unit ? SHORT : MESSAGES);
   const settings = settingsFor(level.n, message);
   const project = createProject(settings, `case-${level.n}-${seed}`);
 
@@ -199,12 +272,12 @@ export function makeCase(levelN: number, seed: number): Case {
       { rotated180: true, mirrored: false, inverted: true },
     ]);
   }
-  // Turn the visible chart the same way the logical grid would turn.
+  // Turn the visible chart the same way the logical grid would turn. Block levels are shown as knitted.
   const states = project.output.chart;
   const bits = states.map((row) => row.map((v) => (v === "purl" || v === "B" ? 1 : 0) as 0 | 1));
   const turned = transform(bits, orientation);
   const [zero, one] = settings.carrier.id === "two-colour" ? (["A", "B"] as const) : (["knit", "purl"] as const);
-  const shown: Visible[][] = turned.map((row) => row.map((b) => (b ? one : zero)));
+  const shown: Visible[][] = unit ? states.map((row) => [...row]) : turned.map((row) => row.map((b) => (b ? one : zero)));
 
   let mistake: Case["mistake"];
   if (level.n === 5) {
@@ -232,7 +305,8 @@ export function makeCase(levelN: number, seed: number): Case {
     hints: hintsFor(level.n),
     machineAfter: level.n === 6 ? 3 : hintsFor(level.n).length,
     ...(level.n === 6 ? { decipherAfter: 4 } : {}),
-    description: project.output.key?.hide.mode === "motif" ? describeTiles(shown, project.output.key.hide.motif) : describe(shown),
+    description: unit ? describeBlocks(shown, unit) : project.output.key?.hide.mode === "motif" ? describeTiles(shown, project.output.key.hide.motif) : describe(shown),
+    ...(unit ? { blocks: { unit, rows: project.output.logicalGrid.length, cols: project.output.logicalGrid[0]!.length } } : {}),
     ...(project.output.key?.hide.mode === "motif" ? { tiles: { size: MOTIFS[project.output.key.hide.motif].size, rows: project.output.key.height, cols: project.output.key.width } } : {}),
   };
 }
