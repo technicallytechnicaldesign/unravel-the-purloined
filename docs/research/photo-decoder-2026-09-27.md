@@ -5,7 +5,7 @@ Phase 8 starts with research, as packet section 28.5 and the Phase 8 roadmap ask
 ## In short
 
 - **Colour grids are within reach.** A person taps the four corners of the chart and types the stitch and row counts. The lab then samples each cell and splits the colours into two groups. On drawn two-colour fabric this read every cell correctly under every condition tried, including all of them at once.
-- **Knit and purl are harder, but not hopeless.** A single "which way do the edges run" number fails (errors near 50% on clean drawings, a coin toss). Two better measures work on drawings: a histogram of edge directions (1 to 5% cell errors) and the whole cell's light pattern (0% when the corners are right, but it collapses when the taps are off by a third of a stitch).
+- **Knit and purl are harder, but not hopeless.** A single "which way do the edges run" number decoded only 15 of 54 drawn messages. Two better measures: the whole cell's lightness pattern is exact when the corners are tapped within about a tenth of a stitch but collapses beyond a third; a histogram of edge directions copes with sloppy taps but leaves 1 to 5% of cells wrong.
 - **Everything so far is drawn fabric, not yarn.** The drawings come from the game's renderer. Real yarn has fuzz, halo, stranding showing through and colours closer in value. The next step needs photos of real swatches with known charts (P4.7).
 - **Keep a person in the loop.** The reader fills the decoder's grid and marks the cells it doubts. The person checks those, then the ordinary error checks do the rest. Nothing is uploaded.
 
@@ -56,15 +56,29 @@ Each condition changes one thing from a middling baseline (tilt 0.15, light 0.3,
 
 Run it with `npm i --no-save playwright && npx vite-node scripts/photo-experiment.ts`.
 
-RESULTS_TABLE
+Summary over the 18 conditions (54 trials per row). Full table: `photo-sweep-2026-09-27.md`.
 
-An earlier run with five seeds per condition also tried parity instead of Hamming for the colour readings. It gave the same result: every cell right, and every message decoded, in every condition.
+| Carrier | Reading | Messages decoded | Mean cell errors | Worst condition |
+|---|---|---|---|---|
+| Two-colour | colour (Lab) | 54 of 54 | 0.0% | none |
+| Two-colour | hue (colour without lightness) | 54 of 54 | 0.0% | none |
+| Two-colour | hue, corners settled | 54 of 54 | 0.0% | none |
+| Purl relief | shape (lightness pattern) | 45 of 54 | 5.6% | taps 12 px off: 46.5% |
+| Purl relief | shape, corners settled | 47 of 54 | 5.7% | taps 12 px off: 46.5% |
+| Purl relief | edge histogram | 37 of 54 | 2.0% | taps exact: 5.4% |
+| Purl relief | edge histogram, corners settled | 35 of 54 | 1.2% | no light fall-off: 2.2% |
+| Purl relief | edges across (one number) | 15 of 54 | 8.5% | no blur: 28.2% |
+
+An earlier run with five seeds, stopped before it finished, also tried parity instead of Hamming for the colour readings. It covered 62 of the 72 condition rows and gave the same result: every cell right and every message decoded.
 
 ### What the numbers say
 
-- Colour: RESULT_COLOUR
-- Knit/purl: RESULT_KNIT
-- Doubtful cells are useful. Where a reading failed, most of the wrong cells were among those marked doubtful, so a person checking only the marked cells would find them.
+- **Colour** is not the hard part. Tilt, light fall-off, noise, blur, heavy JPEG and taps 12 px off (more than half a stitch) changed nothing on drawn fabric.
+- **Knit/purl, shape reading** is exact whenever the taps land within about 2 px, a tenth of a stitch, under any light, noise or blur tried. At 6 px it breaks, and settling the corners does not rescue it; a better settling search is worth trying. With a magnifier for tapping, this may still be the best reading.
+- **Knit/purl, edge histogram** tolerates sloppy taps but leaves 1 to 5% of cells wrong, spread out enough that Hamming repairs many letters but not every message.
+- **The single "edges across" number** is not good enough; it stays in the code only as a baseline.
+- Blur helped the edge readings (fewer errors at 3 blur passes than at none): the drawn outlines are sharper than yarn. Real photos will differ.
+- Not measured yet: how many wrong cells fall among those marked doubtful. That decides whether "check the marked cells" is enough for a person, and it is the first thing to measure on real photos.
 
 ### What they do not say
 
@@ -78,7 +92,7 @@ An earlier run with five seeds per condition also tried parity instead of Hammin
 |---|---|---|
 | Two-colour | Good | Colour reading as in the spike. Similar-value pairs (navy and black) need a test. |
 | Stripes | Good | A colour per row; simpler than a grid. |
-| Purl relief | Uncertain | Edge histograms, raking light from the side, a person checking doubtful cells. |
+| Purl relief | Uncertain | Shape reading with a magnifier for exact taps, or edge histograms; raking light from the side; a person checking doubtful cells. |
 | Motif alphabets | Follows the carrier | Read the cells, then `readGlyphs` as now. Distance 3 packs repair misread cells. |
 | Lace | Promising, untested | Hold the piece up to a window: eyelets become bright dots, which turns lace into a colour problem. |
 | Bobbles | Uncertain | Raised blobs cast shadows under side light; blob detection per block. |
