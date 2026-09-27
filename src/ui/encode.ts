@@ -1,7 +1,8 @@
 // T09 encode tool: settings in, every pipeline stage out, in order.
 
 import { h, download, svgToPng } from "./h";
-import { carrierControls, cipherControls, constructionControl, encodingControls, field, select } from "./controls";
+import { carrierControls, cipherControls, constructionControl, encodingControls, field, secureControls, select } from "./controls";
+import { encrypt, OVERHEAD, toLetters } from "../engine/secure";
 import { fromRecipe, RECIPES, type RecipeId } from "../engine/recipes";
 import { PATTERNS, patternsFor, type StitchPattern } from "../engine/stitches";
 import { DENSITY_TEXT, FILLER_TEXTURE, type FillerId } from "../engine/stego";
@@ -120,7 +121,19 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
       out.replaceChildren(h("li.step", {}, h("p.error", {}, "Width must be a whole number from 3 to 120.")));
       return;
     }
-    const cipher = cip.get();
+    const secure = sec.on();
+    cip.el.hidden = secure;
+    if (secure && !sec.passphrase()) {
+      out.replaceChildren(h("li.step", {}, h("p.error", {}, "Type a passphrase for secure mode.")));
+      return;
+    }
+    const want = `${message.value}\u0000${sec.passphrase()}`;
+    if (secure && sealed?.for !== want) {
+      seal(want);
+      out.replaceChildren(h("li.step", {}, h("p.hint", { role: "status" }, "Sealing the message. Turning the passphrase into a key is slow on purpose, so guessing is slow too.")));
+      return;
+    }
+    const cipher = secure ? undefined : cip.get();
     const depth = Math.max(0, Math.min(8, Math.round(Number(borderDepth.value)) || 0));
     const style = borderStyle.value as StitchPattern | "plain";
     const edgeStyle = (edgePattern.value === "plain" ? style : edgePattern.value) as StitchPattern | "plain";
@@ -130,7 +143,8 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     try {
       p = createProject({
         title: title.value || "Untitled",
-        message: message.value,
+        message: secure ? sealed!.letters : message.value,
+        ...(secure ? { secure: { version: 1 as const } } : {}),
         encoding: enc.get(),
         ...(enc.glyphs() ? { glyphs: enc.glyphs()! } : {}),
         layout: { width: w, border: depth > 0, borderWidth: depth },
@@ -159,13 +173,22 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     const matches = p.output.decoded === p.message.normalized;
 
     out.replaceChildren(
-      step(
-        next(),
-        "Normalize",
-        h("p.mono.big", {}, p.message.normalized || "(nothing left to carry)"),
-        dropped.length ? h("p.error.mono", {}, `Left out, this alphabet cannot carry: ${dropped.join(" ")}`) : "",
-        ...p.message.notes.map((n) => h("p.hint", {}, n)),
-      ),
+      p.settings.secure
+        ? step(
+            next(),
+            "Encrypt (AES-GCM)",
+            h("p.mono.big.wrap", {}, p.message.normalized),
+            h("p.hint", {}, `${sealed!.bytes} bytes of message plus ${OVERHEAD} bytes of format, salt, nonce and tag, written as two letters per byte. Even a short message makes a big piece: this suits a blanket or a jumper.`),
+            h("p.hint", {}, "Every change to the message or passphrase seals it afresh with a new random salt and nonce, so the letters change too. That is expected."),
+            ...p.message.notes.map((n) => h("p.hint", {}, n)),
+          )
+        : step(
+            next(),
+            "Normalize",
+            h("p.mono.big", {}, p.message.normalized || "(nothing left to carry)"),
+            dropped.length ? h("p.error.mono", {}, `Left out, this alphabet cannot carry: ${dropped.join(" ")}`) : "",
+            ...p.message.notes.map((n) => h("p.hint", {}, n)),
+          ),
       p.message.enciphered !== undefined
         ? step(next(), "Encipher", h("p.mono.big", {}, p.message.enciphered), h("p.hint", {}, "This is what gets knitted. The decoder needs the same cipher and key to read it back."))
         : "",
@@ -259,6 +282,27 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const car = carrierControls(() => (fillPatterns(), recipe.value !== "none" && applyRecipe(), render()), true);
   const con = constructionControl(render);
   const cip = cipherControls(render);
+  const sec = secureControls(render, "Keep the error checks on: one misread letter and the message will not open. Hamming repairs one cell per letter.");
+  // The sealed letters for the current message and passphrase. Sealing is async and slow on purpose,
+  // so it waits for typing to pause, and a newer request wins over an older one.
+  let sealed: { for: string; letters: string; bytes: number } | undefined;
+  let pending: ReturnType<typeof setTimeout> | undefined;
+  let ticket = 0;
+  const seal = (want: string) => {
+    clearTimeout(pending);
+    const mine = ++ticket;
+    pending = setTimeout(async () => {
+      const [text, pass] = want.split("\u0000") as [string, string];
+      try {
+        const bytes = await encrypt(text, pass);
+        if (mine !== ticket) return;
+        sealed = { for: want, letters: toLetters(bytes), bytes: bytes.length - OVERHEAD };
+        render();
+      } catch (err) {
+        if (mine === ticket) out.replaceChildren(h("li.step", {}, h("p.error", {}, err instanceof Error ? err.message : String(err))));
+      }
+    }, 400);
+  };
   fillPatterns();
   applyRecipe();
   for (const el of [message, title, width, borderDepth, edgeBelow, edgeAbove]) el.addEventListener("input", render);
@@ -273,7 +317,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     "form.builder",
     { onsubmit: (ev: Event) => (ev.preventDefault(), render(), out.scrollIntoView({ behavior: "smooth" })) },
     stage(1, "MESSAGE", field("MESSAGE", message), field("PATTERN TITLE", title)),
-    stage(2, "ENCODE", enc.el, cip.el),
+    stage(2, "ENCODE", enc.el, cip.el, sec.el),
     stage(3, "RECIPE", field("START FROM", recipe), recipeNote),
     stage(4, "CARRIER", car.el),
     stage(5, "SIZE AND CONSTRUCTION", field("MESSAGE WIDTH (STITCHES)", width, "The border adds its depth on each side."), con.el),
@@ -295,6 +339,7 @@ const slug = (p: Project) => (p.settings.title.toLowerCase().replace(/[^a-z0-9]+
 
 /** Fill the print sheet with the pattern and open the browser's print dialog, where "Save as PDF" lives. */
 function printPattern(p: Project, svg: string): void {
+  const footer = p.settings.secure ? "Encrypted with AES-GCM from a passphrase. The passphrase is not on this sheet: pass it on some other way." : "Encoded is not encrypted. A modern reconstruction made at the lab.";
   const sheet = document.querySelector<HTMLElement>("#print-sheet")!;
   const stitches = p.output.chart[0]?.length ?? 0;
   const method = p.settings.construction.method;
@@ -309,7 +354,7 @@ function printPattern(p: Project, svg: string): void {
     h("ol.instructions.mono", {}, ...p.output.instructions.map((l) => h("li", {}, l))),
     ...p.output.finishing.map((l) => h("p.mono", {}, l)),
     ...[...p.message.notes, ...p.output.carrierNotes, ...p.output.checks].map((n) => h("p", {}, n)),
-    h("p.mono", {}, "Encoded is not encrypted. A modern reconstruction made at the lab."),
+    h("p.mono", {}, footer),
   );
   sheet.querySelector(".print-chart")!.innerHTML = svg;
   window.print();

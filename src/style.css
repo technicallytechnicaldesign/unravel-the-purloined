@@ -304,6 +304,9 @@ a {
   font-weight: 600;
   word-break: break-word;
 }
+.wrap {
+  overflow-wrap: anywhere;
+}
 
 /* Controls */
 .controls {
