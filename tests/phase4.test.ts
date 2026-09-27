@@ -49,15 +49,16 @@ describe("stripe-interval code", () => {
 });
 
 describe("motif alphabet", () => {
+  const MIN: Record<GlyphPack, number> = { pixel5: 1, geometric3: 2, geometric4: 3 };
   for (const pack of Object.keys(PACKS) as GlyphPack[]) {
-    it(`${pack}: every character has a glyph, and any two differ by at least ${pack === "pixel5" ? 1 : 2} stitches`, () => {
+    it(`${pack}: every character has a glyph, and any two differ by at least ${MIN[pack]} stitches`, () => {
       const g = PACKS[pack].glyphs;
       expect(Object.keys(g).sort()).toEqual([...CHARSET].sort());
       const list = Object.values(g);
       let min = Infinity;
       for (let i = 0; i < list.length; i++)
         for (let j = i + 1; j < list.length; j++) min = Math.min(min, list[i]!.flat().filter((b, k) => b !== list[j]!.flat()[k]).length);
-      expect(min).toBeGreaterThanOrEqual(pack === "pixel5" ? 1 : 2);
+      expect(min).toBeGreaterThanOrEqual(MIN[pack]);
     });
 
     it(`${pack}: lays text out and reads it back from every turn`, () => {
@@ -76,9 +77,40 @@ describe("motif alphabet", () => {
     expect(r.notes[0]!.message).toMatch(/^Character 1 is 1 stitch off .*"H"/);
   });
 
-  for (const carrier of ["purl-relief", "two-colour", "cable"] as const)
-    it(`knits letters in ${carrier}, and decodes back`, () => {
-      const p = createProject(base({ carrier: { id: carrier }, glyphs: { pack: "pixel5" }, layout: { width: 17, border: true, borderWidth: 2 } }), "g");
+  it("4 x 4 symbols repair any single slipped stitch, from every turn", () => {
+    for (const ch of CHARSET) {
+      const { cells } = layoutGlyphs(ch, "geometric4", 4);
+      for (let i = 0; i < 16; i++) {
+        const slipped = cells.map((row) => [...row]);
+        slipped[i >> 2]![i & 3] = (1 - slipped[i >> 2]![i & 3]!) as Bit;
+        for (const o of turns) {
+          const r = readGlyphs(transform(slipped, o), "geometric4");
+          expect([ch, i, o, r.text]).toEqual([ch, i, o, ch.trimEnd()]);
+          expect(r.notes).toHaveLength(1);
+        }
+      }
+    }
+  });
+
+  it("4 x 4 symbols repair one slip in every symbol of a message", () => {
+    const text = "MEET AT 9.";
+    const { cells } = layoutGlyphs(text, "geometric4", 24);
+    [...text].forEach((_, k) => {
+      const line = Math.floor(k / 5);
+      const row = cells.length - 1 - line * 5 - (k % 4);
+      const col = (k % 5) * 5 + (k % 3);
+      cells[row]![col] = (1 - cells[row]![col]!) as Bit;
+    });
+    for (const o of turns) {
+      const r = readGlyphs(transform(cells, o), "geometric4");
+      expect([o, r.text]).toEqual([o, text]);
+      expect(r.notes).toHaveLength(text.length);
+    }
+  });
+
+  for (const [carrier, pack] of [["purl-relief", "pixel5"], ["two-colour", "geometric4"], ["cable", "pixel5"], ["purl-relief", "geometric4"]] as const)
+    it(`knits ${pack} letters in ${carrier}, and decodes back`, () => {
+      const p = createProject(base({ carrier: { id: carrier }, glyphs: { pack }, layout: { width: 17, border: true, borderWidth: 2 } }), "g");
       expect(p.output.decoded).toBe("MEET AT NOON.");
     });
 

@@ -34,6 +34,7 @@ export function encodingControls(onChange: () => void) {
     ["bacon-modern26", "Bacon, modern 26-letter"],
     ["glyph-pixel5", "Motif alphabet: pixel letters (5 × 5)"],
     ["glyph-geometric3", "Motif alphabet: geometric symbols (3 × 3)"],
+    ["glyph-geometric4", "Motif alphabet: geometric symbols that repair a slip (4 × 4)"],
   ]);
   const code = select("code", [
     ["parity", "Parity cell per letter"],
@@ -51,6 +52,8 @@ export function encodingControls(onChange: () => void) {
       ? "The letters themselves, knitted as small pictures. Anyone can read them; they carry A to Z, 0 to 9, space, full stop and question mark."
       : transform.value === "glyph-geometric3"
         ? "A secret alphabet designed here: 38 symbols, each 3 stitches square. Any two differ by at least two stitches, so a single slip is noticed, but it may not be clear which symbol was meant."
+        : transform.value === "glyph-geometric4"
+        ? "A secret alphabet designed here: 38 symbols, each 4 stitches square. Any two differ by at least three stitches, however the fabric is turned, so one slipped stitch in a symbol is read as the right symbol and reported."
         : transform.value.startsWith("bacon")
       ? "Historical / puzzle cipher, not modern security. Bacon's alphabet has no space, so words run together."
       : transform.value === "morse"
