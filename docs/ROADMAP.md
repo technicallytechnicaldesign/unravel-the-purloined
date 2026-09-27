@@ -90,11 +90,15 @@ Real encryption, kept apart from the historical ciphers (CLAUDE.md honesty rules
 - [x] **P1.2 A quiet landing page.** Only what the project is and where to go: Open the lab, Visit the archive, Play The Purloined Parcel. No archive content or interactives. Done when the page fits roughly one screen on a phone. (Done 2026-09-27: about one screen at 375 × 900.)
 - [x] **P1.3 Decoder on its own page.** `decode.html` holds the decoder and alphabet reading; the lab's "try it in the decoder" hands the pattern over. Done when a pattern goes from the lab to the decoder page and decodes. (Done 2026-09-27: handover through sessionStorage, or a downloaded file if storage is blocked; the alphabet draft is offered there too.)
 - [x] **P1.4 Lab as guided paths.** Start with a choice: "I have a message to encode" (message, then encoding, carrier, size, border, hiding) or "I want to knit a..." (scarf, cowl, hat band, swatch first, then the message and the rest). One stage open at a time; finished stages fold to a one-line summary and reopen on click. Done when both paths reach a pattern, at 375px, with keyboard and no axe issues. (Done 2026-09-27: the alphabet designer also folds away until opened.)
-- [x] **P1.5 Game tutorial.** A short, skippable walkthrough before the first case: how the marker row shows which way up the fabric is, and how to mark knit and purl (what each looks like, which is 0 and which is 1). For players new to knitting or to codes. Done when a first-time player sees it once, can reopen it, and it works without seeing the images. (Done 2026-09-27: `src/ui/tutorial.ts`, opens on the first visit, again from the folio or inside any case.)
+- [x] **P1.5 Game tutorial.** A short, skippable walkthrough before the first case: how the marker row shows which way up the fabric is, and how to mark knit and purl (what each looks like, which is 0 and which is 1). For players new to knitting or to codes. Done when the guide starts closed, can be opened from the folio or inside any case, and works without seeing the images. (Built 2026-09-27 as a first-visit guide; revised later that day to start closed at the maker's request.)
 
 Maker's answers on Phase 8 (2026-09-27): will photograph the swatches as asked (8.3). Offer both a knitted frame the lab finds and manual corner taps, with a toggle (8.6). A learned stitch model is on hold until time allows (moved to Future directions).
 
 - [x] **P1.6 Page titles as wordmarks.** Each page's title is knitted in the same style: THE LAB, DECODE, THE ARCHIVE, THE PURLOINED PARCEL, with the site wordmark above linking home. (Maker's note and done 2026-09-27.)
+
+## Phase P2: wayfinding and entrance
+
+- [x] **P2.1 Visual flow.** Show Lab, Decode, Archive and Parcel on the home page; give inner pages a compact menu with Home and one knitted page title; add selected-option field notes with drawings for Transform and Carrier; start the parcel guide closed; reveal the knitted site title only on the first site entry in a tab session, with Skip and reduced-motion support. Done when the 375px layout has no horizontal scroll, the title reveal does not replay on Home, and the encoding engine is unchanged. (Done 2026-09-27.)
 
 ## Phase 7: design your own alphabet
 

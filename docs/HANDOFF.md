@@ -2,7 +2,7 @@
 
 Where things stand, what is loose, and what to pick up next. Read `CLAUDE.md` first, then this. Update this file at the end of any session that changes the picture; keep it short.
 
-Last updated 2026-09-27 (playtest round 1), project version 0.5.
+Last updated 2026-09-27 (visual flow), project version 0.5.
 
 ## Where things stand
 
@@ -15,12 +15,12 @@ Last updated 2026-09-27 (playtest round 1), project version 0.5.
 | Secure mode | PBKDF2 + AES-GCM via Web Crypto; bytes as letters A to P through the normal alphabets and error checks. | `secure.ts` |
 | Alphabets | Design your own: checks (duplicates, one-stitch pairs, turned look-alikes, blanks), suggestions, JSON files, printable legend; stored inside project files. | `alphabet.ts` |
 | Photo | Four-corner homography, cell sampling, readings for colour, knit/purl and lace against light, doubtful cells, corner settling, frame finding. On the decoder page as READ FROM A PHOTO. | `photo.ts`, `src/ui/photoread.ts`, `scripts/photo-experiment.ts` |
-| Lab | `lab.html`: two paths (a message first, or a piece to knit first) with stages that fold to summaries; alphabet designer folded below. `decode.html`: the decoder, fed from the lab by `handover.ts`. | `src/ui/encode.ts`, `decode.ts`, `designer.ts`, `handover.ts` |
-| Site frame | Knitted wordmarks: the site title on every page (linking home) and each page's own title (`data-wordmark`). The home page is only the three ways in. | `wordmark.ts`, `index.html` |
-| Game | The Purloined Parcel, ten levels (8 to 10 in cables, lace and bobbles, copied one cell per block), drawn fabric, a primer on knit, purl and the marker row. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
+| Lab | `lab.html`: two guided paths with folded stages and selected-option field notes for Transform and Carrier; alphabet designer folded below. `decode.html`: the decoder, fed from the lab by `handover.ts`. | `src/ui/encode.ts`, `choicehelp.ts`, `decode.ts`, `designer.ts`, `handover.ts` |
+| Site frame | Four home routes including Decode; inner pages have an explicit Home menu and one knitted page title. The title decodes once on the first site entry in a tab session. | `wordmark.ts`, `intro.ts`, `index.html` |
+| Game | The Purloined Parcel, ten levels (8 to 10 in cables, lace and bobbles, copied one cell per block), drawn fabric, and a parcel guide that starts closed. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
-Tests: `npm test` (about 285). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
+Tests: `npm test` (296 passing on 2026-09-27, using the verified D: path because Vitest resolves the C: junction inconsistently). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
 
 ## Waiting on the maker (do not decide these)
 
