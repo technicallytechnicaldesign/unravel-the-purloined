@@ -313,6 +313,30 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   syncHide();
   recipe.addEventListener("change", () => (applyRecipe(), render()));
 
+  // A photo frame: a solid border in colour B that the decoder's photo reader can find by itself.
+  const frameNote = h("p.hint", {});
+  const frameBtn = h(
+    "button.btn.btn-small",
+    {
+      type: "button",
+      onclick: () => {
+        borderDepth.value = String(Math.max(2, Number(borderDepth.value) || 0));
+        borderStyle.value = "solid-b";
+        render();
+        refreshSums();
+      },
+    },
+    "Use a photo frame",
+  );
+  const syncFrame = () => {
+    const colour = car.get().id === "two-colour";
+    frameBtn.disabled = !colour;
+    frameNote.textContent = colour
+      ? "A solid border in colour B, at least 2 stitches deep, is a frame the decoder can find in a photo by itself. It is a look as much as a tool: skip it and tap the corners instead."
+      : "Photo frames need two colours: choose the two-colour carrier, or tap the corners when reading a photo.";
+  };
+  const frameBox = h("div", {}, h("div.actions", {}, frameBtn), frameNote);
+
   // Two ways in: start from the words, or from the piece to knit. Stages open one at a time and
   // fold to a one-line summary; the pattern appears once the last stage is done.
   type Path = "message" | "knit";
@@ -338,6 +362,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
         h("div.pair", {}, field("BORDER DEPTH", borderDepth, "0 for none."), field("BORDER PATTERN", borderStyle)),
         h("div.pair", {}, field("PLAIN ROWS BELOW", edgeBelow), field("PLAIN ROWS ABOVE", edgeAbove)),
         field("EDGE PATTERN", edgePattern, "Edge rows are rounded up to even numbers so row 1 of the chart stays on the right side."),
+        frameBox,
       ],
       sum: () => (Number(borderDepth.value) > 0 ? `Border ${borderDepth.value} deep, ${(borderStyle.selectedOptions[0]?.text ?? "").toLowerCase()}` : "No border"),
     },
@@ -419,6 +444,8 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const form = h("form.builder", { onsubmit: (ev: Event) => (ev.preventDefault(), showPattern()) }, paths, pathNote, stages);
   form.addEventListener("input", refreshSums);
   form.addEventListener("change", refreshSums);
+  form.addEventListener("change", syncFrame);
+  syncFrame();
   out.hidden = true;
   root.append(form, out);
   render();
