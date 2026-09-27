@@ -13,7 +13,8 @@ import { decodeWithKey } from "../engine/unhide";
 import { MOTIFS } from "../engine/motifs";
 import { decipher } from "../engine/ciphers";
 import { decodeCells } from "../engine/steps";
-import { importProject, type Project } from "../engine/project";
+import { importProject, packFor, type Project } from "../engine/project";
+import { type Alphabet } from "../engine/alphabet";
 import { type Bit } from "../engine/fivebit";
 import { cellGrid } from "./cellgrid";
 import { stepsView } from "./stepsview";
@@ -39,7 +40,7 @@ export function parseRows(text: string): Bit[][] | string {
   return rows.reverse(); // row 0 is the bottom
 }
 
-export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
+export function mountDecoder(root: HTMLElement): { load(p: Project): void; useAlphabet(a: Alphabet): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
   const border = h("input", { type: "number", name: "border-depth", value: 0, min: 0, max: 8, inputmode: "numeric" });
@@ -89,7 +90,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     const glyphs = enc.glyphs();
     if (glyphs || car.get().id === "stripes") {
       grid.unmark("flag");
-      const r = glyphs ? readGlyphsFrom(glyphs.pack) : readStripesFrom();
+      const r = glyphs ? readGlyphsFrom(packFor(glyphs)) : readStripesFrom();
       out.replaceChildren(simpleSteps(r, cipher), sec.on() ? decryptStep(r.text) : "");
       return;
     }
@@ -261,5 +262,5 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void } {
     out,
   );
   decode();
-  return { load };
+  return { load, useAlphabet: (a) => (enc.setCustom(a), decode()) };
 }

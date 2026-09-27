@@ -38,7 +38,7 @@ const PIXEL5: Record<string, string> = {
 };
 
 const toBits = (rows: string): Bit[][] => rows.split(" ").map((r) => [...r].map((ch) => (ch === "x" ? 1 : 0) as Bit)).reverse();
-const distance = (a: Bit[][], b: Bit[][]): number => a.reduce((n, row, r) => n + row.reduce<number>((k, x, c) => k + (x === b[r]![c] ? 0 : 1), 0), 0);
+export const distance = (a: Bit[][], b: Bit[][]): number => a.reduce((n, row, r) => n + row.reduce<number>((k, x, c) => k + (x === b[r]![c] ? 0 : 1), 0), 0);
 
 /** 3 x 3 symbols chosen in a fixed order so that any two differ by two stitches or more. Space stays empty. */
 function geometric(): Record<string, Bit[][]> {
@@ -101,29 +101,45 @@ export const PACKS: Record<GlyphPack, { name: string; size: number; glyphs: Reco
   geometric4: { name: "Geometric secret alphabet that repairs a slip (4 × 4, designed here)", size: 4, glyphs: geometric4() },
 };
 
+/** Any alphabet of drawn symbols: a built-in pack, or one designed in the lab (see alphabet.ts). */
+export interface Pack {
+  name: string;
+  width: number;
+  height: number;
+  glyphs: Record<string, Bit[][]>;
+}
+export type PackRef = GlyphPack | Pack;
+
+export const packOf = (ref: PackRef): Pack => {
+  if (typeof ref !== "string") return ref;
+  const p = PACKS[ref];
+  return { name: p.name, width: p.size, height: p.size, glyphs: p.glyphs };
+};
+
 /** Characters per line for a width in stitches: each glyph plus one stitch of space. */
 export const perLine = (width: number, size: number): number => Math.max(1, Math.floor((width + 1) / (size + 1)));
 
 /** Lay text out as glyphs. Returns cells (row 0 at the bottom) and which cells belong to a glyph. */
-export function layoutGlyphs(text: string, pack: GlyphPack, width: number): { cells: Bit[][]; inGlyph: boolean[][] } {
-  const { size, glyphs } = PACKS[pack];
-  if (width < size) throw new Error(`The motif alphabet needs at least ${size} stitches across.`);
-  const n = perLine(width, size);
-  const lines: string[] = [];
-  for (let i = 0; i < Math.max(text.length, 1); i += n) lines.push(text.slice(i, i + n));
-  const height = lines.length * size + (lines.length - 1);
+export function layoutGlyphs(text: string, pack: PackRef, width: number): { cells: Bit[][]; inGlyph: boolean[][] } {
+  const { width: gw, height: gh, glyphs } = packOf(pack);
+  if (width < gw) throw new Error(`The motif alphabet needs at least ${gw} stitches across.`);
+  const n = perLine(width, gw);
+  const chars = [...text];
+  const lines: string[][] = [];
+  for (let i = 0; i < Math.max(chars.length, 1); i += n) lines.push(chars.slice(i, i + n));
+  const height = lines.length * gh + (lines.length - 1);
   const cells = Array.from({ length: height }, () => new Array<Bit>(width).fill(0));
   const inGlyph = Array.from({ length: height }, () => new Array<boolean>(width).fill(false));
   lines.forEach((line, li) => {
-    const top = height - 1 - li * (size + 1); // first line at the top
-    [...line].forEach((ch, k) => {
+    const top = height - 1 - li * (gh + 1); // first line at the top
+    line.forEach((ch, k) => {
       const g = glyphs[ch];
       if (!g) throw new Error(`"${ch}" has no motif in this alphabet.`);
-      for (let r = 0; r < size; r++)
-        for (let c = 0; c < size; c++) {
-          const row = top - (size - 1) + r;
-          cells[row]![k * (size + 1) + c] = g[r]![c]!;
-          inGlyph[row]![k * (size + 1) + c] = true;
+      for (let r = 0; r < gh; r++)
+        for (let c = 0; c < gw; c++) {
+          const row = top - (gh - 1) + r;
+          cells[row]![k * (gw + 1) + c] = g[r]![c]!;
+          inGlyph[row]![k * (gw + 1) + c] = true;
         }
     });
   });
@@ -135,33 +151,34 @@ export interface GlyphNote {
   message: string;
 }
 
-const ORIENTATIONS: Orientation[] = [false, true].flatMap((rotated180) => [false, true].flatMap((mirrored) => [false, true].map((inverted) => ({ rotated180, mirrored, inverted }))));
+export const ORIENTATIONS: Orientation[] = [false, true].flatMap((rotated180) => [false, true].flatMap((mirrored) => [false, true].map((inverted) => ({ rotated180, mirrored, inverted }))));
 
 /** Read glyphs back, trying every turn of the fabric and keeping the one that matches best. */
-export function readGlyphs(cells: readonly (readonly Bit[])[], pack: GlyphPack): { text: string; orientation: Orientation; notes: GlyphNote[] } {
-  const { size, glyphs } = PACKS[pack];
+export function readGlyphs(cells: readonly (readonly Bit[])[], pack: PackRef): { text: string; orientation: Orientation; notes: GlyphNote[] } {
+  const { width: gw, height: gh, glyphs } = packOf(pack);
   const entries = Object.entries(glyphs);
   const read = (grid: Bit[][]) => {
     const height = grid.length;
     const width = grid[0]?.length ?? 0;
-    const lines = Math.floor((height + 1) / (size + 1));
-    const n = perLine(width, size);
+    const lines = Math.floor((height + 1) / (gh + 1));
+    const n = perLine(width, gw);
     let text = "";
     let total = 0;
     const notes: GlyphNote[] = [];
     for (let li = 0; li < lines; li++) {
-      const top = height - 1 - li * (size + 1);
+      const top = height - 1 - li * (gh + 1);
       for (let k = 0; k < n; k++) {
-        const block = Array.from({ length: size }, (_, r) => Array.from({ length: size }, (_, c) => grid[top - (size - 1) + r]![k * (size + 1) + c]!));
+        const block = Array.from({ length: gh }, (_, r) => Array.from({ length: gw }, (_, c) => grid[top - (gh - 1) + r]![k * (gw + 1) + c]!));
         const scored = entries.map(([ch, g]) => ({ ch, d: distance(block, g) })).sort((a, b) => a.d - b.d);
         const best = scored[0]!;
         const ties = scored.filter((s) => s.d === best.d).map((s) => `"${s.ch}"`);
         total += best.d;
         text += best.ch;
+        const count = [...text].length;
         if (best.d > 0)
           notes.push({
-            cells: [[top - (size - 1), k * (size + 1)]],
-            message: `Character ${text.length} is ${best.d} stitch${best.d === 1 ? "" : "es"} off ${ties.length > 1 ? `${ties.join(" and ")}, too close to call` : `"${best.ch}"`}; read as "${best.ch}".`,
+            cells: [[top - (gh - 1), k * (gw + 1)]],
+            message: `Character ${count} is ${best.d} stitch${best.d === 1 ? "" : "es"} off ${ties.length > 1 ? `${ties.join(" and ")}, too close to call` : `"${best.ch}"`}; read as "${best.ch}".`,
           });
       }
     }

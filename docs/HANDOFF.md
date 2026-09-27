@@ -13,11 +13,12 @@ Last updated 2026-09-27, project version 0.5.
 | Hiding | Scatter in a filler, motif tiles; parcel key as JSON, typed code and printable card. | `stego.ts`, `motifs.ts`, `key.ts`, `unhide.ts` |
 | Outputs | Written rows with abbreviations, SVG and PNG chart, print to PDF, XLSX, CSV, project JSON. | `pattern.ts`, `chartsvg.ts`, `xlsx.ts`, `project.ts` |
 | Secure mode | PBKDF2 + AES-GCM via Web Crypto; bytes as letters A to P through the normal alphabets and error checks. | `secure.ts` |
-| Lab | Encoder in seven stages, manual grid decoder, secure mode in both. | `src/ui/encode.ts`, `decode.ts` |
+| Alphabets | Design your own: checks (duplicates, one-stitch pairs, turned look-alikes, blanks), suggestions, JSON files, printable legend; stored inside project files. | `alphabet.ts` |
+| Lab | Encoder in seven stages, manual grid decoder, secure mode in both, alphabet designer. | `src/ui/encode.ts`, `decode.ts`, `designer.ts` |
 | Game | The Purloined Parcel, seven levels, drawn fabric. | `src/ui/game.ts`, `cases.ts`, `fabric.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
-Tests: `npm test` (about 260). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
+Tests: `npm test` (about 280). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
 
 ## Waiting on the maker (do not decide these)
 
@@ -45,7 +46,7 @@ Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteri
 
 **Phase 6: secure mode** is built (6.1 to 6.3); 6.4 waits on the maker reading the copy.
 
-**Phase 7: design-your-own language.** Let people build an alphabet (symbol to cells) and a mapping onto a carrier, then generate encoder, decoder, printable key and legend. The glyph packs and parcel key are good starting points. Custom alphabets must be checked for distance and reported, the way `geometric()` is.
+**Phase 7: design your own alphabet** is built (7.1 to 7.4). Ideas left for later: a short share code for alphabets (like the parcel key code), custom alphabets inside a parcel key, and a game level built on a player's own alphabet.
 
 **Phase 8: photo decoder.** Research first, per the packet: colour grids are the easy start (sample a rectified photo into cells, then hand the grid to the existing decoder). Knit/purl, bobbles and lace are much harder. Everything stays in the browser.
 
