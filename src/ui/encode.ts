@@ -14,6 +14,7 @@ import { chartCsv, workbook } from "../engine/xlsx";
 import { describeStream } from "../engine/steps";
 import { type CellRole } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
+import { type Alphabet } from "../engine/alphabet";
 
 const ROLE_TEXT: Record<CellRole, string> = {
   data: "message",
@@ -53,7 +54,7 @@ function symbolTable(p: Project): HTMLElement {
   );
 }
 
-export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => void): void {
+export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => void): { useAlphabet(a: Alphabet): void } {
   const message = h("input", { type: "text", name: "message", value: "Meet at noon.", maxlength: 120, autocomplete: "off", spellcheck: "false" });
   const title = h("input", { type: "text", name: "title", value: "Meet at noon", maxlength: 60 });
   const width = h("input", { type: "number", name: "width", value: 12, min: 3, max: 120, inputmode: "numeric" });
@@ -333,6 +334,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   );
   root.append(form, out);
   render();
+  return { useAlphabet: (a) => (enc.setCustom(a), render()) };
 }
 
 const slug = (p: Project) => (p.settings.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "pattern");

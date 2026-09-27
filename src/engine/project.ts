@@ -7,10 +7,11 @@ import { type Bit } from "./fivebit";
 import * as fivebit from "./fivebit";
 import * as morse from "./morse";
 import * as bacon from "./bacon";
-import { type Dropped } from "./normalize";
+import { normalizeWith, type Dropped } from "./normalize";
 import { decodeFrame, encodeFrame, type ErrorControlOptions } from "./errorcontrol";
 import { readStripes, ROWS_PER_UNIT, stripeRows } from "./stripes";
-import { layoutGlyphs, PACKS, readGlyphs, type GlyphPack } from "./glyphs";
+import { layoutGlyphs, packOf, readGlyphs, type GlyphPack, type PackRef } from "./glyphs";
+import { toPack, type Alphabet } from "./alphabet";
 import { borderOf, frame, layout, readGrid, unframe, type CellRole, type GridOptions, type LogicalGrid } from "./grid";
 import { expand, MOTIFS } from "./motifs";
 import { scatterCanvas, scatterHeight, SYNC, type HideSettings } from "./stego";
@@ -33,6 +34,12 @@ export type EncodingSettings =
   | { alphabet: "morse" }
   | { alphabet: "bacon"; variant: bacon.BaconAlphabet };
 
+/** A built-in motif alphabet, or one designed in the lab, stored whole so the project file stands alone. */
+export type GlyphSettings = { pack: GlyphPack } | { alphabet: Alphabet };
+
+/** The pack to lay out and read letters with. */
+export const packFor = (g: GlyphSettings): PackRef => ("pack" in g ? g.pack : toPack(g.alphabet));
+
 export interface ProjectSettings {
   title: string;
   message: string;
@@ -51,7 +58,7 @@ export interface ProjectSettings {
   /** Hide the message by scattering it in a filler or turning cells into motifs (steganography). */
   hide?: HideSettings;
   /** Knit the letters themselves as small motifs (the motif alphabet), instead of encoding them as cells. */
-  glyphs?: { pack: GlyphPack };
+  glyphs?: GlyphSettings;
   /** The message is secure-mode ciphertext written as letters A to P (see secure.ts). The plaintext and passphrase are never stored. */
   secure?: { version: typeof SECURE_VERSION };
 }
@@ -178,7 +185,7 @@ export function decodeRows(rows: readonly Row[], settings: ProjectSettings, key?
   }
   const cipherFor = activeCipher(settings.cipher);
   const plain = (t: string) => (cipherFor ? decipher(t, cipherFor) : t);
-  if (settings.glyphs) return plain(readGlyphs(unframe(cells, borderOf(settings.layout)), settings.glyphs.pack).text);
+  if (settings.glyphs) return plain(readGlyphs(unframe(cells, borderOf(settings.layout)), packFor(settings.glyphs)).text);
   if (settings.carrier.id === "stripes") return plain(morse.decodeUnits(readStripes(unframe(cells, borderOf(settings.layout))).units).text);
   const bits = readGrid(cells, borderOf(settings.layout)).bits;
   const e = settings.encoding;
@@ -256,20 +263,27 @@ function checkCombination(s: ProjectSettings): void {
 
 /** The message for the motif alphabet: letters, digits, space, full stop and question mark, then any cipher. */
 function glyphMessage(s: ProjectSettings): { normalized: string; enciphered?: string; dropped: Dropped[]; notes: string[]; bits: Bit[] } {
-  const n = morse.normalize(s.message);
+  const custom = "alphabet" in s.glyphs!;
+  const pack = packOf(packFor(s.glyphs!));
+  const n = custom ? normalizeWith(s.message, (ch) => ch !== " " && ch in pack.glyphs) : morse.normalize(s.message);
   const cipher = activeCipher(s.cipher);
-  const pack = PACKS[s.glyphs!.pack];
+  const enciphered = cipher ? encipher(n.text, cipher) : undefined;
+  const missing = [...new Set([...(enciphered ?? "")].filter((ch) => !(ch in pack.glyphs)))];
+  if (missing.length) throw new Error(`The cipher makes letters this alphabet has no symbol for: ${missing.join(" ")}. Draw them, or choose another cipher.`);
   return {
     normalized: n.text,
-    ...(cipher ? { enciphered: encipher(n.text, cipher) } : {}),
+    ...(enciphered !== undefined ? { enciphered } : {}),
     dropped: n.dropped,
-    notes: [`${pack.name}. Read left to right, top line first.`, ...(cipher ? [`${CIPHERS[cipher.kind].name}, key ${cipher.key.trim().toUpperCase()}. ${PUZZLE_LABEL}`] : [])],
+    notes: [
+      `${pack.name}${custom ? `, ${pack.width} × ${pack.height}, designed by its maker` : ""}. Read left to right, top line first.`,
+      ...(cipher ? [`${CIPHERS[cipher.kind].name}, key ${cipher.key.trim().toUpperCase()}. ${PUZZLE_LABEL}`] : []),
+    ],
     bits: [],
   };
 }
 
 function glyphGrid(s: ProjectSettings, text: string): LogicalGrid {
-  const g = layoutGlyphs(text, s.glyphs!.pack, s.layout.width);
+  const g = layoutGlyphs(text, packFor(s.glyphs!), s.layout.width);
   return { options: s.layout, ...frame(g.cells, g.inGlyph.map((row) => row.map((x): CellRole => (x ? "data" : "filler"))), borderOf(s.layout)) };
 }
 
