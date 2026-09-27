@@ -28,7 +28,7 @@ Tests: `npm test` (about 250). Build: `npm run build`. Browser checks so far use
 
 ## Loose ends
 
-- **T11 source reading** is blocked in the cloud environment: most source hosts are refused by the network policy. Needs a local session or a wider network policy. Until then no exhibit can publish.
+- **T11 is done** (21 of 23 checked). Six places where the drafts say more or other than their sources are listed in `docs/research/research-notes-2026-09-26.md` for the maker. S03 and S04 need a human (book pages), so the Belgium exhibit cannot publish yet. Smithsonian and nsa.gov block scripted fetches even locally; use Wayback snapshots.
 - **G5** needs a real screen-reader session before it is ticked.
 - **XLSX** has only been checked by tests and by parsing; nobody has opened one in Excel yet.
 - **Old project files** (0.4 and earlier) import fine but report "regenerated from the settings", because the output gained `abbreviations`. Harmless; bump `PROJECT_VERSION` only if the settings shape changes.
