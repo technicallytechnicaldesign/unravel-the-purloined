@@ -6,6 +6,7 @@ import { h, download } from "./h";
 import { field, select } from "./controls";
 import { cellGrid } from "./cellgrid";
 import { loadDraft as load, saveDraft as save } from "./handover";
+import { alphabetCode, parseAlphabetCode } from "../engine/alphabet";
 import { checkAlphabet, emptyAlphabet, exportAlphabet, importAlphabet, legendSvg, MAX_SIZE, MIN_SIZE, suggestSymbols, toCells, toRows, type Alphabet } from "../engine/alphabet";
 import { type Bit } from "../engine/fivebit";
 
@@ -30,6 +31,8 @@ export function mountDesigner(root: HTMLElement, use: (a: Alphabet) => void): vo
   const report = h("div.report", { role: "status" });
   const message = h("p.hint", { role: "status" });
   const file = h("input", { type: "file", accept: "application/json,.json", "aria-label": "Alphabet file" });
+  const shareCode = h("p.mono.key-code.wrap", {});
+  const codeIn = h("input", { type: "text", name: "alphabet-code", placeholder: "UTPA1-...", spellcheck: "false", autocomplete: "off", "aria-label": "Alphabet share code" });
 
   const editor = cellGrid({
     cells: toCells(resize([], a.width, a.height)),
@@ -69,6 +72,7 @@ export function mountDesigner(root: HTMLElement, use: (a: Alphabet) => void): vo
       ),
     );
     editTitle.textContent = `DRAWING "${current}"`;
+    shareCode.textContent = alphabetCode(a);
     if (reloadEditor) editor.set(toCells(a.symbols[current] ?? resize([], a.width, a.height)));
     const undrawn = chars.filter((ch) => !a.symbols[ch]);
     report.replaceChildren(
@@ -96,8 +100,8 @@ export function mountDesigner(root: HTMLElement, use: (a: Alphabet) => void): vo
     message.textContent = "Drawings kept their top-left corner; check the edges.";
     refresh();
   };
-  const open = (json: string) => {
-    const r = importAlphabet(json);
+  const open = (text: string) => {
+    const r = text.trim().startsWith("{") ? importAlphabet(text) : parseAlphabetCode(text);
     if (typeof r === "string") {
       message.textContent = r;
       return;
@@ -183,7 +187,22 @@ export function mountDesigner(root: HTMLElement, use: (a: Alphabet) => void): vo
       btn("Print the legend", printLegend),
       btn("Alphabet (JSON)", () => download(`${a.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "alphabet"}.json`, "application/json", exportAlphabet(a))),
     ),
-    h("details.more", {}, h("summary.mono", {}, "OPEN AN ALPHABET FILE"), file),
+    h(
+      "details.more",
+      {},
+      h("summary.mono", {}, "SHARE CODE"),
+      h("p.hint", {}, "The whole alphabet as one line, to paste into a message. Anyone can open it here, or on the decoder page to read a piece knitted with it."),
+      shareCode,
+      h("div.actions", {}, btn("Copy the code", () => navigator.clipboard?.writeText(shareCode.textContent ?? "").then(() => (message.textContent = "Code copied."), () => (message.textContent = "Copy did not work here: select the code and copy it by hand.")))),
+    ),
+    h(
+      "details.more",
+      {},
+      h("summary.mono", {}, "OPEN A CODE OR FILE"),
+      codeIn,
+      h("div.actions", {}, btn("Open this code", () => open(codeIn.value))),
+      file,
+    ),
     message,
   );
   refresh();

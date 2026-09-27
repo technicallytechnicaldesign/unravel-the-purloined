@@ -253,3 +253,74 @@ export function legendSvg(a: Alphabet, perRow = 8): string {
   parts.push("</svg>");
   return parts.join("");
 }
+
+// Share code: the whole alphabet as one line to paste into a message. Bytes are
+// name, size, characters and drawings packed a bit per cell, written in Crockford
+// base 32 (no I, L, O or U, so nothing looks like a digit) in groups of five,
+// after "UTPA1" and before a two-character check.
+const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const CODE_HEAD = "UTPA1";
+
+const codeCheck = (body: string): string => {
+  let a = 1, b = 0;
+  for (const ch of body) (a = (a + B32.indexOf(ch) + 1) % 1021), (b = (b + a) % 1021);
+  const n = (a * 7 + b) % 1024;
+  return B32[n >> 5]! + B32[n & 31]!;
+};
+
+export function alphabetCode(a: Alphabet): string {
+  const enc = new TextEncoder();
+  const chars = Object.keys(a.symbols).filter((ch) => ch !== " ").sort();
+  const name = enc.encode(a.name.slice(0, 40));
+  const charBytes = enc.encode(chars.join(""));
+  const bits: number[] = [];
+  for (const ch of chars) for (const row of a.symbols[ch]!) for (const v of row) bits.push(v === "x" ? 1 : 0);
+  const bytes = [name.length, ...name, (a.width << 4) | a.height, charBytes.length, ...charBytes];
+  for (let i = 0; i < bits.length; i += 8) bytes.push(bits.slice(i, i + 8).reduce((t, b, k) => t | (b << (7 - k)), 0));
+  let body = "";
+  let acc = 0, n = 0;
+  for (const byte of bytes) {
+    acc = (acc << 8) | byte;
+    n += 8;
+    while (n >= 5) (body += B32[(acc >> (n - 5)) & 31]), (n -= 5);
+  }
+  if (n) body += B32[(acc << (5 - n)) & 31];
+  const full = body + codeCheck(body);
+  return [CODE_HEAD, ...(full.match(/.{1,5}/g) ?? [])].join("-");
+}
+
+/** Read a share code back, or say why not. Spaces, dashes and letter case do not matter; O is read as 0, I and L as 1. */
+export function parseAlphabetCode(code: string): Alphabet | string {
+  const clean = code.toUpperCase().replace(/[\s-]/g, "").replace(/O/g, "0").replace(/[IL]/g, "1");
+  if (!clean.startsWith(CODE_HEAD.replace(/O/g, "0").replace(/[IL]/g, "1"))) return `An alphabet code starts with ${CODE_HEAD}.`;
+  const payload = clean.slice(CODE_HEAD.length);
+  const bad = [...payload].findIndex((ch) => !B32.includes(ch));
+  if (bad >= 0) return `"${payload[bad]}" (character ${bad + 1} after ${CODE_HEAD}) is not used in alphabet codes; possible typing error there.`;
+  const body = payload.slice(0, -2);
+  if (payload.length < 4 || codeCheck(body) !== payload.slice(-2)) return "The last two characters do not match the rest: a character may have been mistyped, left out or added.";
+  const bytes: number[] = [];
+  let acc = 0, n = 0;
+  for (const ch of body) {
+    acc = ((acc << 5) | B32.indexOf(ch)) & 0xffff;
+    n += 5;
+    if (n >= 8) (bytes.push((acc >> (n - 8)) & 255), (n -= 8));
+  }
+  try {
+    const dec = new TextDecoder("utf-8", { fatal: true });
+    let i = 0;
+    const take = (k: number) => { if (i + k > bytes.length) throw new Error("short"); const out = bytes.slice(i, i + k); i += k; return out; };
+    const name = dec.decode(new Uint8Array(take(take(1)[0]!)));
+    const size = take(1)[0]!;
+    const chars = [...dec.decode(new Uint8Array(take(take(1)[0]!)))];
+    const width = size >> 4, height = size & 15;
+    const bitsNeeded = chars.length * width * height;
+    const cells = take(Math.ceil(bitsNeeded / 8)).flatMap((b) => [7, 6, 5, 4, 3, 2, 1, 0].map((k) => (b >> k) & 1));
+    const symbols: Record<string, string[]> = { " ": blankRows(width, height) };
+    chars.forEach((ch, c) => {
+      symbols[ch] = Array.from({ length: height }, (_, r) => Array.from({ length: width }, (_, x) => (cells[(c * height + r) * width + x] ? "x" : ".")).join(""));
+    });
+    return { format: ALPHABET_FORMAT, version: ALPHABET_VERSION, name, width, height, symbols };
+  } catch {
+    return "The code is too short for what it says it holds: part of it may be missing.";
+  }
+}

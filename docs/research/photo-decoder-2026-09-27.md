@@ -104,6 +104,12 @@ An earlier run with five seeds, stopped before it finished, also tried parity in
 - Photos stay in the browser. No upload, no model calls to a server. If a learned model is added later, it ships with the site and runs locally.
 - Photo reading is an aid, not an oracle. The lab should show the grid it read, mark doubtful cells, and let the person correct it. Error reports then work as they do for typed grids.
 
+## Follow-up, same day: the lab reads photos
+
+- `findFrame` finds a border in the darker yarn without taps. It splits the colours in the middle of the photo into two yarns, marks everything near the darker one, keeps the largest joined patch, and takes that patch's farthest points towards each corner. In tests it lands within 4 px of the true corners on a tilted, shaded, noisy photo.
+- A "light" reading compares lightness only, for lace held against a window.
+- End to end in Chromium: a drawn two-colour piece with a 2-stitch frame was tilted in 3D, saved as JPEG at quality 80 and opened on the decoder page. The frame was found with no taps, all 270 cells were read with none marked doubtful, and the message decoded. Drawn fabric again, so real photos (8.3) are still the test that counts.
+
 ## Proposed tasks
 
 See `docs/ROADMAP.md`, Phase 8.
