@@ -92,9 +92,19 @@ People draw their own symbols, see how safe they are to knit, and use them like 
 - [x] **7.3 Pipeline.** Projects take a custom alphabet in place of a built-in pack and store it inside the project file, so the file is self-contained. Done when a custom alphabet round-trips through every carrier family from all 8 turns, and characters it lacks are reported, not dropped silently. (Done 2026-09-27: purl relief, two-colour, cable and bobble, flat and round.)
 - [x] **7.4 Lab designer.** A third lab section: choose size and characters, click cells to draw each symbol, see the check report live, fill the rest with suggestions, download or open an alphabet file, print the legend, and send the alphabet to the encoder and decoder. Done when it works at 375px with no horizontal scroll and no axe issues. (Done 2026-09-27: `src/ui/designer.ts`, lab section 03; the draft is kept in the browser.)
 
+## Phase 8: photo decoder
+
+Read a photo of fabric into the decoder's grid, in the browser, with a person checking what the lab doubts. Research notes: `docs/research/photo-decoder-2026-09-27.md`.
+
+- [x] **8.1 Research.** What others have done, browser tools, a spike and an experiment on drawn fabric. (Done 2026-09-27: papers found but not read, as the container's network blocks their hosts; see the notes.)
+- [x] **8.2 Photo reader spike.** `src/engine/photo.ts`: four-corner homography, cell sampling (Lab colour, edge measures, lightness pattern), 2-means with per-cell confidence and doubtful cells, corner settling. Done when synthetic tilted, shaded, noisy photos read back in tests, and the experiment script reports cell errors and decode success. (Done 2026-09-27.)
+- [ ] **8.3 Real photo test set.** Photos of the P4.7 swatches, whose charts are known: flat in daylight, flat in lamp light, side light, and lace against a window. Store them with their charts and run the reader over them, reporting as the experiment does. Needs the maker.
+- [ ] **8.4 Read a photo in the lab.** In the decoder: open a photo (camera on phones), tap or drag the four corners with a magnifier and arrow keys to nudge, type stitches and rows, pick colour or knit/purl, optionally settle the corners. The result fills the grid with doubtful cells marked for checking. Nothing leaves the browser. Done when a photo of a two-colour chart goes to decoded text at 375px, with no axe issues and a keyboard-only way to place corners.
+- [ ] **8.5 Beyond single stitches.** Stripes (a colour per row), unit carriers (read each block, then `reduceUnits`), lace against the light, bobbles by shadow. Depends on 8.3 photos.
+- [ ] **8.6 Finding the grid without taps.** Research a knitted frame the lab can find, or printed markers, and stitch pitch from the image. Ask the maker first (see the notes' questions).
+
 ## Later phases (headings only)
 
-- Phase 8: photo decoder.
 - Phase 9: community and archive features.
 
 ## Future directions (not core work)
