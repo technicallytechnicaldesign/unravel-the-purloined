@@ -11,7 +11,7 @@
 
 import { type Bit } from "./fivebit";
 import { rng } from "./fabric";
-import { PATTERNS, type StitchPattern } from "./stitches";
+import { BORDER_ONLY, PATTERNS, type StitchPattern } from "./stitches";
 import { family, type CarrierId } from "./carrier";
 import { type MotifId } from "./motifs";
 
@@ -57,6 +57,7 @@ function fillerBit(filler: FillerId, r: number, c: number, texture: () => number
 
 /** Build the hidden canvas: filler everywhere, message cells along the route. Row 0 is the bottom. */
 export function scatterCanvas(stream: readonly Bit[], width: number, height: number, seed: number, filler: FillerId, carrier: CarrierId): { cells: Bit[][]; carries: boolean[][] } {
+  if (filler !== "texture" && BORDER_ONLY.includes(filler)) throw new Error(`${PATTERNS[filler].name} is for borders only; choose another filler.`);
   if (filler !== "texture" && PATTERNS[filler].carrier !== family(carrier)) {
     throw new Error(`${PATTERNS[filler].name} is for ${PATTERNS[filler].carrier === "two-colour" ? "two-colour" : "knit and purl"} work; choose another filler for this carrier.`);
   }

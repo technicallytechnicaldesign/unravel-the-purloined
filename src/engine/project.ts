@@ -244,12 +244,24 @@ export function createProject(settings: ProjectSettings, id: string = newId()): 
       abbreviations: abbreviationsFor(rows),
       dimensions: dimensions(chart[0]!.length, chart.length + words.plainRows, settings.construction.method),
       legend: carrier.legend,
-      carrierNotes: carrier.notes,
+      carrierNotes: [...carrier.notes, ...frameNotes(settings)],
       checks: [...checkStitchCounts(rows, chart[0]!.length), ...floats],
       ...(key ? { key, keyCode: keyCode(key) } : {}),
       decoded: decodeRows(rows, settings, key),
     },
   };
+}
+
+/** How to knit a photo frame in a second yarn around knit/purl work. */
+function frameNotes(s: ProjectSettings): string[] {
+  const edgeFrame = s.edges?.pattern === "frame" && s.edges.below + s.edges.above > 0;
+  if (s.borderStyle !== "frame" && !edgeFrame) return [];
+  return [
+    "Photo frame: the border is knitted in a second, contrasting yarn (B), so the decoder can find the piece in a photo by itself. Plain stockinette in B: knit it on right-side rows, purl it on wrong-side rows.",
+    s.construction.method === "round"
+      ? "In the round the side strips of the frame meet at the start of each round as one stripe. Work it with its own small ball of B, twisting the yarns where they meet so no hole forms, or knit the piece flat instead."
+      : "Work the side strips in intarsia: a small ball of B at each edge, twisting B and the main yarn around each other where they meet so no hole forms. Do not carry B across the back.",
+  ];
 }
 
 /** Settings that cannot work together, refused with the reason. */

@@ -263,6 +263,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
     photoReader({
       size: () => [grid.get()[0]!.length, grid.get().length],
       colour: () => colourGrid(car.get().id),
+      border: depth,
       apply: (cells, doubtful) => setCells(cells, doubtful),
     }),
     h(
