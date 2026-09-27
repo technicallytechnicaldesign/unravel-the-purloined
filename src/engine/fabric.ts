@@ -62,6 +62,59 @@ function purlBump(x: number, y: number, w: number, h: number, fill: string, tilt
   );
 }
 
+/** A decrease: one leg, leaning right (k2tog) or left (ssk), lying over its neighbour. */
+function decrease(x: number, y: number, w: number, h: number, fill: string, lean: 1 | -1, tilt: number): string {
+  const cx = x + w / 2;
+  const cy = y + h * 0.5;
+  return `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(w * 0.3)}" ry="${f(h * 0.62)}" transform="rotate(${f(lean * 38 + tilt)} ${f(cx)} ${f(cy)})" fill="${fill}" stroke="${INK}" stroke-width="1.1"/>`;
+}
+
+/** A yarn-over: an open eyelet, a ring of yarn round a hole. */
+function eyelet(x: number, y: number, w: number, h: number, fill: string): string {
+  const cx = x + w / 2;
+  const cy = y + h * 0.5;
+  return (
+    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(w * 0.42)}" ry="${f(h * 0.44)}" fill="${fill}" stroke="${INK}" stroke-width="0.9"/>` +
+    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(w * 0.24)}" ry="${f(h * 0.26)}" fill="${INK}" fill-opacity="0.82"/>`
+  );
+}
+
+/** A bobble: a round knot standing out of the fabric, with a shadow under it. */
+function bobble(x: number, y: number, w: number, h: number, fill: string): string {
+  const cx = x + w / 2;
+  const cy = y + h * 0.45;
+  const r = w * 0.62;
+  return (
+    `<ellipse cx="${f(cx + r * 0.12)}" cy="${f(cy + r * 0.3)}" rx="${f(r)}" ry="${f(r * 0.8)}" fill="${INK}" fill-opacity="0.25"/>` +
+    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="${fill}" stroke="${INK}" stroke-width="1.1"/>` +
+    `<path d="M${f(cx - r * 0.55)} ${f(cy - r * 0.1)} Q${f(cx)} ${f(cy - r * 0.75)} ${f(cx + r * 0.55)} ${f(cy - r * 0.1)}" fill="none" stroke="${INK}" stroke-opacity="0.35" stroke-width="0.8"/>`
+  );
+}
+
+/** A bead sitting on a knit stitch: a small glass sphere with a glint. */
+function bead(x: number, y: number, w: number, h: number): string {
+  const cx = x + w / 2;
+  const cy = y + h * 0.5;
+  const r = Math.min(w, h) * 0.3;
+  return `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="${INK}" fill-opacity="0.85" stroke="${INK}" stroke-width="0.8"/><circle cx="${f(cx - r * 0.35)}" cy="${f(cy - r * 0.35)}" r="${f(r * 0.28)}" fill="#f9f6ee"/>`;
+}
+
+/**
+ * A 4-stitch cable crossing, drawn once across its four cells: two strands of two stitches each,
+ * the front one over the back. C4F leans left going up (front strand from bottom right to top left),
+ * C4B leans right.
+ */
+function cableCross(x: number, y: number, w: number, h: number, fill: string, leftLean: boolean): string {
+  const [x0, x1] = [x + w, x + 3 * w];
+  const [top, bottom] = [y - h * 0.25, y + h * 1.25];
+  const strand = (from: number, to: number) => {
+    const d = `M${f(from)} ${f(bottom)} C${f(from)} ${f(y + h * 0.5)} ${f(to)} ${f(y + h * 0.5)} ${f(to)} ${f(top)}`;
+    return `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${f(w * 1.75)}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${fill}" stroke-width="${f(w * 1.55)}" stroke-linecap="round"/>`;
+  };
+  // Back strand first, then the front one over it.
+  return leftLean ? strand(x0, x1) + strand(x1, x0) : strand(x1, x0) + strand(x0, x1);
+}
+
 /** Draw a chart (row 0 at the bottom, col 0 on the left) as fabric. */
 export function fabricSvg(chart: readonly (readonly Visible[])[], opts: FabricOptions): string {
   const r = rng(opts.seed);
@@ -81,19 +134,40 @@ export function fabricSvg(chart: readonly (readonly Visible[])[], opts: FabricOp
 
   const parts: string[] = [`<rect width="${f(width)}" height="${f(height)}" fill="${PAPER}"/>`, `<rect x="${f(pad - 2)}" y="${f(pad - 2)}" width="${f(cols * w + 4)}" height="${f(total + 4)}" fill="${GAP}"/>`];
   let y = pad;
+  const lifted: string[] = [];
   for (let row = rows - 1; row >= 0; row--) {
     const h = heights[row]!;
     const drift = (r() - 0.5) * 2 * wobble; // a whole row can lean a little
+    // Cables and bobbles stand proud of the fabric: draw them after the row's flat stitches.
+    const raised: string[] = [];
+    let run = 0;
     chart[row]!.forEach((v, col) => {
       const x = pad + col * w + (r() - 0.5) * 1.6 * wobble;
       const yy = y + (r() - 0.5) * 1.4 * wobble;
       const tilt = (r() - 0.5) * 8 * wobble + drift;
       const fill = v === "B" ? colours.B : colours.A;
-      const body = v === "purl" ? purlBump(x, yy, w, h, fill, tilt) : knitV(x, yy, w, h, fill, tilt, r);
+      run = col > 0 && chart[row]![col - 1] === v ? run + 1 : 0;
+      if (v === "c4f" || v === "c4b") {
+        // Knit columns under the crossing; the crossing itself once per four cells.
+        parts.push(`<g data-row="${row}" data-col="${col}" data-state="${v}">${knitV(x, yy, w, h, fill, tilt, r)}</g>`);
+        if (run % 4 === 0) raised.push(`<g data-row="${row}" data-col="${col}" data-state="${v}-cross">${cableCross(pad + col * w, yy, w, h, fill, v === "c4f")}</g>`);
+        return;
+      }
+      const body =
+        v === "purl" ? purlBump(x, yy, w, h, fill, tilt)
+        : v === "yo" ? eyelet(x, yy, w, h, fill)
+        : v === "k2tog" ? decrease(x, yy, w, h, fill, 1, tilt)
+        : v === "ssk" ? decrease(x, yy, w, h, fill, -1, tilt)
+        : v === "mb" ? knitV(x, yy, w, h, fill, tilt, r)
+        : v === "pb" ? knitV(x, yy, w, h, fill, tilt, r) + bead(x, yy, w, h)
+        : knitV(x, yy, w, h, fill, tilt, r);
       parts.push(`<g data-row="${row}" data-col="${col}" data-state="${v}">${body}</g>`);
+      if (v === "mb") raised.push(`<g data-row="${row}" data-col="${col}" data-state="mb-knot">${bobble(x, yy, w, h, fill)}</g>`);
     });
+    lifted.push(...raised);
     y += h;
   }
+  parts.push(...lifted);
 
   const label = opts.label ?? `Drawing of knitted fabric, ${rows} rows of ${cols} stitches`;
   return [

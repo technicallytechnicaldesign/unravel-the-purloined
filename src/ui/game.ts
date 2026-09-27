@@ -68,7 +68,7 @@ export function mountGame(root: HTMLElement): void {
     );
     root.replaceChildren(
       guide,
-      h("div.folio-head", {}, h("p.mono", {}, `FOLIO / CASE FILES 01 TO 0${LEVELS.length}`), h("p.mono", {}, `${solved} OF ${LEVELS.length} SOLVED`)),
+      h("div.folio-head", {}, h("p.mono", {}, `FOLIO / CASE FILES 01 TO ${String(LEVELS.length).padStart(2, "0")}`), h("p.mono", {}, `${solved} OF ${LEVELS.length} SOLVED`)),
       h(
         "ol.folio",
         {},
@@ -79,7 +79,7 @@ export function mountGame(root: HTMLElement): void {
             h(
               "button.dossier",
               { type: "button", onclick: () => showCase(makeCase(l.n, newSeed())), "aria-label": `Open case file ${l.n}: ${l.name}` },
-              h("span.dossier-tab.mono", {}, `0${l.n}`),
+              h("span.dossier-tab.mono", {}, String(l.n).padStart(2, "0")),
               progress.solved[l.n] ? h("span.stamp.stamp-small.dossier-stamp", {}, "SOLVED") : "",
               h("span.dossier-name", {}, l.name),
               h("span.dossier-teaches", {}, l.teaches),
@@ -96,10 +96,10 @@ export function mountGame(root: HTMLElement): void {
     const rows = c.shown.length;
     const cols = c.shown[0]!.length;
     let zoom = 1;
-    const figure = h("div.scroll.evidence-img");
+    const figure = h("div.scroll.evidence-img", { tabindex: 0, role: "region", "aria-label": "Evidence photograph, scrolls" });
     const svg = fabricSvg(c.shown, {
       seed: c.seed,
-      stitch: c.tiles ? 16 : 30,
+      stitch: c.tiles || c.blocks ? 16 : 30,
       colours: { A: "#f9f6ee", B: "#c8201e" },
       label: `Evidence photograph: knitted fabric, ${rows} rows of ${cols} stitches. A description in words follows.`,
     });
@@ -113,7 +113,7 @@ export function mountGame(root: HTMLElement): void {
 
     const machine = h("div.machine", {}, h("p.hint", {}, `Locked. It switches on with hint ${c.machineAfter}.`));
     const grid = cellGrid({
-      cells: Array.from({ length: c.tiles?.rows ?? rows }, () => new Array<Bit>(c.tiles?.cols ?? cols).fill(0)),
+      cells: Array.from({ length: c.blocks?.rows ?? c.tiles?.rows ?? rows }, () => new Array<Bit>(c.blocks?.cols ?? c.tiles?.cols ?? cols).fill(0)),
       label: "Your copy of the evidence",
       colour,
       onChange: () => runMachine(),
@@ -177,7 +177,7 @@ export function mountGame(root: HTMLElement): void {
           "header.sheet-head",
           {},
           h("button.btn.btn-small", { type: "button", onclick: showList }, "← Folio"),
-          h("p.mono", {}, `CASE FILE 0${c.level.n} / PARCEL ${String(c.seed).padStart(3, "0")}`),
+          h("p.mono", {}, `CASE FILE ${String(c.level.n).padStart(2, "0")} / PARCEL ${String(c.seed).padStart(3, "0")}`),
           h("span.stamp", {}, "FICTION"),
         ),
         h("h2.section-label.sheet-title", {}, c.level.name),
@@ -200,7 +200,9 @@ export function mountGame(root: HTMLElement): void {
             h(
               "p.hint",
               {},
-              c.tiles
+              c.blocks
+                ? `One cell per block of ${c.blocks.unit === "cable" ? "six stitches" : c.blocks.unit === "lace" ? "four stitches" : "three stitches"}: switch it on for a 1. Row 1 is the bottom row of blocks.`
+                : c.tiles
                 ? "One cell per square: switch it on for a filled square. Row 1 is the bottom row of squares."
                 : `Mark each stitch as you see it: ${colour ? "switch red stitches to dark" : "switch purl bumps on"}. Row 1 is the bottom row of the image.`,
             ),

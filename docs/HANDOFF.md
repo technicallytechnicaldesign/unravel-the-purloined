@@ -17,7 +17,7 @@ Last updated 2026-09-27 (playtest round 1), project version 0.5.
 | Photo | Four-corner homography, cell sampling, readings for colour, knit/purl and lace against light, doubtful cells, corner settling, frame finding. On the decoder page as READ FROM A PHOTO. | `photo.ts`, `src/ui/photoread.ts`, `scripts/photo-experiment.ts` |
 | Lab | `lab.html`: two paths (a message first, or a piece to knit first) with stages that fold to summaries; alphabet designer folded below. `decode.html`: the decoder, fed from the lab by `handover.ts`. | `src/ui/encode.ts`, `decode.ts`, `designer.ts`, `handover.ts` |
 | Site frame | Knitted wordmarks: the site title on every page (linking home) and each page's own title (`data-wordmark`). The home page is only the three ways in. | `wordmark.ts`, `index.html` |
-| Game | The Purloined Parcel, seven levels, drawn fabric, a primer on knit, purl and the marker row. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
+| Game | The Purloined Parcel, ten levels (8 to 10 in cables, lace and bobbles, copied one cell per block), drawn fabric, a primer on knit, purl and the marker row. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
 Tests: `npm test` (about 285). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
@@ -42,7 +42,8 @@ Tests: `npm test` (about 285). Build: `npm run build`. Browser checks so far use
 - **Custom alphabets** live in project files, a per-browser draft and a share code (`UTPA1-...`). They cannot go in a parcel key: keys are for hidden messages, and motif alphabets show their letters openly.
 - **Network in cloud sessions** blocks many paper hosts (arxiv.org, proceedings.mlr.press, openaccess.thecvf.com, mdpi.com, news.mit.edu). GitHub works. Read papers from a local session, or ask the maker to allow those hosts.
 - **Stripes** are read from the cast-on edge; upside down they run backwards. The decoder assumes row 1 is the cast-on edge.
-- **The game's fabric renderer** (`fabric.ts`) draws only knit, purl and two colours. Game levels with the Phase 4 carriers are parked under Future directions in the roadmap, by the maker's choice.
+- **The game's fabric renderer** (`fabric.ts`) draws knit, purl, two colours, cable crossings, eyelets, decreases, bobbles and beads. Beads have no game level yet.
+- **Photo frames for knit/purl** need a second yarn at the sides, worked in intarsia (flat) or with its own ball at the round's start (round). The pattern says so; a knitter should check it reads kindly.
 - **Cable blocks** are 6 stitches wide per cell, so a 20-cell message is 120 stitches. Fine for a blanket; the width hint says so.
 
 ## Next phases
@@ -61,5 +62,4 @@ Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteri
 
 1. Any new playtest notes first.
 2. When the swatch photos arrive (8.3): run them through the photo reader, measure how many wrong cells fall among the doubtful ones, and finish 8.5.
-3. Game levels with cables, lace or bobbles need drawings for those stitches in `fabric.ts` first; a medium-sized job the maker has parked as a nice-to-have.
-4. Phase 9 once the maker has decided on hosting.
+3. Phase 9 once the maker has decided on hosting.
