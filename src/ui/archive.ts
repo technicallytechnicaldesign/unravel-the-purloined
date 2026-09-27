@@ -99,7 +99,7 @@ function indexView(showDrafts: boolean): HTMLElement {
       ? h(
           "section",
           {},
-          h("h3.step-title", {}, "In preparation"),
+          h("h2.step-title", {}, "In preparation"),
           h("p.hint", {}, "These open once every source they cite has been read and recorded."),
           h("ul.coming", {}, ...coming.map((e) => h("li", {}, h("span.mono", {}, `${e.archive} `), e.title, h("span.hint", {}, ` (${e.place})`)))),
         )

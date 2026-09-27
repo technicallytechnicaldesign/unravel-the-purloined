@@ -15,17 +15,17 @@
   </head>
   <body>
     <header class="masthead masthead-small">
-      <div class="labels">
-        <a class="mono" href="./">&larr; HOME</a>
-        <a class="mono" href="./archive.html">ARCHIVE</a>
-        <span class="mono">LAB 01</span>
-        <a class="mono" href="./game.html">THE PURLOINED PARCEL</a>
+      <a class="wordmark-link" href="./" data-wordmark>Unravel the Purloined: home</a>
+      <nav class="labels" aria-label="Site">
+          <a class="mono" href="./lab.html" aria-current="page">LAB</a>
+          <a class="mono" href="./decode.html">DECODE</a>
+          <a class="mono" href="./archive.html">ARCHIVE</a>
+          <a class="mono" href="./game.html">THE PURLOINED PARCEL</a>
         <span class="stamp">MODERN RECONSTRUCTION</span>
-      </div>
+      </nav>
       <h1 class="title title-small">The Lab</h1>
       <p class="lede">
-        Type a message and follow it, step by step, into a pattern you can knit. Then read a grid back into text, and see
-        how the checks catch a missed stitch.
+        Turn a message into a pattern you can knit, one step at a time, or design an alphabet of your own.
       </p>
     </header>
 
@@ -38,25 +38,14 @@
         <p class="warning mono">ENCODED IS NOT ENCRYPTED. Anyone with the table can read this, unless secure mode is on.</p>
       </section>
 
-      <section class="panel" aria-labelledby="dec-h">
-        <div class="panel-head">
-          <h2 id="dec-h" class="section-label">02 / Decode a grid</h2>
-        </div>
-        <p class="note">
-          Mark each cell as you see it on the right side, row 1 at the bottom. It does not matter which way up the fabric
-          is: the marker row tells the decoder.
-        </p>
-        <div id="decoder"></div>
-      </section>
       <section class="panel" aria-labelledby="des-h">
-        <div class="panel-head">
-          <h2 id="des-h" class="section-label">03 / Design an alphabet</h2>
-        </div>
-        <p class="note">
-          Draw a symbol for each character, and the lab checks how easily one could be mistaken for another in yarn,
-          including upside down or from the wrong side. The symbols are yours: nothing here calls them traditional.
-        </p>
-        <div id="designer"></div>
+        <details class="fold-panel">
+          <summary>
+            <h2 id="des-h" class="section-label">02 / Design an alphabet</h2>
+            <span class="hint">Draw your own symbols and use them in the encoder. The lab checks how easily one could be mistaken for another in yarn.</span>
+          </summary>
+          <div id="designer"></div>
+        </details>
       </section>
     </main>
 

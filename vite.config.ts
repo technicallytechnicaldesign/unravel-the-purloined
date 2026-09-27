@@ -5,7 +5,7 @@ export default defineConfig({
   base: "/unravel-the-purloined/",
   build: {
     rollupOptions: {
-      input: { main: "index.html", lab: "lab.html", game: "game.html", archive: "archive.html" },
+      input: { main: "index.html", lab: "lab.html", decode: "decode.html", game: "game.html", archive: "archive.html" },
     },
   },
   test: {
