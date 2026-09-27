@@ -4,7 +4,7 @@ import { h, download, svgToPng } from "./h";
 import { carrierControls, cipherControls, constructionControl, encodingControls, field, secureControls, select } from "./controls";
 import { encrypt, OVERHEAD, toLetters } from "../engine/secure";
 import { fromRecipe, RECIPES, type RecipeId } from "../engine/recipes";
-import { PATTERNS, patternsFor, type StitchPattern } from "../engine/stitches";
+import { BORDER_ONLY, PATTERNS, patternsFor, type StitchPattern } from "../engine/stitches";
 import { DENSITY_TEXT, FILLER_TEXTURE, type FillerId } from "../engine/stego";
 import { MOTIFS, type MotifId } from "../engine/motifs";
 import { describeKey, exportKey } from "../engine/key";
@@ -89,7 +89,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   const fillPatterns = () => {
     const carrier = car.get().id;
     const keepFiller = filler.value;
-    filler.replaceChildren(h("option", { value: "texture" }, FILLER_TEXTURE), ...patternsFor(carrier).map((k) => h("option", { value: k }, PATTERNS[k].name)));
+    filler.replaceChildren(h("option", { value: "texture" }, FILLER_TEXTURE), ...patternsFor(carrier).filter((k) => !BORDER_ONLY.includes(k)).map((k) => h("option", { value: k }, PATTERNS[k].name)));
     filler.value = [...filler.options].some((o) => o.value === keepFiller) ? keepFiller : "texture";
     for (const [sel, plain] of [[borderStyle, "Plain (same as the background)"], [edgePattern, "Same as the border"]] as const) {
       const keep = sel.value;
@@ -313,15 +313,16 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   syncHide();
   recipe.addEventListener("change", () => (applyRecipe(), render()));
 
-  // A photo frame: a solid border in colour B that the decoder's photo reader can find by itself.
+  // A photo frame: a solid border in the second yarn that the decoder's photo reader can find by itself.
   const frameNote = h("p.hint", {});
+  const framePattern = (): StitchPattern => (car.get().id === "two-colour" ? "solid-b" : "frame");
   const frameBtn = h(
     "button.btn.btn-small",
     {
       type: "button",
       onclick: () => {
         borderDepth.value = String(Math.max(2, Number(borderDepth.value) || 0));
-        borderStyle.value = "solid-b";
+        borderStyle.value = framePattern();
         render();
         refreshSums();
       },
@@ -329,11 +330,14 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     "Use a photo frame",
   );
   const syncFrame = () => {
-    const colour = car.get().id === "two-colour";
-    frameBtn.disabled = !colour;
-    frameNote.textContent = colour
-      ? "A solid border in colour B, at least 2 stitches deep, is a frame the decoder can find in a photo by itself. It is a look as much as a tool: skip it and tap the corners instead."
-      : "Photo frames need two colours: choose the two-colour carrier, or tap the corners when reading a photo.";
+    const id = car.get().id;
+    frameBtn.disabled = id === "stripes";
+    frameNote.textContent =
+      id === "stripes"
+        ? "Stripes carry their message row by row and have no border to frame."
+        : id === "two-colour"
+          ? "A solid border in colour B, at least 2 stitches deep, is a frame the decoder can find in a photo by itself. It is a look as much as a tool: skip it and tap the corners instead."
+          : "A border knitted in a second, contrasting yarn, at least 2 stitches deep, is a frame the decoder can find in a photo by itself. The sides are worked in intarsia; the pattern says how. Skip it and tap the corners instead, if you prefer.";
   };
   const frameBox = h("div", {}, h("div.actions", {}, frameBtn), frameNote);
 

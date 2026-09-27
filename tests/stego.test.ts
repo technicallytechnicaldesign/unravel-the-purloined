@@ -9,7 +9,7 @@ import { scatterRoute } from "../src/engine/stego";
 import { exportKey, importKey, keyCode, parseKeyCode, describeKey, type ParcelKey } from "../src/engine/key";
 import { decodeWithKey } from "../src/engine/unhide";
 import { decodeCells } from "../src/engine/steps";
-import { patternsFor } from "../src/engine/stitches";
+import { BORDER_ONLY, patternsFor } from "../src/engine/stitches";
 
 const MOTIF_IDS = Object.keys(MOTIFS) as MotifId[];
 const ALL_TURNS = [false, true].flatMap((rotated180) => [false, true].flatMap((mirrored) => [false, true].map((inverted) => ({ rotated180, mirrored, inverted }))));
@@ -69,7 +69,7 @@ describe("hidden projects", () => {
 
   for (const carrier of ["purl-relief", "two-colour"] as const)
     it(`scatter, ${carrier}: every filler, density and alphabet reads back with the key, from any turn`, () => {
-      for (const filler of ["texture", ...patternsFor(carrier)] as const)
+      for (const filler of ["texture", ...patternsFor(carrier).filter((p) => !BORDER_ONLY.includes(p))] as const)
         for (const density of [2, 3, 4] as const)
           for (const encoding of encodings) {
             const p = createProject(base({ encoding, carrier: { id: carrier }, hide: { mode: "scatter", seed: 7, filler, density }, cipher: { kind: "vigenere", key: "DUPIN" } }), "s");

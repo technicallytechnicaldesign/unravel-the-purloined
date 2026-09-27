@@ -14,6 +14,8 @@ const CORNERS = ["top left", "top right", "bottom right", "bottom left"];
 export interface PhotoHooks {
   /** Stitches and rows the decoder grid has now. */
   size(): [cols: number, rows: number];
+  /** Border depth set in the decoder: those cells are frame, not message, and are not read. */
+  border(): number;
   /** Whether the carrier chosen in the decoder is colourwork. */
   colour(): boolean;
   /** Fill the grid (row 0 at the bottom) and mark the doubtful cells. */
@@ -206,7 +208,7 @@ export function photoReader(hooks: PhotoHooks): HTMLElement {
     const c = Math.round(Number(cols.value));
     const r = Math.round(Number(rows.value));
     if (!(c >= 2 && c <= 60 && r >= 2 && r <= 60)) return void (status.textContent = "Stitches and rows must be whole numbers from 2 to 60.");
-    const out = readPhoto(img, quad, c, r, reading.value as Feature, settle.checked);
+    const out = readPhoto(img, quad, c, r, reading.value as Feature, settle.checked, hooks.border());
     hooks.apply(out.cells, out.doubtful);
     status.textContent = `Read ${c * r} cells into the grid below; ${out.doubtful.length ? `${out.doubtful.length} look doubtful and are marked with a dashed outline. Check those against the photo.` : "none look doubtful."} The checks will point at anything that still looks wrong.`;
   };

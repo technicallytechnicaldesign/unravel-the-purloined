@@ -213,16 +213,18 @@ const meanL = (s: CellSample[], labels: number[], g: number) => {
  * Nudge each tapped corner, a fraction of a cell at a time, to where the cells split most cleanly into
  * two groups. Taps are rarely exact, and a shape reading needs the grid to sit on the stitches.
  */
-export function refineQuad(img: RGBAImage, quad: Quad, cols: number, rows: number, feature: Feature, rounds = 3): Quad {
-  const score = (q: Quad) => {
-    const c = classify(sampleCells(img, q, cols, rows), feature).confidence.flat();
-    return c.reduce((t, x) => t + x, 0) / c.length;
-  };
+export function refineQuad(img: RGBAImage, quad: Quad, cols: number, rows: number, feature: Feature, rounds = 3, border = 0): Quad {
+  // Knit/purl with a frame: align on the frame, where every border cell should be frame yarn and
+  // the ring just inside should not. Otherwise align on how cleanly the message cells split in two
+  // (in colourwork the frame's yarn is also a message colour, so the frame says less).
+  const framed = border > 0 && rows > 2 * border + 1 && cols > 2 * border + 1 && feature !== "colour" && feature !== "hue";
+  const score = (q: Quad) => (framed ? frameFit(sampleCells(img, q, cols, rows), border) : meanConfidence(classifyInside(sampleCells(img, q, cols, rows), feature, border)));
   let best = quad.map((p) => [...p] as [number, number]) as Quad;
   let bestScore = score(best);
   const cell = Math.hypot(quad[1][0] - quad[0][0], quad[1][1] - quad[0][1]) / cols;
-  for (let round = 0; round < rounds; round++) {
-    const step = (cell / 3) / (round + 1);
+  const passes = framed ? rounds + 2 : rounds;
+  for (let round = 0; round < passes; round++) {
+    const step = cell / 3 / (round + 1);
     for (let k = 0; k < 4; k++)
       for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [-1, 1], [1, -1]]) {
         const q = best.map((p) => [...p] as [number, number]) as Quad;
@@ -234,19 +236,53 @@ export function refineQuad(img: RGBAImage, quad: Quad, cols: number, rows: numbe
   return best;
 }
 
+const meanConfidence = (r: PhotoRead) => {
+  const c = r.confidence.flat();
+  return c.reduce((t, x) => t + x, 0) / c.length;
+};
+
+/** How well a grid sits on a frame: the ring inside far from the frame's colour, the frame cells close to it. */
+function frameFit(samples: CellSample[][], border: number): number {
+  const rows = samples.length, cols = samples[0]!.length;
+  const inFrame: CellSample[] = [], inside: CellSample[] = [];
+  samples.forEach((row, r) => row.forEach((s, c) => {
+    const depth = Math.min(r, c, rows - 1 - r, cols - 1 - c);
+    if (depth < border) inFrame.push(s);
+    else if (depth === border) inside.push(s);
+  }));
+  const median = [0, 1, 2].map((k) => [...inFrame.map((s) => s.lab[k]!)].sort((a, b) => a - b)[inFrame.length >> 1]!);
+  const dist = (s: CellSample) => Math.hypot(s.lab[0] * 0.5 - median[0]! * 0.5, s.lab[1] - median[1]!, s.lab[2] - median[2]!);
+  const mean = (list: CellSample[]) => list.reduce((t, s) => t + dist(s), 0) / (list.length || 1);
+  return mean(inside) - mean(inFrame);
+}
+
 /** The whole reading: optionally settle the corners, then sample and classify. */
-export function readPhoto(img: RGBAImage, quad: Quad, cols: number, rows: number, feature: Feature, refine = false): PhotoRead {
-  const q = refine ? refineQuad(img, quad, cols, rows, feature) : quad;
-  return classify(sampleCells(img, q, cols, rows), feature);
+export function readPhoto(img: RGBAImage, quad: Quad, cols: number, rows: number, feature: Feature, refine = false, border = 0): PhotoRead {
+  const q = refine ? refineQuad(img, quad, cols, rows, feature, 3, border) : quad;
+  return classifyInside(sampleCells(img, q, cols, rows), feature, border);
+}
+
+/**
+ * Classify only the cells inside a border `border` cells deep. A frame is not message, and in a
+ * different yarn or stitch it would pull the two groups apart. Border cells come back as 0, sure.
+ */
+function classifyInside(samples: CellSample[][], feature: Feature, border: number): PhotoRead {
+  const rows = samples.length, cols = samples[0]?.length ?? 0;
+  if (!border || rows <= 2 * border || cols <= 2 * border) return classify(samples, feature);
+  const inner = classify(samples.slice(border, rows - border).map((r) => r.slice(border, cols - border)), feature);
+  const cells = Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => (inner.cells[r - border]?.[c - border] ?? 0) as Bit));
+  const confidence = Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => inner.confidence[r - border]?.[c - border] ?? 1));
+  return { cells, confidence, doubtful: inner.doubtful.map(([r, c]): [number, number] => [r + border, c + border]) };
 }
 
 export type FrameResult = { ok: true; quad: Quad; note: string } | { ok: false; message: string };
 
 /**
- * Find a knitted frame (a border in the darker yarn, colour B) without taps. The middle of the
- * photo is taken to be fabric: its colours split into the two yarns, and every pixel nearer the
- * darker yarn is marked. The biggest joined patch of marked pixels is the frame (with any message
- * stitches that touch it); its farthest points towards each corner are the corners of the piece.
+ * Find a knitted frame (a border in its own yarn) without taps. The photo's colours are split into
+ * four groups; in each group, every joined patch that stays clear of the photo's edges is a
+ * candidate, and the one whose corners enclose the most wins: the outermost ring of the piece,
+ * whatever its colour. A plain piece on a contrasting table is its own frame, so its outline wins.
+ * The farthest points towards each corner are the corners of the piece.
  * Works while the piece is turned less than about 45 degrees in the photo.
  */
 export function findFrame(img: RGBAImage): FrameResult {
@@ -254,52 +290,123 @@ export function findFrame(img: RGBAImage): FrameResult {
   const step = Math.max(1, Math.ceil(Math.max(img.width, img.height) / 240));
   const W = Math.floor(img.width / step);
   const H = Math.floor(img.height / step);
-  const colours: [number, number, number][] = [];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) colours.push(lab(pixel(img, x * step, y * step)));
-  const middle = colours.filter((_, i) => {
-    const x = i % W, y = Math.floor(i / W);
-    return x > W / 4 && x < (3 * W) / 4 && y > H / 4 && y < (3 * H) / 4;
-  });
-  const split = classify([middle.map((lab) => ({ lab, across: 0, edges: [], patch: [] }))], "colour", 0);
-  const mean = (b: 0 | 1) => {
-    const m = middle.filter((_, i) => split.cells[0]![i] === b);
-    return m.length ? ([0, 1, 2].map((k) => m.reduce((t, c) => t + c[k]!, 0) / m.length) as [number, number, number]) : undefined;
-  };
-  const dark = mean(1);
-  const light = mean(0);
-  if (!dark || !light) return { ok: false, message: "The middle of the photo is all one colour, so no frame colour can be told apart. Tap the corners instead." };
-  const d2 = (a: number[], b: number[]) => a.reduce((t, x, k) => t + (x - b[k]!) ** 2, 0);
-  const gap = Math.sqrt(d2(dark, light));
-  const mark = colours.map((c) => d2(c, dark) < d2(c, light) && Math.sqrt(d2(c, dark)) < gap * 0.6);
-
-  // Largest 4-connected patch of marked pixels.
-  const seen = new Uint8Array(W * H);
-  let best: number[] = [];
-  for (let i = 0; i < W * H; i++) {
-    if (!mark[i] || seen[i]) continue;
-    const patch: number[] = [];
-    const stack = [i];
-    seen[i] = 1;
-    while (stack.length) {
-      const j = stack.pop()!;
-      patch.push(j);
-      const x = j % W, y = Math.floor(j / W);
-      for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]] as const)
-        if (nx >= 0 && ny >= 0 && nx < W && ny < H) {
-          const k = ny * W + nx;
-          if (mark[k] && !seen[k]) (seen[k] = 1), stack.push(k);
+  const colours: number[][] = [];
+  // Shade scales all three channels together, so each channel's share of the total stays put:
+  // one yarn stays one group from the lit side to the shadowed side. A gentle log-brightness
+  // term still tells a grey table from cream yarn.
+  // Each sample averages a block of pixels, which also calms the grain of a photo.
+  const block = Math.max(step, 3);
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      let r = 0, g = 0, b = 0;
+      for (let dy = 0; dy < block; dy++)
+        for (let dx = 0; dx < block; dx++) {
+          const [pr, pg, pb] = pixel(img, x * step + dx - (block - step) / 2, y * step + dy - (block - step) / 2);
+          (r += pr), (g += pg), (b += pb);
         }
+      const sum = r + g + b + block * block;
+      colours.push([(300 * r) / sum, (300 * g) / sum, 20 * Math.log(sum / (block * block))]);
     }
-    if (patch.length > best.length) best = patch;
+  const d2 = (a: number[], b: number[]) => a.reduce((t, x, k) => t + (x - b[k]!) ** 2, 0);
+
+  // 4-means, started from points spread far apart.
+  const centres: number[][] = [colours[0]!];
+  while (centres.length < 4) centres.push(colours.reduce((best, c) => (Math.min(...centres.map((m) => d2(c, m))) > Math.min(...centres.map((m) => d2(best, m))) ? c : best)));
+  let group = new Uint8Array(colours.length);
+  for (let it = 0; it < 12; it++) {
+    group = Uint8Array.from(colours, (c) => centres.reduce((bi, m, i) => (d2(c, m) < d2(c, centres[bi]!) ? i : bi), 0));
+    centres.forEach((_, g) => {
+      const m = colours.filter((_, i) => group[i] === g);
+      if (m.length) centres[g] = [0, 1, 2].map((k) => m.reduce((t, c) => t + c[k]!, 0) / m.length);
+    });
   }
-  if (best.length < (W * H) / 200) return { ok: false, message: "No frame found: nothing in the darker yarn is big enough. Tap the corners instead." };
-  const pts = best.map((j): Point => [(j % W) * step + step / 2, Math.floor(j / W) * step + step / 2]);
-  const touches = best.some((j) => { const x = j % W, y = Math.floor(j / W); return x === 0 || y === 0 || x === W - 1 || y === H - 1; });
-  if (touches) return { ok: false, message: "The darker yarn runs off the edge of the photo, so the frame cannot be told from the background. Leave some space around the piece, or tap the corners." };
-  const by = (f: (p: Point) => number, max: boolean) => pts.reduce((a, p) => ((max ? f(p) > f(a) : f(p) < f(a)) ? p : a));
-  const quad: Quad = [by(([x, y]) => x + y, false), by(([x, y]) => x - y, true), by(([x, y]) => x + y, true), by(([x, y]) => x - y, false)];
-  // Pixel centres sit half a sample inside the true edge: push each corner outwards by that much.
-  const cx = quad.reduce((t, p) => t + p[0], 0) / 4, cy = quad.reduce((t, p) => t + p[1], 0) / 4;
-  const out = quad.map(([x, y]): Point => [x + Math.sign(x - cx) * step / 2, y + Math.sign(y - cy) * step / 2]) as Quad;
-  return { ok: true, quad: out, note: "Frame found. Check the corner marks sit on the outer corners of the frame; drag any that do not." };
+
+  let best: { quad: Quad; area: number } | undefined;
+  let edgeOnly = false;
+  for (let g = 0; g < 4; g++) {
+    // Bridge the dark gaps between stitches: grow the group by two samples before joining pixels
+    // into patches, but trace the sides from the group's own pixels only.
+    const own = Uint8Array.from(group, (v) => (v === g ? 1 : 0));
+    const grown = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) {
+      if (!own[i]) continue;
+      const x = i % W, y = Math.floor(i / W);
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < W && ny < H) grown[ny * W + nx] = 1;
+      }
+    }
+    const seen = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) {
+      if (!own[i] || seen[i]) continue;
+      const patch: number[] = [];
+      const stack = [i];
+      seen[i] = 1;
+      let touches = false;
+      while (stack.length) {
+        const j = stack.pop()!;
+        if (own[j]) patch.push(j);
+        const x = j % W, y = Math.floor(j / W);
+        if (own[j] && (x === 0 || y === 0 || x === W - 1 || y === H - 1)) touches = true;
+        for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]] as const)
+          if (nx >= 0 && ny >= 0 && nx < W && ny < H) {
+            const k = ny * W + nx;
+            if (grown[k] && !seen[k]) (seen[k] = 1), stack.push(k);
+          }
+      }
+      if (patch.length < (W * H) / 200) continue;
+      if (touches) {
+        edgeOnly = true;
+        continue;
+      }
+      const quad = fitSides(patch, W, step);
+      if (!quad) continue;
+      const area = Math.abs(quad.reduce((t, [x, y], k) => { const [nx, ny] = quad[(k + 1) % 4]!; return t + x * ny - nx * y; }, 0)) / 2;
+      if (!best || area > best.area) best = { quad, area };
+    }
+  }
+  if (!best || best.area < (img.width * img.height) / 50)
+    return { ok: false, message: edgeOnly ? "No frame found clear of the photo's edges. Leave some table showing around the piece, or tap the corners." : "No frame found. Tap the corners instead." };
+  return { ok: true, quad: best.quad, note: "Frame found. Check the corner marks sit on the outer corners of the frame; drag any that do not." };
+}
+
+/**
+ * The four sides of a patch as straight lines, met at the corners. Each side is traced (the topmost
+ * pixel of the patch in each column along the top, and so on), trimmed to its middle, and fitted by
+ * least squares after dropping the points farthest from a first fit: stitches are bumpy, and one
+ * rounded corner stitch should not decide where the corner is.
+ */
+function fitSides(patch: number[], W: number, step: number): Quad | undefined {
+  const top = new Map<number, number>(), bottom = new Map<number, number>(), left = new Map<number, number>(), right = new Map<number, number>();
+  for (const j of patch) {
+    const x = j % W, y = Math.floor(j / W);
+    if (!top.has(x) || y < top.get(x)!) top.set(x, y);
+    if (!bottom.has(x) || y > bottom.get(x)!) bottom.set(x, y + 1);
+    if (!left.has(y) || x < left.get(y)!) left.set(y, x);
+    if (!right.has(y) || x > right.get(y)!) right.set(y, x + 1);
+  }
+  // Fit v = a u + b to the middle 60% of a traced side, twice, the second time without the worst quarter.
+  const fit = (side: Map<number, number>): [number, number] | undefined => {
+    const us = [...side.keys()].sort((a, b) => a - b);
+    if (us.length < 5) return undefined;
+    const lo = us[Math.floor(us.length * 0.2)]!, hi = us[Math.ceil(us.length * 0.8) - 1]!;
+    let pts = us.filter((u) => u >= lo && u <= hi).map((u) => [u + 0.5, side.get(u)!] as const);
+    const ls = (p: readonly (readonly [number, number])[]): [number, number] => {
+      const n = p.length, su = p.reduce((t, q) => t + q[0], 0), sv = p.reduce((t, q) => t + q[1], 0);
+      const suu = p.reduce((t, q) => t + q[0] * q[0], 0), suv = p.reduce((t, q) => t + q[0] * q[1], 0);
+      const a = (n * suv - su * sv) / (n * suu - su * su || 1);
+      return [a, (sv - a * su) / n];
+    };
+    const first = ls(pts);
+    pts = [...pts].sort((p, q) => Math.abs(p[1] - first[0] * p[0] - first[1]) - Math.abs(q[1] - first[0] * q[0] - first[1])).slice(0, Math.max(3, Math.ceil(pts.length * 0.75)));
+    return ls(pts);
+  };
+  const t = fit(top), b = fit(bottom), l = fit(left), r = fit(right);
+  if (!t || !b || !l || !r) return undefined;
+  // top/bottom: y = a x + c; left/right: x = a y + c. Meet them.
+  const meet = ([ha, hc]: [number, number], [va, vc]: [number, number]): Point => {
+    const y = (ha * vc + hc) / (1 - ha * va);
+    return [(va * y + vc) * step, y * step];
+  };
+  return [meet(t, l), meet(t, r), meet(b, r), meet(b, l)];
 }
