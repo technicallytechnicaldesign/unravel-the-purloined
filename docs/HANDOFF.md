@@ -32,8 +32,6 @@ Tests: `npm test` (296 passing on 2026-09-27, using the verified D: path because
 
 ## Loose ends
 
-- **P2.1 publication.** The visual flow is committed on `task/visual-flow-20260927`, but the branch push awaits explicit publication approval and restored GitHub authentication.
-
 - **T11 is done** (21 of 23 checked). Six places where the drafts say more or other than their sources are listed in `docs/research/research-notes-2026-09-26.md` for the maker. S03 and S04 need a human (book pages), so the Belgium exhibit cannot publish yet. Smithsonian and nsa.gov block scripted fetches even locally; use Wayback snapshots.
 - **G5** needs a real screen-reader session before it is ticked.
 - **XLSX** has only been checked by tests and by parsing; nobody has opened one in Excel yet.
