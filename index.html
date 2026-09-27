@@ -6,6 +6,9 @@
     <title>Unravel the Purloined</title>
     <meta name="description" content="A museum of craft resistance, and a lab for hiding messages in thread." />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23f3eee2'/%3E%3Ccircle cx='5' cy='5' r='2.4' fill='%23c8201e'/%3E%3C/svg%3E" />
+    <script>
+      try { if (!sessionStorage.getItem("utp-intro-seen")) document.documentElement.classList.add("intro-pending"); } catch {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,6 +17,15 @@
     />
   </head>
   <body>
+    <div id="intro" class="intro" role="dialog" aria-modal="true" aria-label="A message in stitches">
+      <div class="intro-inner">
+        <p class="intro-kicker mono">FIELD NOTE 00 / A MESSAGE IN STITCHES</p>
+        <div class="intro-wordmark" data-wordmark aria-hidden="true">UNRAVEL THE PURLOINED</div>
+        <p class="intro-caption mono">DECODING THE TITLE</p>
+        <div class="intro-track" aria-hidden="true"><span></span></div>
+        <button class="intro-skip mono" type="button">SKIP INTRO →</button>
+      </div>
+    </div>
     <header class="masthead masthead-home">
       <div class="labels">
         <span class="mono">ARCHIVE 00.1</span>
@@ -29,9 +41,10 @@
 
     <main>
       <nav class="doors" aria-label="Where to go">
-        <a class="door" href="./lab.html"><span class="mono">01</span><b>Open the lab</b><span>Turn a message into a knitting pattern, or design your own alphabet.</span></a>
-        <a class="door" href="./archive.html"><span class="mono">02</span><b>Visit the archive</b><span>Stories of cloth that spoke, each with its evidence.</span></a>
-        <a class="door" href="./game.html"><span class="mono">03</span><b>Play The Purloined Parcel</b><span>Read the messages hidden in knitted parcels.</span></a>
+        <a class="door" href="./lab.html"><span class="mono">01</span><b>Encode in the lab</b><span>Turn a message into a knitting pattern, or design your own alphabet.</span></a>
+        <a class="door" href="./decode.html"><span class="mono">02</span><b>Decode a grid</b><span>Mark the stitches of a knitted piece and read the message back.</span></a>
+        <a class="door" href="./archive.html"><span class="mono">03</span><b>Visit the archive</b><span>Explore the evidence and the stories being prepared.</span></a>
+        <a class="door" href="./game.html"><span class="mono">04</span><b>Play The Purloined Parcel</b><span>Read the messages hidden in knitted parcels.</span></a>
       </nav>
     </main>
 

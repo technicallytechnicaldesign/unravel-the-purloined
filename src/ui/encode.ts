@@ -279,8 +279,8 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
     out.querySelector(".chart-svg")!.innerHTML = svg;
   };
 
-  const enc = encodingControls(render);
-  const car = carrierControls(() => (fillPatterns(), recipe.value !== "none" && applyRecipe(), render()), true);
+  const enc = encodingControls(render, true);
+  const car = carrierControls(() => (fillPatterns(), recipe.value !== "none" && applyRecipe(), render()), true, true);
   const con = constructionControl(render);
   const cip = cipherControls(render);
   const sec = secureControls(render, "Keep the error checks on: one misread letter and the message will not open. Hamming repairs one cell per letter.");
