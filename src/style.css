@@ -288,7 +288,8 @@ a {
   padding-bottom: 24px;
 }
 .title-small {
-  font-size: clamp(2.8rem, 10vw, 5rem);
+  margin-top: 14px;
+  font-size: clamp(2.1rem, 8vw, 4rem);
 }
 .hint {
   display: block;
@@ -854,32 +855,111 @@ a {
   margin: 6px 0;
 }
 
-/* Builder: the encoder's numbered stages */
+/* Builder: two ways in, then stages that fold to a summary */
 .builder {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 20px;
+}
+.paths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 12px;
+}
+.path {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--knit);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+.path b {
+  font-size: 1.3rem;
+  font-weight: 800;
+  font-stretch: 75%;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.path span {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+.path:hover {
+  border-color: var(--red);
+  box-shadow: 4px 4px 0 var(--red);
+}
+.path:focus-visible,
+.stage summary:focus-visible,
+.linkish:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+.path-note {
+  margin: 0;
+  color: var(--ink-2);
+}
+.linkish {
+  padding: 0;
+  font: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.stages {
+  display: grid;
+  gap: 6px;
 }
 .stage {
   min-width: 0;
-  margin: 0;
-  padding: 8px 12px 10px;
   background: var(--paper-2);
   border: 1.5px solid var(--ink);
 }
-.stage legend {
-  padding: 0 6px;
+.stage summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  list-style: none;
+}
+.stage summary::-webkit-details-marker {
+  display: none;
+}
+.stage summary::after {
+  content: "+";
+  margin-left: auto;
+  font: 600 1rem var(--mono);
+}
+.stage[open] summary::after {
+  content: "−";
+}
+.stage[open] summary {
+  border-bottom: 1px solid var(--rule);
+}
+.stage-name {
   font-weight: 600;
-  background: var(--paper);
-  border: 1.5px solid var(--ink);
+}
+.stage-sum {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.stage[open] .stage-sum {
+  display: none;
+}
+.stage-body {
+  padding: 10px 12px 12px;
 }
 .stage .field {
   margin-bottom: 8px;
-}
-.builder .btn-go {
-  justify-self: start;
-  align-self: end;
 }
 .section-line {
   margin: 4px 0;
@@ -958,4 +1038,221 @@ a {
 }
 .findings li.note .mono {
   color: var(--ink-2);
+}
+
+/* Knitted wordmark: the title as five-bit purl dots, one column per letter */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.wordmark {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: clamp(2px, 0.6vw, 6px);
+  max-width: 760px;
+}
+.wm-col {
+  display: grid;
+  gap: clamp(2px, 0.6vw, 6px);
+}
+.wm-space {
+  opacity: 0.4;
+}
+.wm-cell {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid var(--ink);
+}
+.wm-cell.purl::after {
+  content: "";
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.wm-letter {
+  margin-top: 0.3em;
+  font: 600 clamp(0.55rem, 1.9vw, 1.05rem) var(--mono);
+  text-align: center;
+  letter-spacing: 0;
+}
+.has-wordmark.title {
+  margin: 22px 0 18px;
+}
+.wordmark-link {
+  display: block;
+  max-width: 300px;
+  margin: 16px 0 4px;
+  text-decoration: none;
+}
+.wordmark-link .wordmark {
+  gap: 2px;
+}
+.wordmark-link .wm-col {
+  gap: 2px;
+}
+.wordmark-link .wm-letter {
+  font-size: 0.5rem;
+}
+.wordmark-link:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 4px;
+}
+
+/* Landing page: the ways in */
+.doors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+.door {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 18px;
+  border: 2px solid var(--ink);
+  background: var(--knit);
+  color: var(--ink);
+  text-decoration: none;
+}
+.door b {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-stretch: 75%;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+.door span:last-child {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+.door:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.door:hover span:last-child {
+  color: var(--paper);
+}
+.door:first-child {
+  border-color: var(--red);
+  box-shadow: 4px 4px 0 var(--red);
+}
+.door:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+.masthead-home {
+  padding-bottom: 20px;
+}
+@media (max-width: 600px) {
+  .masthead-home {
+    padding-top: 18px;
+  }
+  .masthead-home .lede {
+    font-size: 1rem;
+  }
+  .doors {
+    gap: 8px;
+    margin: 18px 0;
+  }
+  .door {
+    padding: 12px 14px;
+    gap: 2px;
+  }
+  .door b {
+    font-size: 1.15rem;
+  }
+  .door span:last-child {
+    font-size: 0.88rem;
+  }
+}
+.labels a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+}
+.labels a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+}
+.fold-panel > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.fold-panel > summary::-webkit-details-marker {
+  display: none;
+}
+.fold-panel > summary .section-label::after {
+  content: "  +";
+}
+.fold-panel[open] > summary .section-label::after {
+  content: "  −";
+}
+.fold-panel > summary:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 4px;
+}
+.fold-panel > summary .hint {
+  font-weight: 400;
+}
+
+/* Game primer */
+.primer-box {
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  background: var(--knit);
+  border: 2px solid var(--ink);
+}
+.primer-box > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.primer-box > summary:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+.primer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.primer-step p {
+  margin: 8px 0;
+}
+.primer-img svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.primer-key {
+  line-height: 2.2;
+}
+.primer-cell {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: default;
+}
+.primer-inline {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  vertical-align: middle;
+}
+.primer-list {
+  margin: 6px 0;
+  padding-left: 1.2em;
+}
+.primer-title {
+  display: inline;
+  margin: 0;
+  font-size: 0.85rem;
 }

@@ -5,27 +5,11 @@
 import { h, download } from "./h";
 import { field, select } from "./controls";
 import { cellGrid } from "./cellgrid";
+import { loadDraft as load, saveDraft as save } from "./handover";
 import { checkAlphabet, emptyAlphabet, exportAlphabet, importAlphabet, legendSvg, MAX_SIZE, MIN_SIZE, suggestSymbols, toCells, toRows, type Alphabet } from "../engine/alphabet";
 import { type Bit } from "../engine/fivebit";
 
-const DRAFT = "utp-alphabet-draft";
 const DEFAULT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.?";
-
-const load = (): Alphabet | undefined => {
-  try {
-    const a = importAlphabet(localStorage.getItem(DRAFT) ?? "");
-    return typeof a === "string" ? undefined : a;
-  } catch {
-    return undefined;
-  }
-};
-const save = (a: Alphabet) => {
-  try {
-    localStorage.setItem(DRAFT, exportAlphabet(a));
-  } catch {
-    // Storage may be blocked; the designer works without it.
-  }
-};
 
 /** Crop or pad drawn rows to a new size, keeping the top-left corner. */
 const resize = (rows: string[], w: number, ht: number): string[] => Array.from({ length: ht }, (_, r) => (rows[r] ?? "").slice(0, w).padEnd(w, "."));
@@ -191,10 +175,10 @@ export function mountDesigner(root: HTMLElement, use: (a: Alphabet) => void): vo
             const check = checkAlphabet(a);
             if (!check.usable) message.textContent = "Fix the findings marked PROBLEM first.";
             else if (Object.keys(a.symbols).length < 2) message.textContent = "Draw at least one symbol first.";
-            else (use(a), (message.textContent = `"${a.name}" is ready in the encoder and the decoder, as "Your alphabet".`));
+            else (use(a), (message.textContent = `"${a.name}" is ready in the encoder as "Your alphabet". The decoder page offers it too.`));
           },
         },
-        "Use in the encoder and decoder ↑",
+        "Use in the encoder ↑",
       ),
       btn("Print the legend", printLegend),
       btn("Alphabet (JSON)", () => download(`${a.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "alphabet"}.json`, "application/json", exportAlphabet(a))),

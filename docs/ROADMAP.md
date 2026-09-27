@@ -83,6 +83,16 @@ Real encryption, kept apart from the historical ciphers (CONTRIBUTING.md honesty
 - [x] **6.3 Lab UI.** "Secure mode" in encoder and decoder, apart from the classical cipher (which hides while it is on). Sealing waits for typing to pause; the decoder reads and checks the letters first, then opens them. Print sheet says the passphrase is not on it. Done when a pattern goes encoder to decoder and opens in Chromium at 375px with no axe issues. (Done 2026-09-27.)
 - [ ] **6.4 Review the copy.** The maker reads the secure-mode wording and size warning in the lab and says whether it is clear and calm enough.
 
+## Phase P1: first playtest (maker's notes, 2026-09-27)
+
+- [x] **P1.1 Knitted wordmark.** The title chart ("UNRAVEL THE PURLOINED" in five-bit purl dots, one column per letter, letters underneath, dim columns for spaces) becomes the title on every page, with the words as its accessible name. Done when every page shows it, it fits 375px, and screen readers read the title as text. (Done 2026-09-27: `src/ui/wordmark.ts`, large on the home page, small and linking home on the others.)
+- [x] **P1.2 A quiet landing page.** Only what the project is and where to go: Open the lab, Visit the archive, Play The Purloined Parcel. No archive content or interactives. Done when the page fits roughly one screen on a phone. (Done 2026-09-27: about one screen at 375 × 900.)
+- [x] **P1.3 Decoder on its own page.** `decode.html` holds the decoder and alphabet reading; the lab's "try it in the decoder" hands the pattern over. Done when a pattern goes from the lab to the decoder page and decodes. (Done 2026-09-27: handover through sessionStorage, or a downloaded file if storage is blocked; the alphabet draft is offered there too.)
+- [x] **P1.4 Lab as guided paths.** Start with a choice: "I have a message to encode" (message, then encoding, carrier, size, border, hiding) or "I want to knit a..." (scarf, cowl, hat band, swatch first, then the message and the rest). One stage open at a time; finished stages fold to a one-line summary and reopen on click. Done when both paths reach a pattern, at 375px, with keyboard and no axe issues. (Done 2026-09-27: the alphabet designer also folds away until opened.)
+- [x] **P1.5 Game tutorial.** A short, skippable walkthrough before the first case: how the marker row shows which way up the fabric is, and how to mark knit and purl (what each looks like, which is 0 and which is 1). For players new to knitting or to codes. Done when a first-time player sees it once, can reopen it, and it works without seeing the images. (Done 2026-09-27: `src/ui/tutorial.ts`, opens on the first visit, again from the folio or inside any case.)
+
+Maker's answers on Phase 8 (2026-09-27): will photograph the swatches as asked (8.3). Offer both a knitted frame the lab finds and manual corner taps, with a toggle (8.6). A learned stitch model is on hold until time allows (moved to Future directions).
+
 ## Phase 7: design your own alphabet
 
 People draw their own symbols, see how safe they are to knit, and use them like the built-in motif alphabets. Invented symbols are the maker's own: the lab never calls them traditional.
@@ -101,7 +111,7 @@ Read a photo of fabric into the decoder's grid, in the browser, with a person ch
 - [ ] **8.3 Real photo test set.** Photos of the P4.7 swatches, whose charts are known: flat in daylight, flat in lamp light, side light, and lace against a window. Store them with their charts and run the reader over them, reporting as the experiment does. Needs the maker.
 - [ ] **8.4 Read a photo in the lab.** In the decoder: open a photo (camera on phones), tap or drag the four corners with a magnifier and arrow keys to nudge, type stitches and rows, pick colour or knit/purl, optionally settle the corners. The result fills the grid with doubtful cells marked for checking. Nothing leaves the browser. Done when a photo of a two-colour chart goes to decoded text at 375px, with no axe issues and a keyboard-only way to place corners.
 - [ ] **8.5 Beyond single stitches.** Stripes (a colour per row), unit carriers (read each block, then `reduceUnits`), lace against the light, bobbles by shadow. Depends on 8.3 photos.
-- [ ] **8.6 Finding the grid without taps.** Research a knitted frame the lab can find, or printed markers, and stitch pitch from the image. Ask the maker first (see the notes' questions).
+- [ ] **8.6 Finding the grid without taps.** A toggle: tap the corners by hand, or knit an optional contrasting frame that the lab finds itself (an aesthetic choice for the knitter). Research finding the frame and the stitch pitch from the image. (Maker's choice 2026-09-27.)
 
 ## Later phases (headings only)
 
@@ -109,4 +119,5 @@ Read a photo of fabric into the decoder's grid, in the browser, with a person ch
 
 ## Future directions (not core work)
 
+- A learned stitch classifier for photos (ONNX Runtime Web or TensorFlow.js). Fun, but on hold until time allows (maker, 2026-09-27).
 - Game levels with cables, lace, bobbles or beads. The game's bones are solid; this needs the fabric renderer (`src/engine/fabric.ts`) to draw those stitches first. The maker's call, 2026-09-26: a later nice-to-have, not a priority.
