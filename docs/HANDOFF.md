@@ -2,7 +2,7 @@
 
 Where things stand, what is loose, and what to pick up next. Read `CLAUDE.md` first, then this. Update this file at the end of any session that changes the picture; keep it short.
 
-Last updated 2026-09-26, project version 0.5.
+Last updated 2026-09-27, project version 0.5.
 
 ## Where things stand
 
@@ -12,11 +12,12 @@ Last updated 2026-09-26, project version 0.5.
 | Carriers | Purl relief, two-colour, cable, lace, bobble, bead, stripes. Motif alphabet (pixel and geometric letters) as a separate layout. | `carrier.ts`, `units.ts`, `stripes.ts`, `glyphs.ts` |
 | Hiding | Scatter in a filler, motif tiles; parcel key as JSON, typed code and printable card. | `stego.ts`, `motifs.ts`, `key.ts`, `unhide.ts` |
 | Outputs | Written rows with abbreviations, SVG and PNG chart, print to PDF, XLSX, CSV, project JSON. | `pattern.ts`, `chartsvg.ts`, `xlsx.ts`, `project.ts` |
-| Lab | Encoder in seven stages, manual grid decoder. | `src/ui/encode.ts`, `decode.ts` |
+| Secure mode | PBKDF2 + AES-GCM via Web Crypto; bytes as letters A to P through the normal alphabets and error checks. | `secure.ts` |
+| Lab | Encoder in seven stages, manual grid decoder, secure mode in both. | `src/ui/encode.ts`, `decode.ts` |
 | Game | The Purloined Parcel, seven levels, drawn fabric. | `src/ui/game.ts`, `cases.ts`, `fabric.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
-Tests: `npm test` (about 250). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
+Tests: `npm test` (about 260). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.
 
 ## Waiting on the maker (do not decide these)
 
@@ -42,10 +43,7 @@ Tests: `npm test` (about 250). Build: `npm run build`. Browser checks so far use
 
 Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteria before starting a phase.
 
-**Phase 6: secure mode** (packet phase 6, CLAUDE.md honesty rules).
-1. `src/engine/secure.ts`: Web Crypto only. PBKDF2 (SHA-256, high iteration count) from a passphrase, random 16-byte salt, AES-GCM with a random 12-byte nonce. Output bytes: version, salt, nonce, ciphertext and tag. Round-trip tests, a wrong-passphrase test, a tampered-byte test.
-2. Bytes to cells: a byte stream path through the grid (8 cells per byte, with the existing checksum idea). Expect about 45 bytes of overhead, so 360 or more cells even for a short message: say so plainly in the UI.
-3. Lab UI: a "Secure (AES-GCM)" choice, clearly apart from the historical ciphers, with the copy rules: never "unbreakable"; the passphrase is the whole secret; nothing leaves the browser.
+**Phase 6: secure mode** is built (6.1 to 6.3); 6.4 waits on the maker reading the copy.
 
 **Phase 7: design-your-own language.** Let people build an alphabet (symbol to cells) and a mapping onto a carrier, then generate encoder, decoder, printable key and legend. The glyph packs and parcel key are good starting points. Custom alphabets must be checked for distance and reported, the way `geometric()` is.
 

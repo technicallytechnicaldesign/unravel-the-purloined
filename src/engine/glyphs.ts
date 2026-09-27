@@ -6,13 +6,16 @@
 //   geometric3  3 x 3 symbols, a secret alphabet: every pair differs by at
 //               least two stitches, so one slipped stitch is always noticed
 //               and reported, though it may be too close to call
+//   geometric4  4 x 4 symbols: every pair differs by at least three stitches,
+//               also after any turn or inversion of the fabric, so one
+//               slipped stitch per symbol is repaired and reported
 //
 // Carries A to Z, 0 to 9, space, full stop and question mark.
 
 import { type Bit } from "./fivebit";
 import { transform, type Cell, type Orientation } from "./grid";
 
-export type GlyphPack = "pixel5" | "geometric3";
+export type GlyphPack = "pixel5" | "geometric3" | "geometric4";
 
 export const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .?";
 
@@ -57,9 +60,45 @@ function geometric(): Record<string, Bit[][]> {
   return out;
 }
 
+/** 16 cells as a number, bit r * 4 + c; and back to rows. */
+const mask4 = (n: number): Bit[][] => Array.from({ length: 4 }, (_, r) => Array.from({ length: 4 }, (_, c) => ((n >> (r * 4 + c)) & 1) as Bit));
+const ones = (n: number): number => { let k = 0; for (; n; n &= n - 1) k++; return k; };
+
+/**
+ * 4 x 4 symbols, picked in a fixed order. Any two differ by three stitches or more, and a
+ * symbol seen upside down, mirrored or inverted is still three or more from every other
+ * symbol, so one slip reads back as the right symbol whichever way the fabric is held.
+ * Each symbol has 5 to 11 purls so none is nearly blank or nearly solid. Space stays empty.
+ */
+function geometric4(): Record<string, Bit[][]> {
+  const flip = (n: number, f: (r: number, c: number) => [number, number]) => {
+    let o = 0;
+    for (let i = 0; i < 16; i++) if ((n >> i) & 1) { const [r, c] = f(i >> 2, i & 3); o |= 1 << (r * 4 + c); }
+    return o;
+  };
+  const turn = (n: number) => flip(n, (r, c) => [3 - r, 3 - c]);
+  const mirror = (n: number) => flip(n, (r, c) => [r, 3 - c]);
+  const turns = [false, true].flatMap((t) => [false, true].flatMap((m) => [false, true].map((i) => (n: number) => {
+    if (t) n = turn(n);
+    if (m) n = mirror(n);
+    return i ? n ^ 0xffff : n;
+  }))).slice(1); // every turn but upright
+  const far = (a: number, b: number) => ones(a ^ b) >= 3;
+  const picked = [0];
+  const candidates = Array.from({ length: 65536 }, (_, n) => n)
+    .filter((n) => ones(n) >= 5 && ones(n) <= 11)
+    .sort((a, b) => (Math.imul(a, 2654435761) >>> 0) - (Math.imul(b, 2654435761) >>> 0));
+  for (const n of candidates) {
+    if (picked.length === CHARSET.length) break;
+    if (picked.every((p) => far(p, n) && turns.every((t) => far(t(n), p) && far(t(p), n)))) picked.push(n);
+  }
+  return Object.fromEntries([" ", ...CHARSET.replace(" ", "")].map((ch, i) => [ch, mask4(picked[i]!)]));
+}
+
 export const PACKS: Record<GlyphPack, { name: string; size: number; glyphs: Record<string, Bit[][]> }> = {
   pixel5: { name: "Pixel letters (5 × 5, designed here)", size: 5, glyphs: Object.fromEntries(Object.entries(PIXEL5).map(([k, v]) => [k, toBits(v)])) },
   geometric3: { name: "Geometric secret alphabet (3 × 3, designed here)", size: 3, glyphs: geometric() },
+  geometric4: { name: "Geometric secret alphabet that repairs a slip (4 × 4, designed here)", size: 4, glyphs: geometric4() },
 };
 
 /** Characters per line for a width in stitches: each glyph plus one stitch of space. */

@@ -22,6 +22,7 @@ import { family, longFloats, purlRelief, read, render, twoColour, type Carrier, 
 import { ABBREVIATIONS, checkStitchCounts, writeRows, writtenAs } from "./pattern";
 import { CIPHERS, decipher, encipher, PUZZLE_LABEL, type CipherSettings } from "./ciphers";
 import { applyBorder, PATTERNS, type StitchPattern } from "./stitches";
+import { SECURE_VERSION } from "./secure";
 import { dimensions, evenRows, RECIPES, sectionRows, writeSection, type RecipeId } from "./recipes";
 
 export const PROJECT_FORMAT = "unravel-the-purloined/project";
@@ -51,6 +52,8 @@ export interface ProjectSettings {
   hide?: HideSettings;
   /** Knit the letters themselves as small motifs (the motif alphabet), instead of encoding them as cells. */
   glyphs?: { pack: GlyphPack };
+  /** The message is secure-mode ciphertext written as letters A to P (see secure.ts). The plaintext and passphrase are never stored. */
+  secure?: { version: typeof SECURE_VERSION };
 }
 
 export interface Project {
@@ -190,6 +193,10 @@ const newId = () => globalThis.crypto?.randomUUID?.() ?? `p-${Date.now().toStrin
 export function createProject(settings: ProjectSettings, id: string = newId()): Project {
   checkCombination(settings);
   const msg = settings.glyphs ? glyphMessage(settings) : encodeMessage(settings.message, settings.encoding, settings.cipher);
+  if (settings.secure) {
+    if (msg.normalized !== settings.message) throw new Error("This alphabet cannot carry the secure letters unchanged. Choose the five-bit alphabet, Morse, modern Bacon or a motif alphabet.");
+    msg.notes.push(`Encrypted with AES-GCM before knitting: ${settings.message.length} letters from A to P, two per byte. One misread letter and the message will not open, so keep the error checks on.`);
+  }
   const carrier = carrierFor(settings.carrier);
   const { grid, key } = settings.hide
     ? hidden(settings, msg.bits, carrier.id)
@@ -243,6 +250,8 @@ function checkCombination(s: ProjectSettings): void {
   if (s.carrier.id === "stripes" && s.encoding.alphabet !== "morse" && !s.glyphs) throw new Error("The stripe-interval code carries Morse: choose Morse code as the transform.");
   if (s.carrier.id === "stripes" && (s.glyphs || s.hide)) throw new Error("Stripes carry Morse on their own; they cannot also be hidden or drawn as letters.");
   if (s.glyphs && s.hide) throw new Error("The motif alphabet shows its letters openly, so it cannot also be hidden.");
+  if (s.secure && s.cipher && s.cipher.kind !== "none") throw new Error("Secure mode already encrypts the message; a classical cipher on top adds nothing. Choose one or the other.");
+  if (s.secure && !/^[A-P]+$/.test(s.message)) throw new Error("A secure message holds only the letters A to P, as the encryption step writes them.");
 }
 
 /** The message for the motif alphabet: letters, digits, space, full stop and question mark, then any cipher. */
