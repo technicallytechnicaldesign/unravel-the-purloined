@@ -23,5 +23,5 @@ export function mountWordmark(host: HTMLElement, text = TITLE): void {
   host.classList.add("has-wordmark");
 }
 
-/** Every element marked data-wordmark on the page. */
-export const mountWordmarks = (): void => document.querySelectorAll<HTMLElement>("[data-wordmark]").forEach((el) => mountWordmark(el));
+/** Every element marked data-wordmark on the page, spelling its data-wordmark value (the site title when empty). */
+export const mountWordmarks = (): void => document.querySelectorAll<HTMLElement>("[data-wordmark]").forEach((el) => mountWordmark(el, el.dataset.wordmark || TITLE));

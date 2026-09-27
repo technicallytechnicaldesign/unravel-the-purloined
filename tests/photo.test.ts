@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classify, homography, lab, project, readPhoto, sampleCells, type Quad, type RGBAImage } from "../src/engine/photo";
+import { classify, findFrame, homography, lab, project, readPhoto, sampleCells, type Quad, type RGBAImage } from "../src/engine/photo";
 import { rng } from "../src/engine/fabric";
 import { type Bit } from "../src/engine/fivebit";
 
@@ -84,5 +84,29 @@ describe("photo reading", () => {
     const settled = readPhoto(img, sloppy, 12, 10, "hue", true);
     expect(plain.cells).not.toEqual(grid);
     expect(settled.cells).toEqual(grid);
+  });
+
+  it("finds a knitted frame by itself and reads what it holds", () => {
+    const inner = pattern(8, 12, 11);
+    const framed: Bit[][] = Array.from({ length: 12 }, (_, r) => Array.from({ length: 16 }, (_, c) => (r < 2 || r > 9 || c < 2 || c > 13 ? 1 : inner[r - 2]![c - 2]!)) as Bit[]);
+    const img = photo(framed, tilted, { light: 0.3, noise: 12 });
+    const f = findFrame(img);
+    if (!f.ok) throw new Error(f.message);
+    f.quad.forEach((p, i) => {
+      expect(Math.abs(p[0] - tilted[i]![0])).toBeLessThan(4);
+      expect(Math.abs(p[1] - tilted[i]![1])).toBeLessThan(4);
+    });
+    expect(readPhoto(img, f.quad, 16, 12, "hue", true).cells).toEqual(framed);
+  });
+
+  it("reads lace held to the light: a glowing eyelet is 1", () => {
+    const grid = pattern(6, 8, 13);
+    const img = photo(grid, tilted, { noise: 8, paint: (b, u, v) => (b && Math.hypot(u - 0.5, v - 0.5) < 0.25 ? [250, 248, 240] : [150, 140, 130]) });
+    expect(readPhoto(img, tilted, 8, 6, "light").cells).toEqual(grid);
+  });
+
+  it("says so when there is no frame to find", () => {
+    const plain = photo(pattern(6, 6, 2).map((r) => r.map(() => 0 as Bit)), tilted);
+    expect(findFrame(plain)).toMatchObject({ ok: false, message: /all one colour|No frame/ });
   });
 });
