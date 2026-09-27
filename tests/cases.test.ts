@@ -4,6 +4,7 @@ import { decodeCells } from "../src/engine/steps";
 import { fabricSvg } from "../src/engine/fabric";
 import { decipher } from "../src/engine/ciphers";
 import { MOTIFS, reduce } from "../src/engine/motifs";
+import { reduceUnits, UNITS } from "../src/engine/units";
 
 const bitsOf = (shown: string[][]) => shown.map((row) => row.map((v) => (v === "purl" || v === "B" ? 1 : 0) as 0 | 1));
 
@@ -19,7 +20,9 @@ describe("The Purloined Parcel: cases", () => {
       for (let seed = 1; seed <= 60; seed++) {
         const c = makeCase(level.n, seed);
         // Motif cases are copied one cell per tile, as the game asks.
-        const copy = c.tiles ? reduce(bitsOf(c.shown), MOTIFS.window).grid : bitsOf(c.shown);
+        // Block cases (cables, lace, bobbles) are copied one cell per block.
+        const copy = c.blocks ? reduceUnits(c.shown, UNITS[c.blocks.unit], 0).cells : c.tiles ? reduce(bitsOf(c.shown), MOTIFS.window).grid : bitsOf(c.shown);
+        if (c.blocks) expect([copy.length, copy[0]!.length]).toEqual([c.blocks.rows, c.blocks.cols]);
         if (c.tiles) expect([copy.length, copy[0]!.length]).toEqual([c.tiles.rows, c.tiles.cols]);
         const s = decodeCells(copy, c.tiles ? 0 : c.settings.layout.border, c.settings.encoding);
         if (level.n === 5) {
@@ -81,5 +84,16 @@ describe("The Purloined Parcel: cases", () => {
     for (const [, r, col, state] of drawn) expect(c.shown[Number(r)]![Number(col)]).toBe(state);
     expect(fabricSvg(c.shown, { seed: c.seed })).toBe(svg);
     expect(fabricSvg(c.shown, { seed: c.seed + 1 })).not.toBe(svg);
+  });
+
+  it("draws cables, eyelets, decreases and bobbles in the block levels, and describes them in words", () => {
+    const parts: Record<number, RegExp[]> = { 8: [/c4f-cross|c4b-cross/], 9: [/data-state="yo"/, /data-state="k2tog"|data-state="ssk"/], 10: [/mb-knot/] };
+    for (const [n, want] of Object.entries(parts)) {
+      const c = makeCase(Number(n), 5);
+      const svg = fabricSvg(c.shown, { seed: 5 });
+      for (const w of want) expect(svg).toMatch(w);
+      expect(c.description).toMatch(/Row 1 of blocks/);
+      expect(c.description).not.toMatch(c.answer.split(" ")[0]!);
+    }
   });
 });

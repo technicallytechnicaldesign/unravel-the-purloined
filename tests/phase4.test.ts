@@ -142,3 +142,19 @@ describe("chart symbols for special stitches", () => {
     expect(p.output.abbreviations.some((a) => a.startsWith("yo:"))).toBe(true);
   });
 });
+
+describe("photo frame in a second yarn", () => {
+  for (const carrier of ["purl-relief", "bobble"] as const)
+    it(`frames ${carrier} work in colour B, says how to knit it, and still decodes`, () => {
+      const flat = createProject(base({ carrier: { id: carrier }, layout: { width: 12, border: true, borderWidth: 2 }, borderStyle: "frame" }), "f");
+      expect(flat.output.decoded).toBe("MEET AT NOON.");
+      expect(flat.output.instructions.join(" ")).toMatch(/, k\d+ in B/);
+      expect(flat.output.carrierNotes.join(" ")).toMatch(/intarsia/);
+      const round = createProject(base({ carrier: { id: carrier }, layout: { width: 12, border: true, borderWidth: 2 }, borderStyle: "frame", construction: { method: "round", firstRow: "RS" } }), "f");
+      expect(round.output.carrierNotes.join(" ")).toMatch(/start of each round/);
+    });
+
+  it("is refused as a filler for hiding", () => {
+    expect(() => createProject(base({ carrier: { id: "purl-relief" }, hide: { mode: "scatter", seed: 3, filler: "frame" as never, density: 3 } }), "f")).toThrow(/borders only/);
+  });
+});

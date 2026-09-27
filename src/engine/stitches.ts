@@ -17,7 +17,8 @@ export type StitchPattern =
   | "solid-a"
   | "solid-b"
   | "checker"
-  | "stripes";
+  | "stripes"
+  | "frame";
 
 export interface PatternInfo {
   name: string;
@@ -42,7 +43,12 @@ export const PATTERNS: Record<StitchPattern, PatternInfo> = {
   "solid-b": { name: "Solid colour B", carrier: "two-colour", repeat: 1, cell: () => "B" },
   checker: { name: "Checkerboard, A and B", carrier: "two-colour", repeat: 2, cell: (r, c) => (odd(r + c) ? "B" : "A") },
   stripes: { name: "Two-row stripes, A and B", carrier: "two-colour", repeat: 1, cell: (r) => (odd(Math.floor(r / 2)) ? "B" : "A") },
+  // A knit/purl piece framed in a second yarn, so the photo reader can find its corners.
+  frame: { name: "Photo frame in a contrasting yarn (B)", carrier: "purl-relief", repeat: 1, cell: () => "B" },
 };
+
+/** Border-only patterns: never a filler for hiding, where a solid block would stand out. */
+export const BORDER_ONLY: readonly StitchPattern[] = ["frame"];
 
 export const patternsFor = (carrier: CarrierId): StitchPattern[] =>
   (Object.keys(PATTERNS) as StitchPattern[]).filter((p) => PATTERNS[p].carrier === family(carrier));
