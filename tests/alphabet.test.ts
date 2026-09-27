@@ -20,6 +20,7 @@ describe("alphabet check", () => {
     expect(c.findings.filter((f) => f.severity !== "note")).toEqual([]);
     expect(c.minDistance).toBe(3);
     expect(c.slip).toMatch(/repaired/);
+    expect(checkAlphabet(emptyAlphabet("New", 4, 4)).slip).toMatch(/Nothing to compare/);
   });
 
   it("reports each kind of problem", () => {
