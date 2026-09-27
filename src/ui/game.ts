@@ -11,8 +11,25 @@ import { decodeCells } from "../engine/steps";
 import { borderOf, describe as describeOrientation } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
 import { decipher, encipher } from "../engine/ciphers";
+import { primer } from "./tutorial";
 
 const STORE = "purloined-parcel";
+const PRIMER = "purloined-parcel-primer-seen";
+
+const primerSeen = (): boolean => {
+  try {
+    return localStorage.getItem(PRIMER) === "1";
+  } catch {
+    return false;
+  }
+};
+const markPrimerSeen = (): void => {
+  try {
+    localStorage.setItem(PRIMER, "1");
+  } catch {
+    /* not kept: the primer simply opens again next time */
+  }
+};
 
 interface Progress {
   solved: Record<string, boolean>;
@@ -41,7 +58,16 @@ export function mountGame(root: HTMLElement): void {
 
   const showList = () => {
     const solved = LEVELS.filter((l) => progress.solved[l.n]).length;
+    // The primer opens by itself the first time, and folds away once read.
+    const guide = h(
+      "details.primer-box",
+      { open: !primerSeen() },
+      h("summary", {}, h("h2.mono.primer-title", {}, "HOW TO READ A PARCEL")),
+      primer(),
+      h("div.actions", {}, h("button.btn.btn-go", { type: "button", onclick: () => (markPrimerSeen(), (guide.open = false), guide.querySelector("summary")!.focus()) }, "Got it: show me the cases")),
+    );
     root.replaceChildren(
+      guide,
       h("div.folio-head", {}, h("p.mono", {}, `FOLIO / CASE FILES 01 TO 0${LEVELS.length}`), h("p.mono", {}, `${solved} OF ${LEVELS.length} SOLVED`)),
       h(
         "ol.folio",
@@ -165,6 +191,7 @@ export function mountGame(root: HTMLElement): void {
             h("div.sheet-label", {}, h("h3.step-title", {}, "Exhibit A"), h("span.zoom", {}, h("button.btn.btn-small", { type: "button", onclick: () => setZoom(zoom / 1.25), "aria-label": "Zoom out" }, "−"), h("button.btn.btn-small", { type: "button", onclick: () => setZoom(zoom * 1.25), "aria-label": "Zoom in" }, "+"))),
             figure,
             h("details.more", {}, h("summary.mono", {}, "DESCRIBE THE IMAGE IN WORDS"), h("pre.description.mono", {}, c.description)),
+            h("details.more", {}, h("summary.mono", {}, "HOW TO READ A PARCEL"), primer()),
           ),
           h(
             "section",

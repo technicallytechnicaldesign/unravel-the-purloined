@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Purloined Parcel</title>
-    <meta name="description" content="A small game of knitted secrets: read the stitches, find the message. All cases are fiction." />
+    <title>Decode a grid: Unravel the Purloined</title>
+    <meta name="description" content="Mark the stitches of a knitted grid and read them back into text, with every check shown." />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23f3eee2'/%3E%3Ccircle cx='5' cy='5' r='2.4' fill='%23c8201e'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,32 +18,36 @@
       <a class="wordmark-link" href="./" data-wordmark>Unravel the Purloined: home</a>
       <nav class="labels" aria-label="Site">
           <a class="mono" href="./lab.html">LAB</a>
-          <a class="mono" href="./decode.html">DECODE</a>
+          <a class="mono" href="./decode.html" aria-current="page">DECODE</a>
           <a class="mono" href="./archive.html">ARCHIVE</a>
-          <a class="mono" href="./game.html" aria-current="page">THE PURLOINED PARCEL</a>
-        <span class="stamp">FICTION / A GAME</span>
+          <a class="mono" href="./game.html">THE PURLOINED PARCEL</a>
+        <span class="stamp">MODERN RECONSTRUCTION</span>
       </nav>
-      <h1 class="title title-small">The Purloined Parcel</h1>
+      <h1 class="title title-small">Decode a grid</h1>
       <p class="lede">
-        Parcels arrive at the archive with knitting inside and no letter. Read the stitches and find the message. Take your time: nothing here is timed.
+        Mark the stitches you see and follow them back into text. The checks point at any stitch that looks wrong.
       </p>
     </header>
 
     <main>
-      <section class="panel" aria-label="Case files">
-        <div id="game"></div>
+      <section class="panel" aria-labelledby="dec-h">
+        <div class="panel-head">
+          <h2 id="dec-h" class="section-label">Read the stitches</h2>
+        </div>
+        <p class="note">
+          Mark each cell as you see it on the right side, row 1 at the bottom. It does not matter which way up the fabric
+          is: the marker row tells the decoder.
+        </p>
+        <div id="decoder"></div>
       </section>
-      <p class="note">
-        Every case is invented for this game. For what knitters and needleworkers really did, and how sure we can be,
-        see <a href="./archive.html">the archive</a>.
-      </p>
     </main>
 
     <footer class="foot mono">
-      <span>UNRAVEL THE PURLOINED / THE PURLOINED PARCEL</span>
+      <span>UNRAVEL THE PURLOINED / DECODE</span>
       <span>Decryption may require frogging.</span>
     </footer>
 
-    <script type="module" src="/src/game.ts"></script>
+    <div id="print-sheet" class="print-sheet"></div>
+    <script type="module" src="/src/decode.ts"></script>
   </body>
 </html>

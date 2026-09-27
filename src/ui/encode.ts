@@ -272,7 +272,7 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
           h("button.btn", { type: "button", onclick: () => download(`${slug(p)}-chart.csv`, "text/csv", chartCsv(p.output.chart)) }, "Chart (CSV)"),
           h("button.btn", { type: "button", onclick: () => download(`${slug(p)}.json`, "application/json", exportProject(p)) }, "Project (JSON)"),
         ),
-        h("div.actions", {}, h("button.btn", { type: "button", onclick: () => sendToDecoder(p) }, "Try it in the decoder ↓")),
+        h("div.actions", {}, h("button.btn", { type: "button", onclick: () => sendToDecoder(p) }, "Open it in the decoder →")),
       ),
     );
     // The SVG is our own output, built from escaped text only.
@@ -313,25 +313,113 @@ export function mountEncoder(root: HTMLElement, sendToDecoder: (p: Project) => v
   syncHide();
   recipe.addEventListener("change", () => (applyRecipe(), render()));
 
-  const stage = (n: number, name: string, ...body: HTMLElement[]) => h("fieldset.stage", {}, h("legend.mono", {}, h("span.step-n", {}, String(n).padStart(2, "0")), ` ${name}`), ...body);
-  const form = h(
-    "form.builder",
-    { onsubmit: (ev: Event) => (ev.preventDefault(), render(), out.scrollIntoView({ behavior: "smooth" })) },
-    stage(1, "MESSAGE", field("MESSAGE", message), field("PATTERN TITLE", title)),
-    stage(2, "ENCODE", enc.el, cip.el, sec.el),
-    stage(3, "RECIPE", field("START FROM", recipe), recipeNote),
-    stage(4, "CARRIER", car.el),
-    stage(5, "SIZE AND CONSTRUCTION", field("MESSAGE WIDTH (STITCHES)", width, "The border adds its depth on each side."), con.el),
-    stage(
-      6,
-      "BORDER AND EDGES",
-      h("div.pair", {}, field("BORDER DEPTH", borderDepth, "0 for none."), field("BORDER PATTERN", borderStyle)),
-      h("div.pair", {}, field("PLAIN ROWS BELOW", edgeBelow), field("PLAIN ROWS ABOVE", edgeAbove)),
-      field("EDGE PATTERN", edgePattern, "Edge rows are rounded up to even numbers so row 1 of the chart stays on the right side."),
-    ),
-    stage(7, "HIDE (STEGANOGRAPHY)", field("HIDE THE MESSAGE", hideMode), scatterBox, motifBox, hideNote),
-    h("button.btn.btn-go", { type: "submit" }, "Generate signal →"),
+  // Two ways in: start from the words, or from the piece to knit. Stages open one at a time and
+  // fold to a one-line summary; the pattern appears once the last stage is done.
+  type Path = "message" | "knit";
+  const chosen = (el: HTMLElement, name: string) => el.querySelector<HTMLSelectElement>(`select[name="${name}"]`)?.selectedOptions[0]?.text ?? "";
+  const recipeField = field("START FROM (OPTIONAL)", recipe);
+  const blocks: Record<string, { name: string; body: HTMLElement[]; sum: () => string }> = {
+    knit: { name: "WHAT TO KNIT", body: [recipeField, recipeNote], sum: () => chosen(recipeField, "recipe") },
+    message: {
+      name: "MESSAGE",
+      body: [field("MESSAGE", message), field("PATTERN TITLE", title)],
+      sum: () => `"${message.value.trim() || "(empty)"}"`,
+    },
+    encode: { name: "ENCODE", body: [enc.el, cip.el, sec.el], sum: () => `${chosen(enc.el, "transform")}${sec.on() ? ", sealed with a passphrase" : cip.get() ? `, ${chosen(cip.el, "cipher")}` : ""}` },
+    carrier: { name: "CARRIER", body: [car.el], sum: () => chosen(car.el, "carrier") },
+    size: {
+      name: "SIZE AND CONSTRUCTION",
+      body: [field("MESSAGE WIDTH (STITCHES)", width, "The border adds its depth on each side."), con.el],
+      sum: () => `${width.value} stitches, ${chosen(con.el, "construction").toLowerCase()}`,
+    },
+    border: {
+      name: "BORDER AND EDGES",
+      body: [
+        h("div.pair", {}, field("BORDER DEPTH", borderDepth, "0 for none."), field("BORDER PATTERN", borderStyle)),
+        h("div.pair", {}, field("PLAIN ROWS BELOW", edgeBelow), field("PLAIN ROWS ABOVE", edgeAbove)),
+        field("EDGE PATTERN", edgePattern, "Edge rows are rounded up to even numbers so row 1 of the chart stays on the right side."),
+      ],
+      sum: () => (Number(borderDepth.value) > 0 ? `Border ${borderDepth.value} deep, ${(borderStyle.selectedOptions[0]?.text ?? "").toLowerCase()}` : "No border"),
+    },
+    hide: { name: "HIDE (OPTIONAL)", body: [field("HIDE THE MESSAGE", hideMode), scatterBox, motifBox, hideNote], sum: () => hideMode.selectedOptions[0]?.text ?? "" },
+  };
+  type Block = "knit" | "message" | "encode" | "carrier" | "size" | "border" | "hide";
+  const ORDER: Record<Path, Block[]> = { message: ["message", "encode", "carrier", "size", "border", "hide"], knit: ["knit", "message", "encode", "carrier", "size", "border", "hide"] };
+
+  let path: Path | undefined;
+  const stages = h("div.stages");
+  const sums: (() => void)[] = [];
+  const refreshSums = () => sums.forEach((f) => f());
+  const showPattern = () => {
+    out.hidden = false;
+    stages.querySelectorAll("details").forEach((d) => (d.open = false));
+    render();
+    out.scrollIntoView({ behavior: "smooth" });
+  };
+  const build = () => {
+    const order = ORDER[path!];
+    sums.length = 0;
+    // In the knit path the piece comes first and is required; otherwise it is an optional start in the size stage.
+    recipeField.querySelector(".field-label")!.textContent = path === "knit" ? "PIECE" : "START FROM (OPTIONAL)";
+    recipe.options[0]!.hidden = path === "knit";
+    if (path === "knit" && recipe.value === "none") (recipe.value = recipe.options[1]!.value), applyRecipe(), render();
+    blocks.size!.body.splice(2);
+    if (path === "message") blocks.size!.body.push(recipeField, recipeNote);
+    stages.replaceChildren(
+      ...order.map((key, i) => {
+        const b = blocks[key]!;
+        const sum = h("span.stage-sum", {});
+        sums.push(() => (sum.textContent = b.sum()));
+        const last = i === order.length - 1;
+        const next = h(
+          "button.btn" + (last ? ".btn-go" : ""),
+          {
+            type: "button",
+            onclick: () => {
+              if (last) return showPattern();
+              const all = stages.querySelectorAll("details");
+              all[i]!.open = false;
+              all[i + 1]!.open = true;
+              all[i + 1]!.querySelector("summary")!.focus();
+            },
+          },
+          last ? "Make the pattern →" : `Next: ${blocks[order[i + 1]!]!.name.toLowerCase()} →`,
+        );
+        const d = h(
+          "details.stage",
+          { name: "lab-stage", open: i === 0 },
+          h("summary", {}, h("span.step-n.mono", {}, String(i + 1).padStart(2, "0")), h("span.stage-name.mono", {}, b.name), sum),
+          h("div.stage-body", {}, ...b.body, h("div.actions", {}, next)),
+        );
+        // Older browsers ignore name=: keep one stage open by hand.
+        d.addEventListener("toggle", () => d.open && stages.querySelectorAll("details").forEach((o) => o !== d && (o.open = false)));
+        return d;
+      }),
+    );
+    refreshSums();
+  };
+  const pathNote = h("p.path-note.mono", { hidden: true });
+  const choose = (p: Path) => {
+    path = p;
+    paths.hidden = true;
+    pathNote.hidden = false;
+    pathNote.replaceChildren(
+      p === "message" ? "STARTING FROM A MESSAGE " : "STARTING FROM THE PIECE ",
+      h("button.linkish", { type: "button", onclick: () => ((paths.hidden = false), (pathNote.hidden = true), paths.querySelector("button")!.focus()) }, "change"),
+    );
+    build();
+    stages.querySelector("summary")!.focus();
+  };
+  const paths = h(
+    "div.paths",
+    { role: "group", "aria-label": "How do you want to start?" },
+    h("button.path", { type: "button", onclick: () => choose("message") }, h("b", {}, "I have a message to encode"), h("span", {}, "Start with the words, then choose how to knit them.")),
+    h("button.path", { type: "button", onclick: () => choose("knit") }, h("b", {}, "I want to knit a..."), h("span", {}, "Scarf, cowl, hat band or swatch: start with the piece, then add a message.")),
   );
+  const form = h("form.builder", { onsubmit: (ev: Event) => (ev.preventDefault(), showPattern()) }, paths, pathNote, stages);
+  form.addEventListener("input", refreshSums);
+  form.addEventListener("change", refreshSums);
+  out.hidden = true;
   root.append(form, out);
   render();
   return { useAlphabet: (a) => (enc.setCustom(a), render()) };

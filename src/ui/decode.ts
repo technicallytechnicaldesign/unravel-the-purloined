@@ -40,7 +40,7 @@ export function parseRows(text: string): Bit[][] | string {
   return rows.reverse(); // row 0 is the bottom
 }
 
-export function mountDecoder(root: HTMLElement): { load(p: Project): void; useAlphabet(a: Alphabet): void } {
+export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJson(json: string): void; useAlphabet(a: Alphabet, choose?: boolean): void; note(text: string): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
   const border = h("input", { type: "number", name: "border-depth", value: 0, min: 0, max: 8, inputmode: "numeric" });
@@ -197,7 +197,6 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; useAl
     if (p.output.key) useKey(p.output.key);
     else if (key) forgetKey();
     message.textContent = `Loaded "${p.settings.title}". ${p.settings.secure ? "It is sealed: type the passphrase under secure mode. " : ""}Click cells to add mistakes and watch the report.`;
-    root.scrollIntoView({ behavior: "smooth" });
   };
 
   const loadJson = (json: string) => {
@@ -262,5 +261,5 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; useAl
     out,
   );
   decode();
-  return { load, useAlphabet: (a) => (enc.setCustom(a), decode()) };
+  return { load, loadJson, useAlphabet: (a, choose = true) => (enc.setCustom(a, choose), decode()), note: (t) => (message.textContent = t) };
 }
