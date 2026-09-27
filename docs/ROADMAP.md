@@ -74,9 +74,17 @@ Each logical cell becomes a block of real stitches (units), or the message takes
 - [ ] **P4.7 Knit a swatch of each.** A real swatch of every carrier, photographed, to check block sizes, cable pull-in, lace leans and whether the geometric symbols can be told apart in yarn. Needs the maker.
 - [x] **P4.8 Geometric alphabet that repairs a slip.** A 4 × 4 pack beside the 3 × 3 one, with every pair of symbols at least 3 stitches apart, so one slipped stitch is read correctly and reported, not just reported. Done when every symbol with any single stitch flipped reads back as itself from all 8 turns, and the lab offers both packs. (Asked for by the maker 2026-09-26.) (Done 2026-09-27: `geometric4` in `src/engine/glyphs.ts`; distance 3 holds after any turn or inversion too, so a slip never reads as another symbol seen the other way up.)
 
+## Phase 6: secure mode
+
+Real encryption, kept apart from the historical ciphers (CLAUDE.md honesty rules): Web Crypto only, never "unbreakable", the passphrase is the whole secret, nothing leaves the browser.
+
+- [x] **6.1 Engine.** `src/engine/secure.ts`: PBKDF2 (SHA-256, 600 000 rounds) from a passphrase, random 16-byte salt, AES-256-GCM with a random 12-byte nonce and the version byte as additional data. Output: version, salt, nonce, ciphertext and tag. Done when it round-trips, refuses a wrong passphrase and any changed byte with a plain reason. (Done 2026-09-27.)
+- [x] **6.2 Bytes to cells.** Each byte becomes two letters A to P, carried by the ordinary alphabets, so framing, parity or Hamming and the checksum still apply. Stray letters and odd counts are reported by position. Projects store only the letters and `secure: { version: 1 }`, never the plaintext or passphrase. Done when letters survive a knitted project and decrypt. (Done 2026-09-27; 45 bytes of overhead, so "Meet at noon." is 116 letters and 1200 cells with Hamming.)
+- [x] **6.3 Lab UI.** "Secure mode" in encoder and decoder, apart from the classical cipher (which hides while it is on). Sealing waits for typing to pause; the decoder reads and checks the letters first, then opens them. Print sheet says the passphrase is not on it. Done when a pattern goes encoder to decoder and opens in Chromium at 375px with no axe issues. (Done 2026-09-27.)
+- [ ] **6.4 Review the copy.** The maker reads the secure-mode wording and size warning in the lab and says whether it is clear and calm enough.
+
 ## Later phases (headings only)
 
-- Phase 6: secure mode with Web Crypto authenticated encryption. See `docs/HANDOFF.md` for a suggested first task list.
 - Phase 7: design-your-own textile language lab.
 - Phase 8: photo decoder.
 - Phase 9: community and archive features.

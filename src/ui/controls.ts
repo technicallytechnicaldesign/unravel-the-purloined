@@ -1,5 +1,5 @@
 // Settings controls shared by the encoder and the decoder: transform, error
-// checks, layout, carrier and construction. Each returns its element and a
+// checks, layout, carrier, construction and secure mode. Each returns its element and a
 // getter, so the two tools read settings the same way.
 
 import { h } from "./h";
@@ -9,6 +9,7 @@ import { type Construction } from "../engine/construction";
 import { type CarrierId } from "../engine/carrier";
 import { UNITS, type UnitId } from "../engine/units";
 import { type GlyphPack } from "../engine/glyphs";
+import { SECURE_LABEL } from "../engine/secure";
 import { CIPHERS, keyProblem, PUZZLE_LABEL, type CipherKind, type CipherSettings } from "../engine/ciphers";
 
 export function field(label: string, control: HTMLElement, hint?: string): HTMLLabelElement {
@@ -163,5 +164,27 @@ export function cipherControls(onChange: () => void) {
       key.value = c?.key ?? "";
       sync();
     },
+  };
+}
+
+/** Secure mode: real encryption from a passphrase, kept apart from the historical ciphers. */
+export function secureControls(onChange: () => void, hint: string) {
+  const on = check("secure", "Encrypt with a passphrase (AES-GCM)", false);
+  const pass = h("input", { type: "password", name: "passphrase", autocomplete: "off", spellcheck: "false", placeholder: "several words, easy to say, hard to guess" });
+  const show = check("show-passphrase", "Show passphrase", false);
+  const box = h("div", {}, field("PASSPHRASE", pass, "Longer is stronger. It is not saved anywhere, not even in project files."), show.el, h("p.hint", {}, SECURE_LABEL), h("p.hint", {}, hint));
+  const sync = () => {
+    box.hidden = !on.input.checked;
+    pass.type = show.input.checked ? "text" : "password";
+  };
+  on.input.addEventListener("change", () => (sync(), onChange()));
+  show.input.addEventListener("change", sync);
+  pass.addEventListener("input", onChange);
+  sync();
+  return {
+    el: h("fieldset.checks", {}, h("legend.mono", {}, "SECURE MODE (OPTIONAL)"), on.el, box),
+    on: () => on.input.checked,
+    passphrase: () => pass.value,
+    set: (v: boolean) => ((on.input.checked = v), sync()),
   };
 }
