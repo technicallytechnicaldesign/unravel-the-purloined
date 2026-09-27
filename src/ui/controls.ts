@@ -3,7 +3,8 @@
 // getter, so the two tools read settings the same way.
 
 import { h } from "./h";
-import { type EncodingSettings } from "../engine/project";
+import { type EncodingSettings, type GlyphSettings } from "../engine/project";
+import { type Alphabet } from "../engine/alphabet";
 import { type SymbolCode } from "../engine/errorcontrol";
 import { type Construction } from "../engine/construction";
 import { type CarrierId } from "../engine/carrier";
@@ -47,9 +48,21 @@ export function encodingControls(onChange: () => void) {
   const checks = h("fieldset.checks", {}, h("legend.mono", {}, "ERROR CHECKS"), field("PER LETTER", code), separator.el, checksum.el);
   const note = h("p.hint", {});
 
+  // An alphabet designed in the lab, offered as one more transform once there is one.
+  let custom: Alphabet | undefined;
+  const setCustom = (a: Alphabet | undefined, choose = true) => {
+    custom = a;
+    transform.querySelector('option[value="glyph-custom"]')?.remove();
+    if (a) transform.append(h("option", { value: "glyph-custom" }, `Your alphabet: ${a.name} (${a.width} × ${a.height})`));
+    if (a && choose) transform.value = "glyph-custom";
+    if (!a && !transform.value) transform.value = "fivebit";
+    sync();
+  };
   const sync = () => {
     checks.hidden = transform.value !== "fivebit";
-    note.textContent = transform.value === "glyph-pixel5"
+    note.textContent = transform.value === "glyph-custom"
+      ? "Your own symbols, from the alphabet designer below. Characters without a symbol are left out and listed."
+      : transform.value === "glyph-pixel5"
       ? "The letters themselves, knitted as small pictures. Anyone can read them; they carry A to Z, 0 to 9, space, full stop and question mark."
       : transform.value === "glyph-geometric3"
         ? "A secret alphabet designed here: 38 symbols, each 3 stitches square. Any two differ by at least two stitches, so a single slip is noticed, but it may not be clear which symbol was meant."
@@ -71,9 +84,11 @@ export function encodingControls(onChange: () => void) {
     return { alphabet: "fivebit", errorControl: { code: code.value as SymbolCode, separator: separator.input.checked, checksum: checksum.input.checked } };
   };
   /** The motif alphabet pack, when one is chosen. Letters are then normalized as for Morse. */
-  const glyphs = (): { pack: GlyphPack } | undefined => (transform.value.startsWith("glyph-") ? { pack: transform.value.slice(6) as GlyphPack } : undefined);
-  const set = (e: EncodingSettings, g?: { pack: GlyphPack }) => {
-    transform.value = g ? `glyph-${g.pack}` : e.alphabet === "bacon" ? `bacon-${e.variant}` : e.alphabet;
+  const glyphs = (): GlyphSettings | undefined =>
+    transform.value === "glyph-custom" && custom ? { alphabet: custom } : transform.value.startsWith("glyph-") ? { pack: transform.value.slice(6) as GlyphPack } : undefined;
+  const set = (e: EncodingSettings, g?: GlyphSettings) => {
+    if (g && "alphabet" in g) setCustom(g.alphabet);
+    else transform.value = g ? `glyph-${g.pack}` : e.alphabet === "bacon" ? `bacon-${e.variant}` : e.alphabet;
     if (e.alphabet === "fivebit") {
       code.value = e.errorControl.code;
       separator.input.checked = e.errorControl.separator;
@@ -81,7 +96,7 @@ export function encodingControls(onChange: () => void) {
     }
     sync();
   };
-  return { el: h("div.control-group", {}, field("TRANSFORM", transform), note, checks), get, set, glyphs };
+  return { el: h("div.control-group", {}, field("TRANSFORM", transform), note, checks), get, set, glyphs, setCustom };
 }
 
 export function carrierControls(onChange: () => void, withColours: boolean) {

@@ -83,9 +83,17 @@ Real encryption, kept apart from the historical ciphers (CONTRIBUTING.md honesty
 - [x] **6.3 Lab UI.** "Secure mode" in encoder and decoder, apart from the classical cipher (which hides while it is on). Sealing waits for typing to pause; the decoder reads and checks the letters first, then opens them. Print sheet says the passphrase is not on it. Done when a pattern goes encoder to decoder and opens in Chromium at 375px with no axe issues. (Done 2026-09-27.)
 - [ ] **6.4 Review the copy.** The maker reads the secure-mode wording and size warning in the lab and says whether it is clear and calm enough.
 
+## Phase 7: design your own alphabet
+
+People draw their own symbols, see how safe they are to knit, and use them like the built-in motif alphabets. Invented symbols are the maker's own: the lab never calls them traditional.
+
+- [ ] **7.1 Alphabet engine.** `src/engine/alphabet.ts`: an alphabet is a name, a symbol width and height (3 to 6 stitches) and one drawing per character; space is always the blank symbol. `checkAlphabet` reports, as structured findings: wrong sizes, duplicates, symbols that equal the blank, pairs one stitch apart, pairs that read as each other when the fabric is turned or inverted, and nearly blank or solid symbols. It states plainly what one slip does (unnoticed, noticed, or repaired). `suggestSymbols` fills undrawn characters with symbols as far apart as it can find. Done when a clean alphabet reports no problems, each problem kind has a test, and suggestions keep the distance they claim.
+- [ ] **7.2 Alphabet files.** Export as JSON (format `unravel-the-purloined/alphabet`), import with line-by-line reasons for anything wrong, and a printable legend (SVG) showing every symbol with its character. Done when export then import gives the same alphabet and a broken file is refused with its reason.
+- [ ] **7.3 Pipeline.** Projects take a custom alphabet in place of a built-in pack and store it inside the project file, so the file is self-contained. Done when a custom alphabet round-trips through every carrier family from all 8 turns, and characters it lacks are reported, not dropped silently.
+- [ ] **7.4 Lab designer.** A third lab section: choose size and characters, click cells to draw each symbol, see the check report live, fill the rest with suggestions, download or open an alphabet file, print the legend, and send the alphabet to the encoder and decoder. Done when it works at 375px with no horizontal scroll and no axe issues.
+
 ## Later phases (headings only)
 
-- Phase 7: design-your-own textile language lab.
 - Phase 8: photo decoder.
 - Phase 9: community and archive features.
 
