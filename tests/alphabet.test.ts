@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createProject, exportProject, importProject, type ProjectSettings } from "../src/engine/project";
-import { checkAlphabet, emptyAlphabet, exportAlphabet, importAlphabet, legendSvg, suggestSymbols, toPack, type Alphabet } from "../src/engine/alphabet";
+import { alphabetCode, checkAlphabet, emptyAlphabet, exportAlphabet, importAlphabet, legendSvg, parseAlphabetCode, suggestSymbols, toPack, type Alphabet } from "../src/engine/alphabet";
 import { layoutGlyphs, readGlyphs } from "../src/engine/glyphs";
 import { transform, type Orientation } from "../src/engine/grid";
 
@@ -119,5 +119,26 @@ describe("custom alphabet in a project", () => {
     const back = importProject(exportProject(p));
     expect(back.issues).toEqual([]);
     expect(back.project?.settings.glyphs).toEqual({ alphabet: mine });
+  });
+});
+
+describe("alphabet share code", () => {
+  const a = suggestSymbols(emptyAlphabet("Garden marks ✿", 4, 5), [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ.?Ø"]);
+
+  it("carries the whole alphabet and reads back, however it is typed", () => {
+    const code = alphabetCode(a);
+    expect(code).toMatch(/^UTPA1(-[0-9A-HJKMNP-TV-Z]{1,5})+$/);
+    expect(parseAlphabetCode(code)).toEqual(a);
+    expect(parseAlphabetCode(code.toLowerCase().replace(/-/g, " "))).toEqual(a);
+  });
+
+  it("catches a mistyped, dropped or foreign character", () => {
+    const code = alphabetCode(a);
+    const i = code.length - 12;
+    const swap = code[i] === "7" ? "8" : "7";
+    expect(parseAlphabetCode(code.slice(0, i) + swap + code.slice(i + 1))).toMatch(/do not match/);
+    expect(parseAlphabetCode(code.slice(0, i) + code.slice(i + 1))).toMatch(/do not match|too short/);
+    expect(parseAlphabetCode(code.slice(0, 12) + "U" + code.slice(13))).toMatch(/"U".*not used/);
+    expect(parseAlphabetCode("HELLO")).toMatch(/starts with UTPA1/);
   });
 });

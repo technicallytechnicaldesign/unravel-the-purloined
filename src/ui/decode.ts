@@ -14,9 +14,10 @@ import { MOTIFS } from "../engine/motifs";
 import { decipher } from "../engine/ciphers";
 import { decodeCells } from "../engine/steps";
 import { importProject, packFor, type Project } from "../engine/project";
-import { type Alphabet } from "../engine/alphabet";
+import { checkAlphabet, importAlphabet, parseAlphabetCode, type Alphabet } from "../engine/alphabet";
 import { type Bit } from "../engine/fivebit";
 import { cellGrid } from "./cellgrid";
+import { photoReader } from "./photoread";
 import { stepsView } from "./stepsview";
 
 const MAX = 60;
@@ -73,8 +74,12 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
     return el;
   };
 
+  // Cells a photo reading was unsure of, kept marked until another grid comes in.
+  let doubt: [number, number][] = [];
   const decode = () => {
     cip.el.hidden = sec.on();
+    grid.unmark("doubt");
+    grid.mark(doubt, "doubt");
     if (key) {
       const s = decodeWithKey(grid.get(), key);
       out.replaceChildren(
@@ -151,13 +156,30 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
   const pasted = h("textarea", { rows: 4, spellcheck: "false", placeholder: "Paste a downloaded project file here" });
   const file = h("input", { type: "file", accept: "application/json,.json" });
   const keyCode = h("input", { type: "text", name: "key-code", placeholder: "UTP1-...", spellcheck: "false", autocomplete: "off", "aria-label": "Parcel key code" });
+  const alphaCode = h("input", { type: "text", name: "alphabet-code", placeholder: "UTPA1-...", spellcheck: "false", autocomplete: "off", "aria-label": "Alphabet share code" });
+  const alphaFile = h("input", { type: "file", accept: "application/json,.json", "aria-label": "Alphabet file" });
+  /** Take an alphabet from a code or a file's text, and read letters with it if it can be used. */
+  const useAlphabetText = (text: string) => {
+    const a = text.trim().startsWith("{") ? importAlphabet(text) : parseAlphabetCode(text);
+    if (typeof a === "string") return void (message.textContent = a);
+    const problem = checkAlphabet(a).findings.find((f) => f.severity === "problem");
+    if (problem) return void (message.textContent = `This alphabet cannot be read with yet: ${problem.message}`);
+    enc.setCustom(a);
+    decode();
+    message.textContent = `Reading with "${a.name}". Mark the stitches as usual.`;
+  };
+  alphaFile.addEventListener("change", async () => {
+    const f = alphaFile.files?.[0];
+    if (f) useAlphabetText(await f.text());
+  });
   const keyFile = h("input", { type: "file", accept: "application/json,.json", "aria-label": "Parcel key file" });
   keyFile.addEventListener("change", async () => {
     const f = keyFile.files?.[0];
     if (f) useKey(importKey(await f.text()));
   });
 
-  const setCells = (next: Bit[][]) => {
+  const setCells = (next: Bit[][], doubtful: [number, number][] = []) => {
+    doubt = doubtful;
     width.value = String(next[0]!.length);
     height.value = String(next.length);
     grid.set(next);
@@ -238,6 +260,11 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
         "Use these rows",
       ),
     ),
+    photoReader({
+      size: () => [grid.get()[0]!.length, grid.get().length],
+      colour: () => colourGrid(car.get().id),
+      apply: (cells, doubtful) => setCells(cells, doubtful),
+    }),
     h(
       "details.more",
       {},
@@ -248,6 +275,15 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
       keyFile,
     ),
     keyStatus,
+    h(
+      "details.more",
+      {},
+      h("summary.mono", {}, "OPEN AN ALPHABET"),
+      h("p.hint", {}, "For pieces knitted in someone's own alphabet. Paste their share code, or open their alphabet file."),
+      alphaCode,
+      h("div.actions", {}, h("button.btn", { type: "button", onclick: () => useAlphabetText(alphaCode.value) }, "Use this code")),
+      alphaFile,
+    ),
     h(
       "details.more",
       {},

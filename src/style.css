@@ -1053,7 +1053,7 @@ a {
   display: grid;
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   gap: clamp(2px, 0.6vw, 6px);
-  max-width: 760px;
+  max-width: min(760px, calc(var(--cols) * 38px));
 }
 .wm-col {
   display: grid;
@@ -1255,4 +1255,42 @@ a {
   display: inline;
   margin: 0;
   font-size: 0.85rem;
+}
+
+/* Photo reader */
+.dcell.doubt {
+  outline: 2px dashed var(--red);
+  outline-offset: -5px;
+}
+.photo-stage {
+  margin: 10px 0;
+}
+.photo-wrap {
+  position: relative;
+}
+.photo-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ink);
+  touch-action: none;
+  cursor: crosshair;
+}
+.photo-canvas:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+.photo-lens {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: none;
+  pointer-events: none;
+}
+.photo-lens.on {
+  display: block;
 }
