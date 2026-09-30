@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRows } from "../src/ui/decode";
+import { isBlank, parseRows } from "../src/ui/decode";
 
 describe("typed rows for the manual decoder", () => {
   it("reads top row first and stores row 1 at the bottom", () => {
@@ -20,5 +20,13 @@ describe("typed rows for the manual decoder", () => {
     expect(parseRows("")).toMatch(/at least one row/);
     expect(parseRows("01\n012")).toMatch(/line 2: "2" is not a cell/i);
     expect(parseRows("01\n011")).toMatch(/same number of cells/);
+  });
+});
+
+describe("blank grid", () => {
+  it("is blank when every cell is the same stitch", () => {
+    expect(isBlank([[0, 0], [0, 0]])).toBe(true);
+    expect(isBlank([[1, 1], [1, 1]])).toBe(true);
+    expect(isBlank([[0, 0], [0, 1]])).toBe(false);
   });
 });

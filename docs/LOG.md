@@ -26,3 +26,4 @@ One line per session, newest last. Append only.
 - 2026-09-27: P2.1 visual flow: four home routes, explicit Home and one knitted hero on inner pages, Transform and Carrier field notes with drawings, closed parcel guide, first-entry title reveal with Skip and reduced-motion support; build and 296 tests pass. Left: publish the branch and review the live result.
 - 2026-09-27: Published P2.1 branch after the maker's approval; restored GitHub CLI authentication from the working Git credential. Left: PR review, CI, merge and live check.
 - 2026-09-30: P2.2 decoder opens on "I have a..." paths (piece, photo, rows, key, alphabet, file), each showing only its blocks; lab handover opens the file path. 296 tests and build pass. Left: maker review of the path wording.
+- 2026-09-30: P2.2 blank or cleared decoder grid shows "Mark some stitches to begin" instead of a wall of errors; 297 tests pass.

@@ -41,6 +41,12 @@ export function parseRows(text: string): Bit[][] | string {
   return rows.reverse(); // row 0 is the bottom
 }
 
+/** True when every cell is the same, as in a fresh or cleared grid. */
+export function isBlank(cells: Bit[][]): boolean {
+  const first = cells[0]?.[0];
+  return cells.every((r) => r.every((b) => b === first));
+}
+
 export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJson(json: string): void; useAlphabet(a: Alphabet, choose?: boolean): void; note(text: string): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
@@ -80,6 +86,12 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
     cip.el.hidden = sec.on();
     grid.unmark("doubt");
     grid.mark(doubt, "doubt");
+    // A grid of one stitch throughout holds no message yet: say so calmly instead of listing every check it fails.
+    if (isBlank(grid.get())) {
+      grid.unmark("flag");
+      out.replaceChildren(h("p.hint", { role: "status" }, "Mark some stitches to begin. The message and its checks appear here as you go."));
+      return;
+    }
     if (key) {
       const s = decodeWithKey(grid.get(), key);
       out.replaceChildren(
