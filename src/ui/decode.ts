@@ -47,7 +47,7 @@ export function isBlank(cells: Bit[][]): boolean {
   return cells.every((r) => r.every((b) => b === first));
 }
 
-export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJson(json: string): void; useAlphabet(a: Alphabet, choose?: boolean): void; note(text: string): void } {
+export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJson(json: string): void; loadBlank(json: string, note: string): void; useAlphabet(a: Alphabet, choose?: boolean): void; note(text: string): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
   const border = h("input", { type: "number", name: "border-depth", value: 0, min: 0, max: 8, inputmode: "numeric" });
@@ -351,5 +351,14 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
 
   root.append(paths, pathNote, work);
   decode();
-  return { load, loadJson, useAlphabet: (a, choose = true) => (enc.setCustom(a, choose), decode()), note: (t) => (choose("file"), (message.textContent = t)) };
+  /** A pattern's settings with an empty grid of its size, for decoding a piece by hand (the gallery's "try decoding it"). */
+  const loadBlank = (json: string, note: string) => {
+    const r = importProject(json);
+    if (!r.project) return void (message.textContent = r.issues.join(" ") || "That pattern could not be opened.");
+    load(r.project);
+    choose("piece", false, "DECODING A GALLERY PIECE ");
+    setCells(grid.get().map((row) => row.map(() => 0 as Bit)));
+    message.textContent = note;
+  };
+  return { load, loadJson, loadBlank, useAlphabet: (a, choose = true) => (enc.setCustom(a, choose), decode()), note: (t) => (choose("file"), (message.textContent = t)) };
 }
