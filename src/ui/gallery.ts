@@ -1,94 +1,97 @@
-// The gallery: real pieces knitted from lab patterns, listed in
-// src/content/gallery.json (format in content/README.md). Until pieces
-// arrive, the wall shows empty frames with swatches still on the needles.
+// The gallery wall: plates in knitted frames. A plate opens a larger view with
+// the credit, content tags, and the message hidden until asked for; "try
+// decoding it" opens the piece's pattern in the decoder with a blank grid.
 
 import { h } from "./h";
-import data from "../content/gallery.json";
-import { createProject, type ProjectSettings } from "../engine/project";
+import { createProject } from "../engine/project";
 import { fabricSvg } from "../engine/fabric";
+import { type Visible } from "../engine/construction";
+import { PIECES, TAGS, waiting, type Piece, type Placeholder } from "../content/gallery";
 
-export interface Piece {
-  /** Plate number and address: gallery.html#plate-01. */
-  plate: string;
-  title: string;
-  /** When it came off the needles, e.g. 2026-10. */
-  date: string;
-  /** Picture in public/gallery/, e.g. "gallery/red-scarf.jpg". */
-  image: string;
-  /** Words describing the picture, for screen readers. */
-  alt: string;
-  /** How it was made: carrier, alphabet, yarn. */
-  made: string;
-  /** What it says, folded away so visitors can try reading it first. Optional. */
-  message?: string;
-  notes?: string;
+/** A tile of seed stitch in red yarn, for the knitted frames. Drawn without wobble so it repeats cleanly. */
+function frameTile(): string {
+  const K: Visible = "knit", P: Visible = "purl";
+  const chart = Array.from({ length: 4 }, (_, r) => Array.from({ length: 4 }, (_, c) => ((r + c) % 2 ? P : K)));
+  const w = 12, pad = w * 0.8;
+  const svg = fabricSvg(chart, { seed: 3, stitch: w, wobble: 0, colours: { A: "#c8201e", B: "#c8201e" } }).replace(/viewBox="[^"]*"/, `viewBox="${pad} ${pad} ${4 * w} ${4 * w * 0.78}"`).replace(/ width="[^"]*" height="[^"]*"/, ` width="${4 * w}" height="${4 * w * 0.78}"`);
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
-export const PIECES = data as Piece[];
-
-/** A small five-bit swatch, only partly knitted: the rows above `knitted` are still to come. */
-function swatch(message: string, seed: number, knitted: number): HTMLElement {
-  const settings: ProjectSettings = {
-    title: message,
-    message,
-    layout: { width: 10, border: false },
-    construction: { method: "flat", firstRow: "RS" },
-    encoding: { alphabet: "fivebit", errorControl: { code: "plain", separator: false, checksum: false } },
-    carrier: { id: "purl-relief" },
-  };
-  const chart = createProject(settings, `gallery-${seed}`).output.chart.slice(0, knitted);
+/** A drawn swatch; if `knitted` is short of the full height, the rest waits on the needle. */
+function swatch(p: Placeholder, stitch: number): HTMLElement {
+  const full = createProject(p.settings, `gallery-${p.plate}`).output.chart;
+  const chart = p.rows ? full.slice(0, p.rows) : full;
   const el = h("div.plate-swatch");
-  el.innerHTML = fabricSvg(chart, { seed, stitch: 24, wobble: 0.6, label: `A drawing of a small swatch still on the needle, ${knitted} rows knitted.` }); // our own SVG
-  const svg = el.querySelector("svg")!;
-  // The needle across the live stitches at the top.
-  const w = Number(svg.getAttribute("width"));
-  const needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  needle.innerHTML = `<line x1="4" y1="14" x2="${w - 4}" y2="14" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="${w - 6}" cy="14" r="6" fill="var(--red)"/>`;
-  svg.append(needle);
+  el.innerHTML = fabricSvg(chart, { seed: 10 + Number(p.plate), stitch, wobble: 0.6, label: p.rows ? `A drawing of a small swatch still on the needle, ${p.rows} rows knitted.` : `A drawing of a finished swatch, ${chart.length} rows of ${chart[0]!.length} stitches.` }); // our own SVG
+  if (p.rows) {
+    const svg = el.querySelector("svg")!;
+    const w = Number(svg.getAttribute("width"));
+    const needle = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    needle.innerHTML = `<line x1="4" y1="${stitch * 0.55}" x2="${w - 4}" y2="${stitch * 0.55}" stroke="currentColor" stroke-width="${stitch / 5}" stroke-linecap="round"/><circle cx="${w - 6}" cy="${stitch * 0.55}" r="${stitch / 4}" fill="var(--red)"/>`;
+    svg.append(needle);
+  }
   return el;
 }
 
-// Placeholder plates: swatches from the lab, knitted only in drawing. Grade X, made here.
-const WAITING = [
-  { plate: "01", title: "On the needles", message: "SOON", rows: 3, note: "Cast on, three rows in. The message will be finished when the piece is." },
-  { plate: "02", title: "A swatch for every carrier", message: "WOOL", rows: 2, note: "Purl relief, colours, cables, lace and bobbles, knitted to check how each one reads in real yarn." },
-  { plate: "03", title: "Frame reserved", message: "HELLO", rows: 1, note: "Knitted something from a lab pattern? This wall has room." },
-];
+const tagChips = (tags: string[] = []) => (tags.length ? h("p.tags", {}, ...tags.map((t) => h(`span.tag.tag-${TAGS[t]?.tone ?? "plain"}.mono`, {}, TAGS[t]?.label ?? t))) : "");
+
+/** Who made it, or the grade X note for drawings. */
+const credit = (p: Piece | Placeholder) =>
+  "image" in p
+    ? h("p.credit.mono", {}, [p.knitter ? `KNITTED BY ${p.knitter.toUpperCase()}` : "", p.handle ?? "", p.date].filter(Boolean).join(" / "))
+    : h("p.credit.mono", {}, h("span.badge.badge-x", {}, "X"), " A DRAWING, NOT YET KNITTED");
+
+/** The message, hidden, with a way to try it and a way to just see it. */
+function messageBox(plate: string, message: string | undefined, canDecode: boolean): HTMLElement | "" {
+  if (!message && !canDecode) return "";
+  const shown = h("p.mono.big.reveal-text", { hidden: true, "aria-live": "polite" }, message ?? "");
+  const reveal = h("button.btn", { type: "button" }, "Reveal the message");
+  reveal.addEventListener("click", () => ((shown.hidden = false), reveal.remove()));
+  return h(
+    "div.message-box",
+    {},
+    h("p.field-label.mono", {}, "THE MESSAGE IS HIDDEN"),
+    h("p.hint", {}, canDecode ? "Have a go first: the decoder opens in a new tab with this piece's settings and an empty grid. Copy the stitches from the picture." : "Try reading it from the picture first."),
+    h("div.actions", {}, canDecode ? h("a.btn.btn-go", { href: `./decode.html#plate=${plate}`, target: "_blank", rel: "noopener" }, "Try decoding it ↗") : "", message ? reveal : ""),
+    shown,
+  );
+}
 
 export function mountGallery(root: HTMLElement): void {
-  const real = PIECES.map((p) =>
-    h(
-      "figure.plate",
-      { id: `plate-${p.plate}` },
-      h("div.plate-frame", {}, h("img", { src: `${import.meta.env.BASE_URL}${p.image}`, alt: p.alt, loading: "lazy" })),
-      h(
-        "figcaption",
-        {},
-        h("p.mono.plate-no", {}, `PLATE ${p.plate} / ${p.date}`),
-        h("h2.plate-title", {}, p.title),
-        h("p.hint", {}, p.made),
-        p.notes ? h("p", {}, p.notes) : "",
-        p.message ? h("details.more", {}, h("summary.mono", {}, "WHAT DOES IT SAY?"), h("p.mono.big", {}, p.message)) : "",
-      ),
-    ),
-  );
-  const waiting = WAITING.slice(0, Math.max(1, WAITING.length - PIECES.length)).map((w, i) =>
-    h(
-      "figure.plate.plate-waiting",
-      {},
-      h("div.plate-frame", {}, swatch(w.message, 11 + i, w.rows)),
-      h(
-        "figcaption",
-        {},
-        h("p.mono.plate-no", {}, `PLATE ${String(PIECES.length + i + 1).padStart(2, "0")} / NOT YET HUNG`),
-        h("h2.plate-title", {}, w.title),
-        h("p", {}, w.note),
-        h("p.hint", {}, h("span.badge.badge-x", {}, "X"), " A drawing, not a photograph. The rows so far are real five-bit code: the finished piece will spell a word."),
-      ),
-    ),
-  );
+  document.documentElement.style.setProperty("--frame-knit", frameTile());
+  const dialog = h("dialog.lightbox", { "aria-label": "Plate" }) as HTMLDialogElement;
+  dialog.addEventListener("click", (ev) => ev.target === dialog && dialog.close()); // click outside closes
+  const open = (big: () => HTMLElement, caption: () => (Node | string)[], title: string) => {
+    dialog.setAttribute("aria-label", title);
+    dialog.replaceChildren(
+      h("button.lightbox-close", { type: "button", "aria-label": "Close", onclick: () => dialog.close() }, "×"),
+      h("div.lightbox-body", {}, h("div.knit-frame.lightbox-frame", {}, h("div.mat", {}, big())), h("div.lightbox-caption", {}, h("h2.plate-title", {}, title), ...caption())),
+    );
+    dialog.showModal();
+  };
+
+  // Captions are built fresh for the card and for each opening: a node can only sit in one place.
+  const plate = (id: string, title: string, thumb: () => HTMLElement, big: () => HTMLElement, caption: () => (Node | string)[], nsfw = false) => {
+    const frame = h("button.knit-frame.plate-frame", { type: "button", "aria-label": `Open plate ${id}: ${title}`, onclick: () => open(big, caption, `Plate ${id}: ${title}`) }, h("div.mat", {}, thumb(), nsfw ? h("span.nsfw-cover.mono", {}, "NSFW / OPEN TO VIEW") : ""));
+    return h("figure.plate", { id: `plate-${id}` }, frame, h("figcaption", {}, h("p.mono.plate-no", {}, `PLATE ${id}`), h("h2.plate-title", {}, title), ...caption().slice(0, 2)));
+  };
+
+  const real = PIECES.map((p) => {
+    const img = (cls: string) => h(`img.${cls}`, { src: `${import.meta.env.BASE_URL}${p.image}`, alt: p.alt, loading: "lazy" });
+    const caption = () => [credit(p), tagChips(p.tags), h("p.hint", {}, p.made), p.notes ? h("p", {}, p.notes) : "", messageBox(p.plate, p.message, !!p.pattern)];
+    return plate(p.plate, p.title, () => img("plate-img" + (p.tags?.includes("nsfw") ? ".blurred" : "")), () => img("lightbox-img"), caption, p.tags?.includes("nsfw"));
+  });
+  const drawn = waiting().map((p) => {
+    const caption = () => [credit(p), tagChips(p.tags), h("p", {}, p.note), p.rows ? "" : messageBox(p.plate, p.settings.message, true)];
+    return plate(p.plate, p.title, () => swatch(p, 24), () => swatch(p, 40), caption);
+  });
+
   root.append(
-    h("div.gallery-wall", {}, ...real, ...waiting),
-    h("p.note", {}, "Every piece here was knitted from a pattern made in ", h("a", { href: "./lab.html" }, "the lab"), ". To read one yourself, copy its stitches into ", h("a", { href: "./decode.html" }, "the decoder"), "."),
+    h("div.gallery-wall", {}, ...real, ...drawn),
+    h("p.note", {}, "Every piece here was knitted from a pattern made in ", h("a", { href: "./lab.html" }, "the lab"), ". Open a plate to see it larger, try decoding it, or just reveal what it says."),
+    dialog,
   );
+  // gallery.html#plate-03 opens that plate.
+  const linked = /^#plate-\d+$/.test(location.hash) ? document.querySelector<HTMLButtonElement>(`${location.hash} .plate-frame`) : null;
+  linked?.click();
 }
