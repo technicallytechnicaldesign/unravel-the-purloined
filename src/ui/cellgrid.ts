@@ -56,6 +56,7 @@ export function cellGrid(opts: { cells: Bit[][]; label: string; colour?: boolean
           h(`button.dcell.b${b}`, {
             type: "button",
             "data-cell": `${r},${c}`,
+            "data-row": r,
             "aria-label": `Row ${r + 1}, stitch ${w - c}: ${state}`,
             tabindex: r === active[0] && c === active[1] ? 0 : -1,
             onfocus: () => (active = [r, c]),
@@ -67,7 +68,7 @@ export function cellGrid(opts: { cells: Bit[][]; label: string; colour?: boolean
           }),
         );
       });
-      el.append(h("span.rownum.mono", { "aria-hidden": "true" }, r + 1));
+      el.append(h("span.rownum.mono", { "aria-hidden": "true", "data-row": r }, r + 1));
     }
     if (hadFocus) button(active)?.focus();
   };

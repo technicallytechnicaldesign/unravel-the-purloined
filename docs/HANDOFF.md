@@ -17,7 +17,8 @@ Last updated 2026-09-27 (visual flow), project version 0.5.
 | Photo | Four-corner homography, cell sampling, readings for colour, knit/purl and lace against light, doubtful cells, corner settling, frame finding. On the decoder page as READ FROM A PHOTO. | `photo.ts`, `src/ui/photoread.ts`, `scripts/photo-experiment.ts` |
 | Lab | `lab.html`: two guided paths with folded stages and selected-option field notes for Transform and Carrier; alphabet designer folded below. `decode.html`: the decoder, opening on six "I have a..." paths, fed from the lab by `handover.ts`. | `src/ui/encode.ts`, `choicehelp.ts`, `decode.ts`, `designer.ts`, `handover.ts` |
 | Site frame | Four home routes including Decode; inner pages have an explicit Home menu and one knitted page title. The title decodes once on the first site entry in a tab session. | `wordmark.ts`, `intro.ts`, `index.html` |
-| Game | The Purloined Parcel, ten levels (8 to 10 in cables, lace and bobbles, copied one cell per block), drawn fabric, and a parcel guide that starts closed. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
+| Game | The Purloined Parcel, a guided training parcel (case 00), ten levels, a row by row mode for phones (8 to 10 in cables, lace and bobbles, copied one cell per block), drawn fabric, and a parcel guide that starts closed. | `src/ui/game.ts`, `tutorial.ts`, `cases.ts`, `fabric.ts` |
+| Gallery | Placeholder wall; the maker adds pieces to `src/content/gallery.json` as they are knitted. | `src/ui/gallery.ts` |
 | Museum | Five draft exhibits, hidden unless `?drafts`. The maker is writing these. | `content/exhibits/`, `src/content/sources.json` |
 
 Tests: `npm test` (296 passing on 2026-09-27, using the verified D: path because Vitest resolves the C: junction inconsistently). Build: `npm run build`. Browser checks so far used Playwright with the preinstalled Chromium at 375px, plus axe-core; no issues found.

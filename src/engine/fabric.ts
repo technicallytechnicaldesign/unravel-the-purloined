@@ -115,22 +115,34 @@ function cableCross(x: number, y: number, w: number, h: number, fill: string, le
   return leftLean ? strand(x0, x1) + strand(x1, x0) : strand(x1, x0) + strand(x0, x1);
 }
 
+/** Sizes shared by the drawing and `fabricLayout`. Uneven tension: each row gets its own height, from the first rng draws. */
+function measure(chart: readonly (readonly Visible[])[], opts: FabricOptions, r: () => number) {
+  const wobble = opts.wobble ?? 0.5;
+  const w = opts.stitch ?? 22;
+  const baseH = w * 0.78;
+  const pad = w * 0.8;
+  const heights = chart.map(() => baseH * (1 + (r() - 0.5) * 0.12 * wobble));
+  const total = heights.reduce((a, b) => a + b, 0);
+  return { w, pad, heights, total, width: (chart[0]?.length ?? 0) * w + pad * 2, height: total + pad * 2 };
+}
+
+/** Where each row and stitch of a drawing sits, in SVG units: for highlights and row-by-row crops. */
+export function fabricLayout(chart: readonly (readonly Visible[])[], opts: FabricOptions): { width: number; height: number; stitch: number; pad: number; rows: { y: number; h: number }[] } {
+  const { w, pad, heights, width, height } = measure(chart, opts, rng(opts.seed));
+  const rows: { y: number; h: number }[] = new Array(chart.length);
+  let y = pad;
+  for (let row = chart.length - 1; row >= 0; row--) (rows[row] = { y, h: heights[row]! }), (y += heights[row]!);
+  return { width, height, stitch: w, pad, rows };
+}
+
 /** Draw a chart (row 0 at the bottom, col 0 on the left) as fabric. */
 export function fabricSvg(chart: readonly (readonly Visible[])[], opts: FabricOptions): string {
   const r = rng(opts.seed);
   const wobble = opts.wobble ?? 0.5;
-  const w = opts.stitch ?? 22;
-  const baseH = w * 0.78;
   const colours = opts.colours ?? { A: "#f9f6ee", B: "#c8201e" };
   const rows = chart.length;
   const cols = chart[0]?.length ?? 0;
-  const pad = w * 0.8;
-
-  // Uneven tension: each row gets its own height.
-  const heights = chart.map(() => baseH * (1 + (r() - 0.5) * 0.12 * wobble));
-  const total = heights.reduce((a, b) => a + b, 0);
-  const width = cols * w + pad * 2;
-  const height = total + pad * 2;
+  const { w, pad, heights, total, width, height } = measure(chart, opts, r);
 
   const parts: string[] = [`<rect width="${f(width)}" height="${f(height)}" fill="${PAPER}"/>`, `<rect x="${f(pad - 2)}" y="${f(pad - 2)}" width="${f(cols * w + 4)}" height="${f(total + 4)}" fill="${GAP}"/>`];
   let y = pad;

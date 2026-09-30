@@ -6,16 +6,19 @@ import { h } from "./h";
 import { cellGrid } from "./cellgrid";
 import { stepsView } from "./stepsview";
 import { checkAnswer, LEVELS, makeCase, type Case } from "../engine/cases";
-import { fabricSvg } from "../engine/fabric";
+import { fabricLayout, fabricSvg } from "../engine/fabric";
 import { decodeCells } from "../engine/steps";
 import { borderOf, describe as describeOrientation } from "../engine/grid";
 import { type Bit } from "../engine/fivebit";
 import { decipher, encipher } from "../engine/ciphers";
 import { primer } from "./tutorial";
+import { trainingSheet } from "./training";
 
 const STORE = "purloined-parcel";
 interface Progress {
   solved: Record<string, boolean>;
+  /** Row by row mode, remembered for the next case. */
+  rowMode?: boolean;
 }
 
 // Progress stays in this browser only; if storage is blocked the game still works.
@@ -55,6 +58,18 @@ export function mountGame(root: HTMLElement): void {
       h(
         "ol.folio",
         {},
+        h(
+          "li",
+          {},
+          h(
+            "button.dossier.dossier-training",
+            { type: "button", onclick: showTraining, "aria-label": "Open case file 00: the training parcel. Start here." },
+            h("span.dossier-tab.mono", {}, "00"),
+            h("span.stamp.stamp-small.dossier-stamp", {}, progress.solved[0] ? "SOLVED" : "START HERE"),
+            h("span.dossier-name", {}, "The training parcel"),
+            h("span.dossier-teaches", {}, "Read one small parcel together, step by step, with every clue pointed out."),
+          ),
+        ),
         ...LEVELS.map((l) =>
           h(
             "li",
@@ -74,24 +89,32 @@ export function mountGame(root: HTMLElement): void {
     );
   };
 
+  const showTraining = () => {
+    root.replaceChildren(
+      trainingSheet({
+        back: showList,
+        solved: () => ((progress.solved[0] = true), saveProgress(progress)),
+        next: () => showCase(makeCase(1, newSeed())),
+      }),
+    );
+    root.scrollIntoView({ behavior: "smooth" });
+  };
+
   const showCase = (c: Case) => {
     const colour = c.settings.carrier.id === "two-colour";
     const rows = c.shown.length;
     const cols = c.shown[0]!.length;
     let zoom = 1;
     const figure = h("div.scroll.evidence-img", { tabindex: 0, role: "region", "aria-label": "Evidence photograph, scrolls" });
-    const svg = fabricSvg(c.shown, {
-      seed: c.seed,
-      stitch: c.tiles || c.blocks ? 16 : 30,
-      colours: { A: "#f9f6ee", B: "#c8201e" },
-      label: `Evidence photograph: knitted fabric, ${rows} rows of ${cols} stitches. A description in words follows.`,
-    });
+    const look = { seed: c.seed, stitch: c.tiles || c.blocks ? 16 : 30, colours: { A: "#f9f6ee", B: "#c8201e" } };
+    const svg = fabricSvg(c.shown, { ...look, label: `Evidence photograph: knitted fabric, ${rows} rows of ${cols} stitches. A description in words follows.` });
     figure.innerHTML = svg; // our own SVG, no outside text in it
     const setZoom = (z: number) => {
       zoom = Math.min(3, Math.max(0.5, z));
       const el = figure.querySelector("svg")!;
       el.style.width = `${Math.round(Number(el.getAttribute("width")) * zoom)}px`;
       el.style.height = "auto";
+      if (rowMode) showRow(row);
     };
 
     const machine = h("div.machine", {}, h("p.hint", {}, `Locked. It switches on with hint ${c.machineAfter}.`));
@@ -101,6 +124,62 @@ export function mountGame(root: HTMLElement): void {
       colour,
       onChange: () => runMachine(),
     });
+    // Row by row: the copy shows one row, with the matching strip of the evidence cropped above it,
+    // so a phone never has to scroll between the picture and the grid.
+    const copyRows = grid.get().length;
+    const per = rows / copyRows; // fabric rows per copy row: 1, or a block or tile's height
+    const bands = fabricLayout(c.shown, look);
+    let rowMode = !!progress.rowMode;
+    let row = 0;
+    const rowStyle = h("style");
+    const strip = h("div.scroll.row-strip", { role: "img" });
+    const rowLabel = h("span.mono.row-label", { "aria-live": "polite" });
+    const below = h("button.btn.btn-small", { type: "button", onclick: () => showRow(row - 1) }, "↓ Row below");
+    const above = h("button.btn.btn-small", { type: "button", onclick: () => showRow(row + 1) }, "Row above ↑");
+    const bench = h("div.row-bench", { hidden: true }, strip, h("div.row-nav", {}, below, rowLabel, above));
+    const showRow = (r: number) => {
+      row = Math.max(0, Math.min(copyRows - 1, r));
+      rowStyle.textContent = rowMode ? `.row-mode .dgrid > [data-row]:not([data-row="${row}"]) { display: none; }` : "";
+      rowLabel.textContent = `ROW ${row + 1} OF ${copyRows}`;
+      below.toggleAttribute("disabled", row === 0);
+      above.toggleAttribute("disabled", row === copyRows - 1);
+      if (!rowMode) return;
+      // Crop a copy of the drawing to this row's band of fabric, with a sliver of the rows either side.
+      const lo = Math.floor(row * per), hi = Math.floor((row + 1) * per) - 1;
+      const top = bands.rows[hi]!.y, bottom = bands.rows[lo]!.y + bands.rows[lo]!.h;
+      const edge = bands.rows[lo]!.h * 0.35;
+      const y0 = Math.max(0, top - edge), y1 = Math.min(bands.height, bottom + edge);
+      const el = figure.querySelector("svg")!.cloneNode(true) as SVGSVGElement;
+      el.setAttribute("viewBox", `0 ${y0} ${bands.width} ${y1 - y0}`);
+      el.setAttribute("aria-hidden", "true");
+      el.setAttribute("width", String(Math.round(bands.width * zoom)));
+      el.setAttribute("height", String(Math.round((y1 - y0) * zoom)));
+      el.style.width = el.style.height = "";
+      strip.setAttribute("aria-label", `Row ${row + 1} of the evidence, cropped. The full description in words is under Exhibit A.`);
+      strip.replaceChildren(el);
+    };
+    const rowToggle = h("button.btn.btn-small", { type: "button", "aria-pressed": "false" }, "Row by row");
+    const setRowMode = (on: boolean) => {
+      rowMode = on;
+      progress.rowMode = on;
+      saveProgress(progress);
+      rowToggle.setAttribute("aria-pressed", String(on));
+      rowToggle.textContent = on ? "Show everything" : "Row by row";
+      sheet.classList.toggle("row-mode", on);
+      bench.hidden = !on;
+      showRow(row);
+    };
+    rowToggle.addEventListener("click", () => setRowMode(!rowMode));
+    // Arrow keys up and down move to the next row first, so the cell they land on is visible.
+    grid.el.addEventListener(
+      "keydown",
+      (ev) => {
+        if (!rowMode || (ev.key !== "ArrowUp" && ev.key !== "ArrowDown")) return;
+        showRow(row + (ev.key === "ArrowUp" ? 1 : -1));
+      },
+      true,
+    );
+
     let hintsShown = 0;
     const hintList = h("ol.hints");
     const hintBtn = h("button.btn", { type: "button" }, `Take hint 1 of ${c.hints.length}`);
@@ -152,8 +231,7 @@ export function mountGame(root: HTMLElement): void {
       h("button.btn.btn-go", { type: "submit" }, "Check →"),
     );
 
-    root.replaceChildren(
-      h(
+    const sheet = h(
         "article.sheet",
         {},
         h(
@@ -162,6 +240,7 @@ export function mountGame(root: HTMLElement): void {
           h("button.btn.btn-small", { type: "button", onclick: showList }, "← Folio"),
           h("p.mono", {}, `CASE FILE ${String(c.level.n).padStart(2, "0")} / PARCEL ${String(c.seed).padStart(3, "0")}`),
           h("span.stamp", {}, "FICTION"),
+          rowToggle,
         ),
         h("h2.section-label.sheet-title", {}, c.level.name),
         h("div.memo.mono", {}, ...c.briefing.map((b) => h("p", {}, b))),
@@ -180,6 +259,7 @@ export function mountGame(root: HTMLElement): void {
             "section",
             { "aria-label": "Your copy" },
             h("div.sheet-label", {}, h("h3.step-title", {}, "Your copy")),
+            bench,
             h(
               "p.hint",
               {},
@@ -197,8 +277,10 @@ export function mountGame(root: HTMLElement): void {
         h("details.more.fold", {}, h("summary.mono", {}, `HINTS (${c.hints.length})`), h("div.actions", {}, hintBtn), hintList),
         machineBox,
         h("div.actions", {}, h("button.btn", { type: "button", onclick: () => showCase(makeCase(c.level.n, newSeed())) }, "Another parcel like this")),
-      ),
-    );
+        rowStyle,
+      );
+    root.replaceChildren(sheet);
+    setRowMode(rowMode);
     root.scrollIntoView({ behavior: "smooth" });
   };
 
