@@ -92,6 +92,6 @@ Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long sid
 
 - `knitter`, `handle`, `pattern`, `message`, `tags` and `notes` are optional. The credit line (KNITTED BY SAM / @woolly / 2026-10) takes the place of the X badge that drawings carry.
 - The message starts hidden. "Try decoding it" opens the decoder in a new tab with the pattern's settings and an empty grid (`decode.html#plate=01`); "Reveal the message" just shows it. It is a puzzle, not a secret: anyone can read it in the page source.
-- Tags: `kid-friendly`, `swearing` (shown as "Contains swearing"), `nsfw`. Any other word shows as a plain tag. NSFW pictures stay blurred on the wall until the plate is opened.
+- Tags describe the message once decoded, not the knitting: `kid-friendly`, `swearing` ("Message contains swearing"), `nsfw` ("Message is NSFW"). Any other word shows as a plain tag. Pictures are never blurred (the stitches are only stitches); an NSFW piece gets a "NSFW ONCE DECODED" stamp and its reveal button says so.
 - `alt` describes the picture, never the message.
 - Each real piece takes the place of one drawn frame; one always stays empty.

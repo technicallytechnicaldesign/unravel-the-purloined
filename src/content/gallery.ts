@@ -5,11 +5,11 @@
 import data from "./gallery.json";
 import { createProject, exportProject, type ProjectSettings } from "../engine/project";
 
-/** Content tags. Unknown tags still show, in the plain style. */
+/** Content tags, about the message once decoded (the stitches themselves are always decent). Unknown tags show plain. */
 export const TAGS: Record<string, { label: string; tone: "ok" | "care" | "adult" }> = {
   "kid-friendly": { label: "Kid friendly", tone: "ok" },
-  swearing: { label: "Contains swearing", tone: "care" },
-  nsfw: { label: "NSFW", tone: "adult" },
+  swearing: { label: "Message contains swearing", tone: "care" },
+  nsfw: { label: "Message is NSFW", tone: "adult" },
 };
 
 export interface Piece {
