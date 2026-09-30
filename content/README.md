@@ -69,7 +69,7 @@ Plain, warm, grounded. Short sentences. Do not merge separate facts into a stron
 
 # Hanging a piece in the gallery
 
-Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long side), then add an entry to `src/content/gallery.json`:
+Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long side). If visitors should be able to decode it themselves, save the lab's project file (PROJECT JSON) next to it. Then add an entry to `src/content/gallery.json`:
 
 ```json
 [
@@ -77,13 +77,21 @@ Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long sid
     "plate": "01",
     "title": "Red scarf",
     "date": "2026-10",
+    "knitter": "Sam",
+    "handle": "@woolly",
     "image": "gallery/red-scarf.jpg",
     "alt": "A red scarf laid flat, with rows of purl bumps across one end.",
     "made": "Five-bit, purl relief, DK wool.",
+    "pattern": "gallery/red-scarf.json",
     "message": "MEET AT NOON",
+    "tags": ["kid-friendly"],
     "notes": "Optional words about the piece."
   }
 ]
 ```
 
-`message` and `notes` are optional; the message stays folded so visitors can try reading it first. Each real piece takes the place of one empty frame.
+- `knitter`, `handle`, `pattern`, `message`, `tags` and `notes` are optional. The credit line (KNITTED BY SAM / @woolly / 2026-10) takes the place of the X badge that drawings carry.
+- The message starts hidden. "Try decoding it" opens the decoder in a new tab with the pattern's settings and an empty grid (`decode.html#plate=01`); "Reveal the message" just shows it. It is a puzzle, not a secret: anyone can read it in the page source.
+- Tags describe the message once decoded, not the knitting: `kid-friendly`, `swearing` ("Message contains swearing"), `nsfw` ("Message is NSFW"). Any other word shows as a plain tag. Pictures are never blurred (the stitches are only stitches); an NSFW piece gets a "NSFW ONCE DECODED" stamp and its reveal button says so.
+- `alt` describes the picture, never the message.
+- Each real piece takes the place of one drawn frame; one always stays empty.
