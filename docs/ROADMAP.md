@@ -100,6 +100,8 @@ Maker's answers on Phase 8 (2026-09-27): will photograph the swatches as asked (
 
 - [x] **P2.1 Visual flow.** Show Lab, Decode, Archive and Parcel on the home page; give inner pages a compact menu with Home and one knitted page title; add selected-option field notes with drawings for Transform and Carrier; start the parcel guide closed; reveal the knitted site title only on the first site entry in a tab session, with Skip and reduced-motion support. Done when the 375px layout has no horizontal scroll, the title reveal does not replay on Home, and the encoding engine is unchanged. (Done 2026-09-27.)
 
+- [x] **P2.2 Decode by what you have.** The decoder opens on "I have a..." paths (a knitted piece, a photo, written rows, a parcel key, someone's alphabet, a pattern file), like the lab; each shows only the blocks it needs, with a "change" link back. A pattern from the lab opens the file path. Done when every path works at 375px with no horizontal scroll and the engine is unchanged. (Done 2026-09-30.)
+
 ## Phase 7: design your own alphabet
 
 People draw their own symbols, see how safe they are to knit, and use them like the built-in motif alphabets. Invented symbols are the maker's own: the lab never calls them traditional.
