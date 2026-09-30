@@ -41,6 +41,12 @@ export function parseRows(text: string): Bit[][] | string {
   return rows.reverse(); // row 0 is the bottom
 }
 
+/** True when every cell is the same, as in a fresh or cleared grid. */
+export function isBlank(cells: Bit[][]): boolean {
+  const first = cells[0]?.[0];
+  return cells.every((r) => r.every((b) => b === first));
+}
+
 export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJson(json: string): void; useAlphabet(a: Alphabet, choose?: boolean): void; note(text: string): void } {
   const width = h("input", { type: "number", value: 8, min: 3, max: MAX, inputmode: "numeric" });
   const height = h("input", { type: "number", value: 8, min: 2, max: MAX, inputmode: "numeric" });
@@ -80,6 +86,12 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
     cip.el.hidden = sec.on();
     grid.unmark("doubt");
     grid.mark(doubt, "doubt");
+    // A grid of one stitch throughout holds no message yet: say so calmly instead of listing every check it fails.
+    if (isBlank(grid.get())) {
+      grid.unmark("flag");
+      out.replaceChildren(h("p.hint", { role: "status" }, "Mark some stitches to begin. The message and its checks appear here as you go."));
+      return;
+    }
     if (key) {
       const s = decodeWithKey(grid.get(), key);
       out.replaceChildren(
@@ -209,6 +221,7 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
   };
 
   const load = (p: Project) => {
+    choose("file", false, location.hash === "#from-lab" ? "OPENED FROM THE LAB " : undefined);
     enc.set(p.settings.encoding, p.settings.glyphs);
     cip.set(p.settings.cipher);
     sec.set(!!p.settings.secure);
@@ -231,72 +244,112 @@ export function mountDecoder(root: HTMLElement): { load(p: Project): void; loadJ
     if (f) loadJson(await f.text());
   });
 
-  root.append(
+  // Blocks of the page. Each path below shows only the ones its starting point needs.
+  const size = h("div.controls", {}, h("div.control-group", {}, h("div.pair", {}, field("STITCHES PER ROW", width), field("ROWS", height)), field("BORDER DEPTH", border, "Stitches of border on each side; 0 for none. What the border holds does not matter.")));
+  const settings = h("div", {}, h("p.field-label.mono", {}, "HOW IT WAS MADE"), h("div.controls", {}, car.el, enc.el, cip.el));
+  const typedBox = h(
+    "details.more",
+    {},
+    h("summary.mono", {}, "TYPE ROWS"),
+    typed,
     h(
-      "div.controls",
-      {},
-      h("div.control-group", {}, h("div.pair", {}, field("STITCHES PER ROW", width), field("ROWS", height)), field("BORDER DEPTH", border, "Stitches of border on each side; 0 for none. What the border holds does not matter.")),
-      car.el,
-      enc.el,
-      cip.el,
-      sec.el,
-    ),
-    h("div.actions", {}, h("button.btn", { type: "button", onclick: () => setCells(grid.get().map((r) => r.map(() => 0 as Bit))) }, "Clear")),
-    h(
-      "details.more",
-      {},
-      h("summary.mono", {}, "TYPE ROWS INSTEAD"),
-      typed,
-      h(
-        "button.btn",
-        {
-          type: "button",
-          onclick: () => {
-            const r = parseRows(typed.value);
-            if (typeof r === "string") message.textContent = r;
-            else (setCells(r), (message.textContent = `${r.length} rows loaded.`));
-          },
+      "button.btn",
+      {
+        type: "button",
+        onclick: () => {
+          const r = parseRows(typed.value);
+          if (typeof r === "string") message.textContent = r;
+          else (setCells(r), (message.textContent = `${r.length} rows loaded.`));
         },
-        "Use these rows",
-      ),
+      },
+      "Use these rows",
     ),
-    photoReader({
-      size: () => [grid.get()[0]!.length, grid.get().length],
-      colour: () => colourGrid(car.get().id),
-      border: depth,
-      apply: (cells, doubtful) => setCells(cells, doubtful),
-    }),
+  );
+  const photoBox = photoReader({
+    size: () => [grid.get()[0]!.length, grid.get().length],
+    colour: () => colourGrid(car.get().id),
+    border: depth,
+    apply: (cells, doubtful) => setCells(cells, doubtful),
+  });
+  const keyBox = h(
+    "div",
+    {},
     h(
       "details.more",
       {},
       h("summary.mono", {}, "OPEN A PARCEL KEY"),
-      h("p.hint", {}, "For hidden messages. Type the code from a key card, or open a key file."),
+      h("p.hint", {}, "For hidden messages. Type the code from a key card, or open a key file. The key sets the size and how the piece was made."),
       keyCode,
       h("div.actions", {}, h("button.btn", { type: "button", onclick: () => useKey(parseKeyCode(keyCode.value)) }, "Use this code"), h("button.btn", { type: "button", onclick: forgetKey }, "Put the key away")),
       keyFile,
     ),
     keyStatus,
-    h(
-      "details.more",
-      {},
-      h("summary.mono", {}, "OPEN AN ALPHABET"),
-      h("p.hint", {}, "For pieces knitted in someone's own alphabet. Paste their share code, or open their alphabet file."),
-      alphaCode,
-      h("div.actions", {}, h("button.btn", { type: "button", onclick: () => useAlphabetText(alphaCode.value) }, "Use this code")),
-      alphaFile,
-    ),
-    h(
-      "details.more",
-      {},
-      h("summary.mono", {}, "OPEN A PROJECT FILE"),
-      file,
-      pasted,
-      h("button.btn", { type: "button", onclick: () => loadJson(pasted.value) }, "Open pasted project"),
-    ),
-    message,
-    h("div.scroll", {}, grid.el),
-    out,
   );
+  const alphaBox = h(
+    "details.more",
+    {},
+    h("summary.mono", {}, "OPEN AN ALPHABET"),
+    h("p.hint", {}, "For pieces knitted in someone's own alphabet. Paste their share code, or open their alphabet file."),
+    alphaCode,
+    h("div.actions", {}, h("button.btn", { type: "button", onclick: () => useAlphabetText(alphaCode.value) }, "Use this code")),
+    alphaFile,
+  );
+  const fileBox = h(
+    "details.more",
+    {},
+    h("summary.mono", {}, "OPEN A PROJECT FILE"),
+    h("p.hint", {}, "A pattern saved from the lab. It brings its own settings and grid."),
+    file,
+    pasted,
+    h("button.btn", { type: "button", onclick: () => loadJson(pasted.value) }, "Open pasted project"),
+  );
+  const gridBox = h(
+    "div",
+    {},
+    h("p.field-label.mono", {}, "THE GRID"),
+    h("p.hint", {}, "Mark each cell as you see it on the right side, row 1 at the bottom. Which way up does not matter: the marker row tells the decoder."),
+    h("div.actions", {}, h("button.btn", { type: "button", onclick: () => setCells(grid.get().map((r) => r.map(() => 0 as Bit))) }, "Clear")),
+    h("div.scroll", {}, grid.el),
+  );
+
+  // "I have a..." paths, as in the lab. The first block listed is opened and focused.
+  type Path = keyof typeof PATHS;
+  const PATHS = {
+    piece: { have: "a knitted piece", how: "Count the stitches, then mark each one on a grid.", show: [size, settings, gridBox] },
+    photo: { have: "a photo of one", how: "Place four corners and let the page read the cells.", show: [photoBox, settings, size, gridBox] },
+    rows: { have: "rows written down", how: "Type 0s and 1s (or dots and crosses), top row first.", show: [typedBox, settings, gridBox] },
+    key: { have: "a parcel key", how: "A code or key file for a message hidden in a pattern.", show: [keyBox, gridBox] },
+    alphabet: { have: "someone's alphabet", how: "Their share code or file, for a piece in their own letters.", show: [alphaBox, size, settings, gridBox] },
+    file: { have: "a pattern file", how: "A project saved from the lab, with its settings inside.", show: [fileBox, settings, gridBox] },
+  };
+  const blocks = [photoBox, typedBox, keyBox, alphaBox, fileBox, size, settings, gridBox];
+  const pathNote = h("p.path-note.mono", { hidden: true });
+  const paths = h(
+    "div.paths",
+    { role: "group", "aria-label": "What do you have?" },
+    ...Object.entries(PATHS).map(([id, p]) => h("button.path", { type: "button", onclick: () => choose(id as Path, true) }, h("b", {}, `I have ${p.have}`), h("span", {}, p.how))),
+  );
+  const choose = (id: Path, focus = false, note = `STARTING FROM ${PATHS[id].have.toUpperCase()} `) => {
+    const show: HTMLElement[] = PATHS[id].show;
+    for (const b of blocks) b.hidden = !show.includes(b);
+    work.hidden = false;
+    const first = show[0]!;
+    const fold = first.matches("details") ? first : first.querySelector("details");
+    if (fold) (fold as HTMLDetailsElement).open = true;
+    paths.hidden = true;
+    pathNote.hidden = false;
+    pathNote.replaceChildren(note, h("button.linkish", { type: "button", onclick: pickAgain }, "change"));
+    if (focus) first.querySelector<HTMLElement>("summary, input, select, textarea")?.focus();
+  };
+  const pickAgain = () => {
+    paths.hidden = false;
+    pathNote.hidden = true;
+    paths.querySelector("button")!.focus();
+  };
+  // Nothing below the paths shows until one is chosen.
+  const work = h("div", { hidden: true }, ...blocks.slice(0, 7), sec.el, message, gridBox, out);
+
+  root.append(paths, pathNote, work);
   decode();
-  return { load, loadJson, useAlphabet: (a, choose = true) => (enc.setCustom(a, choose), decode()), note: (t) => (message.textContent = t) };
+  return { load, loadJson, useAlphabet: (a, choose = true) => (enc.setCustom(a, choose), decode()), note: (t) => (choose("file"), (message.textContent = t)) };
 }
