@@ -102,6 +102,10 @@ Maker's answers on Phase 8 (2026-09-27): will photograph the swatches as asked (
 
 - [x] **P2.2 Decode by what you have.** The decoder opens on "I have a..." paths (a knitted piece, a photo, written rows, a parcel key, someone's alphabet, a pattern file), like the lab; each shows only the blocks it needs, with a "change" link back. A pattern from the lab opens the file path. Done when every path works at 375px with no horizontal scroll and the engine is unchanged. A blank grid shows a calm "mark some stitches to begin" instead of every failed check. (Done 2026-09-30.)
 
+- [x] **P2.3 Training parcel.** Case 00 in the folio: one fixed five-row parcel ("HI") read step by step. Red rings on the drawing and the copy show where to look; copying steps check every square, name the first wrong one and offer "Show me"; reading steps show the 16 8 4 2 1 sums for START, each letter and END; the end lists the clues to look for in any parcel. (Done 2026-09-30.)
+- [x] **P2.4 Row by row.** A toggle on every case sheet shows one copy row with its strip of the evidence cropped above it, sticky, with row buttons; arrow keys move rows. Works for block and motif levels (one strip per block or tile row). Remembered in the browser. (Done 2026-09-30.)
+- [x] **P2.5 Gallery placeholder.** `gallery.html` with plates from `src/content/gallery.json` (format in `content/README.md`, pictures in `public/gallery/`). Until pieces arrive, empty frames show drawn swatches still on the needle, marked grade X. Linked from the home page and every menu. (Done 2026-09-30.)
+
 ## Phase 7: design your own alphabet
 
 People draw their own symbols, see how safe they are to knit, and use them like the built-in motif alphabets. Invented symbols are the maker's own: the lab never calls them traditional.
