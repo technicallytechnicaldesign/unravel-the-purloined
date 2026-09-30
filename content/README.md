@@ -66,3 +66,24 @@ A claim line is: `- [grade]`, then its sources as `[S01] [S02]`, then the claim.
 ## House style
 
 Plain, warm, grounded. Short sentences. Do not merge separate facts into a stronger claim: say what each source supports and stop there.
+
+# Hanging a piece in the gallery
+
+Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long side), then add an entry to `src/content/gallery.json`:
+
+```json
+[
+  {
+    "plate": "01",
+    "title": "Red scarf",
+    "date": "2026-10",
+    "image": "gallery/red-scarf.jpg",
+    "alt": "A red scarf laid flat, with rows of purl bumps across one end.",
+    "made": "Five-bit, purl relief, DK wool.",
+    "message": "MEET AT NOON",
+    "notes": "Optional words about the piece."
+  }
+]
+```
+
+`message` and `notes` are optional; the message stays folded so visitors can try reading it first. Each real piece takes the place of one empty frame.
