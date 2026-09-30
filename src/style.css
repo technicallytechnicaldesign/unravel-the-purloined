@@ -1565,3 +1565,103 @@ a {
   .guide-panel { left: 0; right: auto; width: 100%; }
   .intro-wordmark .wm-letter { font-size: 0.5rem; }
 }
+
+/* Parcel: row by row mode. One copy row, with its strip of the evidence cropped above it. */
+.row-mode .evidence-img { display: none; }
+.row-bench {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 6px 0 10px;
+  padding: 8px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+}
+.row-strip svg {
+  display: block;
+  max-width: none;
+}
+.row-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 8px;
+}
+.row-label { color: var(--ink-2); }
+
+/* Parcel: the training case. A coach card, red rings on the drawing and the copy. */
+.dossier-training { border-color: var(--red); }
+.coach {
+  margin: 8px 0 12px;
+  padding: 10px 14px 12px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--red);
+}
+.coach p { margin: 6px 0; }
+.coach-count { margin: 0; color: var(--ink-2); }
+.coach-title {
+  margin: 2px 0 6px;
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+.tut-feedback { font-weight: 600; color: var(--red); }
+.tut-feedback.ok { color: var(--grade-a); }
+.tut-ring {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 3;
+  animation: tut-pulse 1.6s ease-in-out infinite;
+}
+@keyframes tut-pulse { 50% { stroke-opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .tut-ring { animation: none; } }
+.dcell.tut { box-shadow: inset 0 0 0 2px var(--red); }
+.tut-bits { display: flex; gap: 4px; }
+.tut-bit {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  padding: 4px 0;
+  background: var(--knit);
+  border: 1.5px solid var(--ink);
+}
+.tut-bit.on { background: var(--ink); color: var(--paper); }
+.tut-bit b { font-size: 1.1rem; }
+.tut-bit small { font-size: 0.7rem; opacity: 0.8; }
+
+/* Gallery: plates on a wall. Empty ones show a swatch still on the needles. */
+.gallery-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 28px 20px;
+  margin: 8px 0 20px;
+}
+.plate { margin: 0; }
+.plate-frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 5 / 4;
+  padding: 14px;
+  background: var(--knit);
+  border: 10px solid var(--ink);
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+  overflow: hidden;
+}
+.plate-frame img { width: 100%; height: 100%; object-fit: cover; }
+.plate-waiting .plate-frame { border-style: double; border-width: 8px; color: var(--ink); }
+.plate-swatch { width: 100%; }
+.plate-swatch svg { display: block; width: 100%; height: auto; }
+.plate-no { margin: 14px 0 0; color: var(--ink-2); }
+.plate-title {
+  margin: 2px 0 4px;
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+.plate figcaption p { margin: 4px 0; }
