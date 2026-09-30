@@ -28,3 +28,4 @@ One line per session, newest last. Append only.
 - 2026-09-30: P2.2 decoder opens on "I have a..." paths (piece, photo, rows, key, alphabet, file), each showing only its blocks; lab handover opens the file path. 296 tests and build pass. Left: maker review of the path wording.
 - 2026-09-30: P2.2 blank or cleared decoder grid shows "Mark some stitches to begin" instead of a wall of errors; 297 tests pass.
 - 2026-09-30: P2.3 training parcel (case 00, step by step with rings, checks and Show me), P2.4 row by row mode on every case, P2.5 gallery placeholder page and menu links; 301 tests and build pass. Left: maker playtest of the training wording, first real gallery piece.
+- 2026-09-30: P2.6 gallery plates: knitted frames, larger view, credits, hidden message with decode-it-yourself and reveal, content tags; 301 tests and build pass. Left: first real piece and its photo.

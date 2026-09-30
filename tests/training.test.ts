@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { fabricLayout, fabricSvg } from "../src/engine/fabric";
 import { createProject } from "../src/engine/project";
 import { trainingGroups, TRAINING_ANSWER } from "../src/ui/training";
-import { PIECES } from "../src/ui/gallery";
+import { PIECES, plateProject, waiting } from "../src/content/gallery";
+import { importProject } from "../src/engine/project";
 import { type Bit } from "../src/engine/fivebit";
 
 const project = createProject(
@@ -36,5 +37,15 @@ describe("training parcel", () => {
 describe("gallery", () => {
   it("lists pieces with a picture and words for it", () => {
     for (const p of PIECES) expect(p.image && p.alt && p.title).toBeTruthy();
+  });
+
+  it("numbers drawn plates after the real pieces, and opens the finished sample for decoding", async () => {
+    const drawn = waiting();
+    expect(drawn[0]!.plate).toBe(String(PIECES.length + 1).padStart(2, "0"));
+    const sample = drawn.find((p) => !p.rows);
+    if (!sample) return;
+    const json = await plateProject(sample.plate);
+    expect(importProject(json!).project?.output.decoded).toBe(sample.settings.message);
+    expect(await plateProject(drawn.find((p) => p.rows)!.plate)).toBeUndefined();
   });
 });
