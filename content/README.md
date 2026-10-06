@@ -95,3 +95,6 @@ Put the photo in `public/gallery/` (JPEG or WebP, around 1200 px on the long sid
 - Tags describe the message once decoded, not the knitting: `kid-friendly`, `swearing` ("Message contains swearing"), `nsfw` ("Message is NSFW"). Any other word shows as a plain tag. Pictures are never blurred (the stitches are only stitches); an NSFW piece gets a "NSFW ONCE DECODED" stamp and its reveal button says so.
 - `alt` describes the picture, never the message.
 - Each real piece takes the place of one drawn frame; one always stays empty.
+
+## Public drafts
+Add visibility: public while retaining status: draft for public testing; every claim still needs checked citations before public visibility.

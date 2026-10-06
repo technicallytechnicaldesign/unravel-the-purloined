@@ -64,3 +64,9 @@ Suggested first tasks. Write them into `docs/ROADMAP.md` with acceptance criteri
 1. Any new playtest notes first.
 2. When the swatch photos arrive (8.3): run them through the photo reader, measure how many wrong cells fall among the doubtful ones, and finish 8.5.
 3. Phase 9 once the maker has decided on hosting.
+
+## Gallery and archive foundation, 2026-10-06
+Maker authorised development studies and one public draft; start at studies.html and docs/development/gallery-archive/README.md.
+The red cap stays draft and specifies Trondheim. Other drafts remain hidden publicly.
+Row photographs and possible SW01 frogging come from the maker; photographic playback and aligned overlays await captures and hand tracing.
+Vitest now preserves symlinks so local checks run through canonical C: paths.
