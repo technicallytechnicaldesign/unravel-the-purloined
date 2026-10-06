@@ -79,7 +79,7 @@ export function mountGallery(root: HTMLElement): void {
 
   root.append(
     h("div.gallery-wall", {}, ...real, ...drawn),
-    h("p.note", {}, "Every piece here was knitted from a pattern made in ", h("a", { href: "./lab.html" }, "the lab"), ". Open a plate to see it larger, try decoding it, or just reveal what it says."),
+    h("p.note", {}, "The real pieces and drawn studies here use patterns made in ", h("a", { href: "./lab.html" }, "the lab"), ". Open a plate to see it larger, try decoding it, or just reveal what it says."),
     h("p.hint", {}, "About the tags: they describe the message, not the knitting. Until it is decoded, even the rudest piece here is a perfectly respectable bit of purl."),
     dialog,
   );

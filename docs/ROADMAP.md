@@ -135,3 +135,10 @@ Read a photo of fabric into the decoder's grid, in the browser, with a person ch
 ## Future directions (not core work)
 
 - A learned stitch classifier for photos (ONNX Runtime Web or TensorFlow.js). Fun, but on hold until time allows (maker, 2026-09-27).
+
+## Gallery and archive studies, 2026-10-06
+
+- [x] **9.1 Foundation.** Three SW01 studies, SVG assets, capture contracts and one public archive draft, verified by tests/build and browser checks.
+- [ ] **9.2 Photography.** Ingest row and frogging captures and implement the photographic player once material arrives.
+- [ ] **9.3 Alignment.** Register photo, trace and chart, linking selected cells without concealing doubtful readings.
+- [ ] **9.4 Learning motion.** Extend studies using real engine outputs with step/play controls and reduced-motion support.

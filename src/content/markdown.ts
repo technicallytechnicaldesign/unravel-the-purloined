@@ -29,6 +29,7 @@ export function parseExhibit(md: string, file: string): Exhibit {
   for (const k of REQUIRED) if (!head[k]) fail(0, `the header needs "${k}:".`);
   if (head.status !== "draft" && head.status !== "published") fail(0, 'status must be "draft" or "published".');
 
+  if (head.visibility && head.visibility !== "public") fail(0, 'visibility, when provided, must be "public".');
   // Body: lede paragraphs, then ## sections.
   const sections = new Map<string, { start: number; lines: string[] }>();
   const lede: string[] = [];
@@ -93,6 +94,7 @@ export function parseExhibit(md: string, file: string): Exhibit {
     unknown: list("what we do not know"),
     ...(expText && expHref ? { experiment: { text: expText, href: expHref } } : {}),
     status: head.status as Exhibit["status"],
+    ...(head.visibility === "public" ? { visibility: "public" as const } : {}),
   };
 }
 
@@ -106,6 +108,7 @@ export function writeExhibit(e: Exhibit): string {
     `place: ${e.place}`,
     `period: ${e.period}`,
     `status: ${e.status}`,
+    ...(e.visibility ? ["visibility: " + e.visibility] : []),
     ...(e.experiment ? [`experiment: ${e.experiment.text} | ${e.experiment.href}`] : []),
     "---",
   ];

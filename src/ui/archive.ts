@@ -3,6 +3,7 @@
 // so unchecked claims never reach the public page by accident.
 
 import { h } from "./h";
+import { publicExhibit, visibleExhibit } from "../content/archive-visibility";
 import { EXHIBITS, GRADES, type Claim, type Exhibit } from "../content/exhibits";
 import { SOURCES, sourceById } from "../content/sources";
 
@@ -26,10 +27,11 @@ function exhibitView(e: Exhibit): HTMLElement {
     "article.exhibit",
     {},
     h("p", {}, h("a.mono", { href: location.search ? `${location.search}#` : "#" }, "← All exhibits")),
-    h("div.labels", {}, h("span.mono", {}, `${e.archive} / ${e.place.toUpperCase()} / ${e.period.toUpperCase()}`), draft ? h("span.stamp", {}, "DRAFT / SOURCES BEING CHECKED") : ""),
+    h("div.labels", {}, h("span.mono", {}, `${e.archive} / ${e.place.toUpperCase()} / ${e.period.toUpperCase()}`), draft ? h("span.stamp", {}, e.visibility === "public" ? "PUBLIC DRAFT / EDITORIAL REVIEW" : "DRAFT / SOURCES BEING CHECKED") : ""),
     h("h2.section-label.exhibit-title", {}, e.title),
     h("p.lede", {}, e.lede),
-    draft ? h("p.note.mono", {}, "Written from the project's research brief. Grades are proposals until each source has been read and recorded.") : "",
+    draft ? h("p.note.mono", {}, "Draft for review. Claims retain their proposed evidence grades; wording and presentation remain under review.") : "",
+    e.slug === "norway" ? h("figure", {}, h("img.archive-drawing", { src: import.meta.env.BASE_URL + "development/assets/red-cap.svg", alt: "A schematic outline of a pointed cap, annotated with a red thread." }), h("figcaption.hint", {}, "X / Drawing made here, a schematic cap rather than a depiction of a surviving museum object. The cap communicates through shared symbolism.")) : "",
     h("h3.step-title", {}, "Claims"),
     h(
       "ol.claims",
@@ -67,8 +69,8 @@ function sourceItem(id: string): HTMLElement {
 }
 
 function indexView(showDrafts: boolean): HTMLElement {
-  const visible = EXHIBITS.filter((e) => showDrafts || e.status === "published");
-  const coming = EXHIBITS.filter((e) => !showDrafts && e.status !== "published");
+  const visible = EXHIBITS.filter((e) => visibleExhibit(e, showDrafts));
+  const coming = EXHIBITS.filter((e) => !showDrafts && !publicExhibit(e));
   return h(
     "div",
     {},
@@ -124,7 +126,7 @@ export function mountArchive(root: HTMLElement): void {
   const showDrafts = new URLSearchParams(location.search).has("drafts") || import.meta.env.DEV;
   const route = () => {
     const slug = location.hash.slice(1);
-    const exhibit = EXHIBITS.find((e) => e.slug === slug && (showDrafts || e.status === "published"));
+    const exhibit = EXHIBITS.find((e) => e.slug === slug && (visibleExhibit(e, showDrafts)));
     if (slug === "sources" || slug.startsWith("source-")) {
       root.replaceChildren(registerView());
       if (slug.startsWith("source-")) document.getElementById(slug)?.scrollIntoView();
