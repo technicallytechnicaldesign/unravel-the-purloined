@@ -32,3 +32,5 @@ One line per session, newest last. Append only.
 - 2026-09-30: P2.6 follow-up: plain black gallery frames; no NSFW blur, tags describe the message ("NSFW ONCE DECODED" stamp, labelled reveal button, note that the stitches are only stitches).
 
 - 2026-10-06: Gallery/learning studies, SW01 photos, SVG masters and capture contracts built; The red cap opted into public draft testing with Trondheim scope corrected; 307 tests and build pass, desktop and 375px browser checks passed.
+
+- 2026-10-06: Matched the studies masthead to the site and added stitch-derived live decoding during knitting/frogging, provisional symbols, active-cell outlines and a reading-key comparison; 312 tests/build pass; desktop and 375px checks pass for the header, partial/reverse reading and key toggle.

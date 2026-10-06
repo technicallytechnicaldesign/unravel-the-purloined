@@ -70,3 +70,5 @@ Maker authorised development studies and one public draft; start at studies.html
 The red cap stays draft and specifies Trondheim. Other drafts remain hidden publicly.
 Row photographs and possible SW01 frogging come from the maker; photographic playback and aligned overlays await captures and hand tracing.
 Vitest now preserves symlinks so local checks run through canonical C: paths.
+
+Studies now share the site masthead/wordmark and decode the changing reconstructed SW01 fabric in the right-hand panel; partial symbols can change, and the reading key can be disabled to demonstrate context.

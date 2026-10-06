@@ -142,3 +142,5 @@ Read a photo of fabric into the decoder's grid, in the browser, with a person ch
 - [ ] **9.2 Photography.** Ingest row and frogging captures and implement the photographic player once material arrives.
 - [ ] **9.3 Alignment.** Register photo, trace and chart, linking selected cells without concealing doubtful readings.
 - [ ] **9.4 Learning motion.** Extend studies using real engine outputs with step/play controls and reduced-motion support.
+
+- [x] **9.5 Live reading.** Match the shared masthead and decode currently present SW01 stitches during knitting/frogging, with provisional symbols and a key comparison; tests prohibit future-bit leakage.
