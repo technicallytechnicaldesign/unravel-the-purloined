@@ -1,0 +1,61 @@
+{
+  "id": "SW01",
+  "title": "Hello World, fuzzy blue",
+  "message": "HELLO WORLD",
+  "rows": [
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppvpvvvvvvppppp",
+    "vvvvvpvvppvvpppvvvvv",
+    "ppppppvvpvvppppppppp",
+    "vvvvvpvppppvpvpvvvvv",
+    "pppppvpppvppppvppppp",
+    "vvvvvpppvpvppppvvvvv",
+    "ppppppppvppvppvppppp",
+    "vvvvvpvpvvvpppvvvvvv",
+    "pppppvvvppppvpvppppp",
+    "vvvvvvpvppppvppvvvvv",
+    "pppppvvpvvvppvpppppp",
+    "vvvvvvvvvppvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp",
+    "vvvvvvvvvvvvvvvvvvvv",
+    "pppppppppppppppppppp"
+  ],
+  "messageWindow": {
+    "leftCol": 5,
+    "rightCol": 14,
+    "bottomRow": 12,
+    "topRow": 23
+  },
+  "provenance": "Reconstructed from written pattern rows, not traced from the photograph.",
+  "photos": [
+    {
+      "src": "development/sw01/overview.jpg",
+      "alt": "Flat on the desk, warm keyboard light. Live stitches still on the needle (cut out with the desk)."
+    },
+    {
+      "src": "development/sw01/detail.jpg",
+      "alt": "Closer and cooler. The open gaps between stitches read best here."
+    }
+  ],
+  "trace": null,
+  "readBack": "not yet verified"
+}

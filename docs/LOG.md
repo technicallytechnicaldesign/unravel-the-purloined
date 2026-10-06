@@ -30,3 +30,5 @@ One line per session, newest last. Append only.
 - 2026-09-30: P2.3 training parcel (case 00, step by step with rings, checks and Show me), P2.4 row by row mode on every case, P2.5 gallery placeholder page and menu links; 301 tests and build pass. Left: maker playtest of the training wording, first real gallery piece.
 - 2026-09-30: P2.6 gallery plates: knitted frames, larger view, credits, hidden message with decode-it-yourself and reveal, content tags; 301 tests and build pass. Left: first real piece and its photo.
 - 2026-09-30: P2.6 follow-up: plain black gallery frames; no NSFW blur, tags describe the message ("NSFW ONCE DECODED" stamp, labelled reveal button, note that the stitches are only stitches).
+
+- 2026-10-06: Gallery/learning studies, SW01 photos, SVG masters and capture contracts built; The red cap opted into public draft testing with Trondheim scope corrected; 307 tests and build pass, desktop and 375px browser checks passed.
