@@ -1,4 +1,3 @@
-.study-title{font-size:clamp(3rem,9vw,6.4rem);font-weight:900;line-height:.95;letter-spacing:-.035em;margin:28px 0}
 .study-section{padding:38px 0;border-bottom:1px solid var(--rule)}.study-section h2{font-size:2rem;margin:5px 0 24px}
 .study-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px}
 .study-card{border:1px solid var(--rule);padding:24px;background:var(--knit);min-width:0}
@@ -14,3 +13,13 @@
 .study-lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 @media(max-width:650px){.study-grid,.study-lesson-grid{grid-template-columns:1fr}.study-card{padding:16px}.study-stage{min-height:260px;padding:10px}.study-section h2{font-size:1.6rem}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.study-live{border-top:1px solid var(--rule);padding-top:18px;margin-top:20px}
+.study-key{display:flex;gap:10px;align-items:center;font:14px var(--font);cursor:pointer}
+.study-key input{accent-color:var(--red);width:18px;height:18px}
+.study-current{font:900 clamp(3rem,7vw,5rem)/1 var(--font);margin:22px 0 12px;min-height:1em;overflow-wrap:anywhere}
+.study-current.partial{text-decoration:underline dotted var(--red);text-underline-offset:.13em}
+.study-current.waiting{color:var(--ink-2)}
+.study-current-bits{overflow-wrap:anywhere}.study-reading-state{font-size:14px}
+.study-message{display:flex;gap:5px;flex-wrap:wrap;margin:20px 0}
+.study-symbol{display:inline-flex;justify-content:center;align-items:center;min-width:26px;min-height:32px;padding:3px;border:1px solid var(--rule);font:600 16px var(--mono)}
+.study-symbol.partial{border:1px dashed var(--red)}.study-symbol.waiting{opacity:.45}.study-symbol.error{border:2px solid var(--red)}

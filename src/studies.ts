@@ -1,6 +1,12 @@
 import "./style.css";
 import "./studies.css";
 import { h } from "./ui/h";
+import { mountWordmarks } from "./ui/wordmark";
+import { markSessionSeen } from "./ui/intro";
+import { readingPlan, readProgress } from "./content/study-reading";
+import { fabricLayout } from "./engine/fabric";
+markSessionSeen();
+mountWordmarks();
 import data from "./content/study-sw01.json";
 import { fabricSvg } from "./engine/fabric";
 import { translate, type Visible } from "./engine/construction";
@@ -13,22 +19,64 @@ const drawing = (rows: Visible[][], label: string): HTMLElement => {
 };
 const chart: Visible[][] = data.rows.map((r) => [...r].map((c) => c === "p" ? "purl" : "knit"));
 const actions = translate(chart, { method: "flat", firstRow: "RS" });
+const plan = readingPlan(data.rows, data.messageWindow);
 const stage = h("div.study-stage"), info = h("p.study-readout", { "aria-live": "polite" }), evidence = h("p.study-evidence");
 const row = h("input.study-row", { type: "range", min: 0, max: chart.length, value: chart.length, "aria-label": "Completed rows remaining" }) as HTMLInputElement;
 const rowText = h("output.mono"), modes = h("div.study-controls"), views = h("div.study-controls", { "aria-label": "Inspection layers" });
 let mode = "inspection", layer = "photo", timer: ReturnType<typeof setInterval> | undefined;
 function stop(): void { if (timer) clearInterval(timer); timer = undefined; play.textContent = "Play sequence"; }
 const play = button("Play sequence", () => {
- if (timer) { stop(); return; }
+ if (timer) { stop(); render(); return; }
  if (mode === "inspection") return;
  if (mode === "needles" && Number(row.value) === chart.length) row.value = "0";
  if (mode === "frog" && Number(row.value) === 0) row.value = String(chart.length);
  timer = setInterval(() => {
   const n = Number(row.value) + (mode === "needles" ? 1 : -1);
-  if (n < 0 || n > chart.length) { stop(); return; }
+  if (n < 0 || n > chart.length) { stop(); render(); return; }
   row.value = String(n); render();
  }, 450); play.textContent = "Pause sequence"; render();
 });
+
+
+const useKey = h("input", { type: "checkbox", checked: true }) as HTMLInputElement;
+const currentLetter = h("p.study-current", { "aria-hidden": "true" });
+const currentBits = h("p.mono.study-current-bits");
+const readState = h("p.study-reading-state");
+const messageStrip = h("div.study-message", { "aria-label": "Current reading" });
+const readingStatus = h("p.hint.study-reading-status", { "aria-live": "polite", "aria-atomic": "true" });
+const liveReading = h("section.study-live", { "aria-label": "Read the changing fabric" },
+ h("p.mono", {}, "READ THE CHANGING FABRIC"),
+ h("label.study-key", {}, useKey, " Use the reading key"), currentLetter, currentBits, readState, messageStrip, readingStatus,
+ h("p.hint", {}, "A dotted letter is a provisional guess: missing bits are temporarily read as zero. It can change until the full block is present. Red outlines mark the block being read."));
+useKey.addEventListener("change", () => render());
+function updateReading(n: number): void {
+ liveReading.hidden = mode === "inspection";
+ if (liveReading.hidden) return;
+ const read = readProgress(data.rows, n, plan, useKey.checked);
+ const active = read.symbols[read.active];
+ currentLetter.textContent = active ? active.glyph === " " ? "␣" : active.glyph : "·";
+ currentLetter.className = "study-current " + (active?.state ?? "waiting");
+ currentBits.textContent = active ? active.bits + (useKey.checked ? " / 5 LETTER + PARITY + GAP" : " / FIVE-BIT GUESS") : "WAITING FOR MESSAGE STITCHES";
+ readState.textContent = active ? active.state === "partial" ? "Provisional letter, this block is incomplete" : active.state === "error" ? "Check cells disagree: inspect this block" : useKey.checked ? "Letter read from a complete block" : "A guess without the window or framing key" : "No message block is available yet";
+ const shown = useKey.checked ? read.symbols : read.symbols.slice(-24);
+ messageStrip.replaceChildren(...shown.map((s) => h("span.study-symbol." + s.state, { title: s.bits + " / " + s.state }, s.glyph === " " ? "␣" : s.glyph || "·")));
+ readingStatus.setAttribute("aria-live", timer ? "off" : "polite");
+ readingStatus.textContent = (active ? "Current symbol: " + (active.glyph === " " ? "space" : active.glyph) + ". " : "") + read.status + (useKey.checked ? "" : " Showing the latest 24 guesses.");
+ const svg = stage.querySelector("svg");
+ if (svg && active) {
+  const geometry = fabricLayout(chart.slice(0,n), {seed:101,stitch:19,wobble:.25});
+  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  group.setAttribute("aria-hidden", "true");
+  for (const [r,c] of active.cells) {
+   const pos=geometry.rows[r]; if(!pos)continue;
+   const box=document.createElementNS(group.namespaceURI,"rect");
+   for(const [key,value] of Object.entries({x:String(geometry.pad+c*geometry.stitch),y:String(pos.y),width:String(geometry.stitch),height:String(pos.h),fill:"none",stroke:"var(--red)","stroke-width":"1.8"}))box.setAttribute(key,value);
+   if(active.state==="partial")box.setAttribute("stroke-dasharray","3 2");
+   group.append(box);
+  }
+  svg.append(group);
+ }
+}
 
 function render(): void {
  const n = Number(row.value); rowText.textContent = n + " / " + chart.length + " completed rows remain";
@@ -68,14 +116,16 @@ function render(): void {
   }
   evidence.textContent=mode==="inspection" ? "X / DRAWING REBUILT FROM THE WRITTEN PATTERN." : "X / DRAWN ROW SEQUENCE. PHOTOGRAPHED FRAMES ARE STILL TO COME.";
   const a=actions[n-1];
-  info.textContent=mode==="inspection" ? data.provenance : mode==="frog" ? "Removing rows from the top reverses making; it does not reveal letters in decoding order. " + n + " rows remain." : a ? "Row "+n+": "+a.side+", "+a.read+". Needle actions: "+a.actions.map((x)=>x.stitch.toUpperCase()).join(" ")+". Drawing shows the right side." : "Cast-on is not counted as a knitting row.";
+  info.textContent=mode==="inspection" ? data.provenance : mode==="frog" ? "Removing rows from the top reverses making; the key reads whichever message stitches still remain. " + n + " rows remain." : a ? "Row "+n+": "+a.side+", "+a.read+". Needle actions: "+a.actions.map((x)=>x.stitch.toUpperCase()).join(" ")+". Drawing shows the right side." : "Cast-on is not counted as a knitting row.";
  }
+ updateReading(n);
+ revealBox.hidden = mode !== "inspection";
  modes.querySelectorAll("button").forEach((b)=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));
  views.querySelectorAll<HTMLButtonElement>("button[data-layer]").forEach((b)=>b.setAttribute("aria-pressed",String(b.dataset.layer===layer)));
 }
 
 for(const [id,title] of [["inspection","Inspection table"],["needles","On the needles"],["frog","Pull the thread"]]){
- const b=button(title!,()=>{stop();mode=id!;render();});b.dataset.mode=id;modes.append(b);
+ const b=button(title!,()=>{stop();const previous=mode;mode=id!;if(previous==="inspection" && mode!=="inspection")row.value=mode==="needles"?"0":String(chart.length);render();});b.dataset.mode=id;modes.append(b);
 }
 for(const [id,title] of [["photo","Photograph"],["drawing","Stitch drawing"],["chart","Chart"]]){
  const b=button(title!,()=>{layer=id!;row.value=String(chart.length);render();});b.dataset.layer=id;views.append(b);
@@ -84,11 +134,11 @@ views.append(h("button.btn",{type:"button",disabled:true},"Hand trace: awaiting 
 row.addEventListener("input",()=>{stop();render();});
 document.addEventListener("visibilitychange",()=>{if(document.hidden)stop();});
 const reveal=h("p.study-letter",{hidden:true},data.message);
-const notes=h("aside.study-card",{},h("span.mono",{},"SW01 / 30 SEPTEMBER 2026"),h("h3",{},data.title),
+const revealBox=h("div",{},button("Reveal the intended message",()=>{reveal.hidden=false;}),reveal,h("p.hint",{},"The intended message is not a verified physical read-back."));
+const notes=h("aside.study-card",{},h("span.mono",{},"SW01 / 30 SEPTEMBER 2026"),h("h3",{},data.title),liveReading,
  h("p",{},"Knit/purl relief. 20 stitches, flat, garter frame. Fuzzy blue yarn with a metallic thread."),
  h("p",{},"The same cloth can be an object, a pattern and a message."),
- button("Reveal the intended message",()=>{reveal.hidden=false;}),reveal,
- h("p.hint",{},"The intended message is not a verified physical read-back."),
+ revealBox,
  h("a",{href:"./decode.html"},"Open the decoder "));
 document.getElementById("study-gallery")!.append(modes,h("div.study-grid",{},h("div",{},views,stage,evidence,h("label",{},rowText,row),play,info),notes));render();
 const asset=(name:string,alt:string)=>h("img",{src:url("development/assets/"+name+".svg"),alt,loading:"lazy"});

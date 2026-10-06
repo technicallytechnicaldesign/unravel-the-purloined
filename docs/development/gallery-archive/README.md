@@ -32,3 +32,11 @@ visibility: public is an explicit Markdown opt-in, independent of status: draft.
 Public listing and direct links still require checked citations for every claim.
 The red cap is opted in. Other drafts stay hidden except in development or with ?drafts.
 Editorial ownership remains with the maker; only the chosen entry's sourced Trondheim scope was corrected.
+
+## Live reading update, 2026-10-06
+The studies header uses the same masthead, section label and knitted wordmark as the inner pages.
+src/content/study-reading.ts calibrates the documented SW01 window through the existing grid/framing decoder; the full pattern reads HELLO WORLD with passing parity, separators and checksum.
+Snapshots sample only rows still present. Unknown bits form clearly labelled provisional candidates until the full seven-cell block exists; frogging removes those bits again.
+The right-hand panel follows the current symbol and accumulating reading; its cells are outlined in the drawn fabric.
+Turning off the key reads every stitch as five-bit text, deliberately including frame/check cells to demonstrate the role of context.
+This verifies the reconstructed pattern, not the photographed physical swatch; the hand trace remains pending.
