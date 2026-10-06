@@ -36,4 +36,6 @@ export interface Exhibit {
   unknown: string[];
   experiment?: { text: string; href: string };
   status: "draft" | "published";
+  /** Explicit opt-in for public draft testing. */
+  visibility?: "public";
 }

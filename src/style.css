@@ -1732,3 +1732,5 @@ a {
   text-transform: uppercase;
 }
 .plate figcaption p { margin: 4px 0; }
+
+.archive-drawing { width: 100%; max-width: 600px; height: auto; }
