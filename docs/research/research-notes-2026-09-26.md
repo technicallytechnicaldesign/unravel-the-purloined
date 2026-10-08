@@ -37,7 +37,7 @@ From the Braille Authority of North America page "Size and Spacing of Braille Ch
 | ANSI A117.1-2003 (signs) | 1.5 to 1.6 mm | 0.6 to 0.9 mm | 2.3 to 2.5 mm | 6.1 to 7.6 mm | 10.0 to 10.2 mm |
 | Marburg Medium (pharma, from PharmaBraille) | not set | not set (ECMA Euro Braille: 0.5 mm) | 2.5 mm | 6.0 mm | |
 
-What this means for a tactile mode (derived here, not measured): dots sit about 2.3 to 2.5 mm apart, which is finer than one stitch at most gauges (a fingering-weight stitch is roughly 3 to 3.5 mm wide). A knitted bobble or purl bump is also far larger than a 1.5 mm dome. So knitted dots cannot meet any Braille standard at normal gauges. A tactile mode should be named as an enlarged, Braille-shaped teaching model or a tactile code, never "Braille", per CONTRIBUTING.md. A swatch would settle whether enlarged cells are readable by touch at all.
+What this means for a tactile mode (derived here, not measured): dots sit about 2.3 to 2.5 mm apart, which is finer than one stitch at most gauges (a fingering-weight stitch is roughly 3 to 3.5 mm wide). A knitted bobble or purl bump is also far larger than a 1.5 mm dome. So knitted dots cannot meet any Braille standard at normal gauges. A tactile mode should be named as an enlarged, Braille-shaped teaching model or a tactile code, never "Braille". A swatch would settle whether enlarged cells are readable by touch at all.
 
 ## Image rights (packet 38.7)
 
