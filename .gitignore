@@ -4,3 +4,9 @@ dist/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local agent instructions stay off the public repo.
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.claude/
