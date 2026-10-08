@@ -16,8 +16,6 @@ Working, and growing. Three parts are live:
 - **The Purloined Parcel** (`game.html`): seven case files of knitted evidence to read and decode.
 - **The archive** (`archive.html`): exhibits with evidence grades. Drafts stay private until their sources are checked; to write one, see `content/README.md`.
 
-See `docs/ROADMAP.md` for what comes next and `docs/HANDOFF.md` for where things stand.
-
 ## Develop
 
 ```bash

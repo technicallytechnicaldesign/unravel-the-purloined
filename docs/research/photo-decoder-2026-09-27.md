@@ -116,10 +116,6 @@ An earlier run with five seeds, stopped before it finished, also tried parity in
 - With a frame, the knit/purl readings settle the corners on the frame (every border cell should be frame yarn, the ring inside should not) and read only the cells inside it.
 - End to end in Chromium, a drawn knit/purl piece in a 2-stitch red frame, tilted and saved as JPEG: the frame was found with no taps and the "shape" reading decoded the message with Hamming, leaving 9 cells marked doubtful. The "edges" reading did not decode on this photo. Both two-colour and knit/purl framed photos now decode with no taps.
 
-## Proposed tasks
-
-See `docs/ROADMAP.md`, Phase 8.
-
 ## Questions for the maker
 
 1. **Real photos.** When the P4.7 swatches are knitted, could each be photographed three ways: flat in daylight, flat in lamp light, and with light from one side? The charts are known, so each photo becomes a test case. Knit/purl and lace (against a window) matter most.
