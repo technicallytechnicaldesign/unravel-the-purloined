@@ -1,5 +1,5 @@
 # Gallery and archive development kit
-2026-10-06. Maker-approved directions: inspection table, on-the-needles photographs and SW01 frogging.
+2026-10-06. Directions: inspection table, on-the-needles photographs and SW01 frogging.
 Open studies.html via npm run dev; it ships in the Pages build and is linked from the gallery.
 
 ## Structure
@@ -31,7 +31,6 @@ The decoder link stays generic until the original saved engine project is recove
 visibility: public is an explicit Markdown opt-in, independent of status: draft.
 Public listing and direct links still require checked citations for every claim.
 The red cap is opted in. Other drafts stay hidden except in development or with ?drafts.
-Editorial ownership remains with the maker; only the chosen entry's sourced Trondheim scope was corrected.
 
 ## Live reading update, 2026-10-06
 The studies header uses the same masthead, section label and knitted wordmark as the inner pages.
