@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Lab: Unravel the Purloined</title>
+    <meta name="description" content="Turn a message into a knitting pattern, and read a knitted grid back into text, one step at a time." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23f3eee2'/%3E%3Ccircle cx='5' cy='5' r='2.4' fill='%23c8201e'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/unravel-the-purloined/assets/lab-tE9FywPe.js"></script>
+    <link rel="modulepreload" crossorigin href="/unravel-the-purloined/assets/intro-DtJZ2Itz.js">
+    <link rel="modulepreload" crossorigin href="/unravel-the-purloined/assets/construction-K_DtaDmT.js">
+    <link rel="modulepreload" crossorigin href="/unravel-the-purloined/assets/project-Ckmtjeuh.js">
+    <link rel="modulepreload" crossorigin href="/unravel-the-purloined/assets/handover-DGYYhoXB.js">
+    <link rel="modulepreload" crossorigin href="/unravel-the-purloined/assets/cellgrid-D9t9Fgwh.js">
+    <link rel="stylesheet" crossorigin href="/unravel-the-purloined/assets/intro-Ca-seunV.css">
+  </head>
+  <body>
+    <header class="masthead masthead-small">
+      <nav class="site-nav mono" aria-label="Site">
+        <a class="nav-home" href="./">← HOME</a>
+        <a href="./lab.html" aria-current="page">LAB</a>
+        <a href="./decode.html">DECODE</a>
+        <a href="./archive.html">ARCHIVE</a>
+        <a href="./gallery.html">GALLERY</a>
+        <a href="./game.html">THE PURLOINED PARCEL</a>
+      </nav>
+      <div class="page-kicker"><span class="mono">SECTION / LAB</span><span class="stamp">MODERN RECONSTRUCTION</span></div>
+      <h1 class="title title-small" data-wordmark="THE LAB">The Lab</h1>
+      <p class="lede">
+        Turn a message into a pattern you can knit, one step at a time, or design an alphabet of your own.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="enc-h">
+        <div class="panel-head">
+          <h2 id="enc-h" class="section-label">01 / Encode a message</h2>
+        </div>
+        <div id="encoder"></div>
+        <p class="warning mono">ENCODED IS NOT ENCRYPTED. Anyone with the table can read this, unless secure mode is on.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="des-h">
+        <details class="fold-panel">
+          <summary>
+            <h2 id="des-h" class="section-label">02 / Design an alphabet</h2>
+            <span class="hint">Draw your own symbols and use them in the encoder. The lab checks how easily one could be mistaken for another in yarn.</span>
+          </summary>
+          <div id="designer"></div>
+        </details>
+      </section>
+    </main>
+
+    <footer class="foot mono">
+      <span>UNRAVEL THE PURLOINED / LAB</span>
+      <span>Decryption may require frogging.</span>
+    </footer>
+
+    <div id="print-sheet" class="print-sheet"></div>
+  </body>
+</html>

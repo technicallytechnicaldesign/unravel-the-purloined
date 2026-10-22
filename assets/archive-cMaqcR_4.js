@@ -1,0 +1,204 @@
+import{h as e,m as E,a as I}from"./intro-DtJZ2Itz.js";const $=JSON.parse(`[{"id":"S01","publisher":"Store norske leksikon","title":"Nisselue","url":"https://snl.no/nisselue","packetLeads":["red topplue as Norwegian symbol","resistance context","26 February 1942 prohibition","broader historical symbolism"],"status":"checked","checked":"2026-09-26","supports":["Article by Ingun Grimstad Klepp (OsloMet), updated 4 February 2026.","The red topplue suited use as a symbol of Norwegianness and resistance during the occupation; knitting and Norwegian patterns became forms of protest.","Quotes a Trondheim police notice: wearing red topplues had become so common it was treated as a demonstration, forbidden from Thursday 26 February 1942.","The ban covered all ages; parents of children under 14 could be penalised.","Before the war the cap marked working men against city hat wearers, and entered the bunad."],"grade":"B","notes":"The quoted notice is from Trondheim police, so the page does not show a nationwide ban. The police notice itself (primary, grade A) still needs finding."},{"id":"S02","publisher":"MiA / Museumstjenesten","title":"Grini motstandsbroderi og strikk","url":"https://mia.no/museumstjenesten/grini-motstandsbroderi-og-strikk","packetLeads":["clandestine prison handwork","miniature knitting","improvised tools/materials","patriotic motifs","making as control / inner freedom / resistance"],"status":"checked","checked":"2026-09-26","supports":["Page edited by Kirsten Linde, conservator, dated 5 May 2026.","About 2,000 women were imprisoned at Grini; they knitted very small mittens and socks, using hairpins and pins as needles.","Thread came from sanitary bandages, mattress stuffing and the prisoners' own clothing.","Pieces carried patriotic statements and motifs, for example 'Kjemp for alt hvad du har kjært'; being found with them in a cell search risked punishment.","The museum reads the handwork as concentration, inner freedom and will, self-respect, mastery and resistance.","Agnes (Aggi) Klønig, prisoner 2047, smuggled messages and supplies for the Red Cross, spent 9 months in solitary, and embroidered with a smuggled needle."],"grade":"B","notes":"Supports Klønig's two activities separately; nothing says her messages were in stitches."},{"id":"S03","publisher":"Yale University Press","title":"Helen Fry, The White Lady","url":"https://yalebooks.yale.edu/book/9780300275117/the-white-lady/","packetLeads":["Belgian intelligence networks","White Lady / Clarence context","recent archive-based scholarship"],"status":"needs-human","checked":"2026-09-26","supports":["Publisher page for Helen Fry, The White Lady: The Story of Two Key British Secret Service Networks Behind German Lines, Yale, 25 November 2025.","Covers La Dame Blanche in the First World War and its successor, the Clarence Service, in the Second.","Agents worked as couriers, radio operators and spies; over 800 radio messages and more than 1,000 reports went to London."],"grade":null,"notes":"Use page-level scholarship before publishing any precise stitch-code claim. The publisher page says nothing about watching rail transport or knitting. Page-level citations from the book itself are needed before the Belgium rail claim can be checked."},{"id":"S04","publisher":"Smithsonian Libraries and Archives","title":"Gordon A. J. Petersen and Marshall McClintock, A Guide to Codes and Signals (1942)","url":"https://www.si.edu/object/siris_sil_523835","packetLeads":["confirming publication","wartime codes/signals context","research lead for handwork-code section"],"status":"needs-human","checked":"2026-09-26","supports":["Bibliographic details, confirmed on Google Books and a dealer listing: A Guide to Codes and Signals: International Flag Code, Secret Ciphers, Weather Signals, Morse Code, Sign Language, etc., with Flags of All Nations.","Whitman Publishing, Racine, Wisconsin, 1942, 62 pages, a small booklet about 5.25 by 3.25 inches."],"grade":null,"notes":"The si.edu record sits behind a bot check and has no Wayback copy. Not on archive.org; Google Books has no preview. The handwork line widely quoted from it (spies working code messages into knitting, embroidery and hooked rugs) needs the physical page. HathiTrust search also sits behind a bot check: a person should look there once, then buy a used copy."},{"id":"S05","publisher":"Smithsonian Institution","title":"American Revolutionaries and Patriotism","url":"https://www.si.edu/stories/american-revolutionaries-and-patriotism","packetLeads":["non-importation","household production","homespun","economic resistance"],"status":"checked","checked":"2026-09-26","supports":["The 1774 Continental Association called for an end to importing British manufactured goods and for consumers to refuse them, from 1 December 1774.","It encouraged household production to replace British goods, discouraged eating lamb to increase wool for colonial cloth-making, and relied on households, women as well as men, to make more.","Buying homespun cloth from neighbours became part of patriot behaviour; women in Hartford gathered to spin thread for weavers to make cloth for the poor.","Shows a spinning wheel of the kind used to make homespun in place of imported fabric."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 1 May 2026."},{"id":"S06","publisher":"U.S. National Park Service","title":"Women During the Lead Up To War","url":"https://www.nps.gov/articles/000/alyssa-kariofyllis-women-of-the-battle-road-paper4.htm","packetLeads":["spinning bees","women and non-importation","domestic production as political participation"],"status":"checked","checked":"2026-09-26","supports":["Research paper by Alyssa Kariofyllis, 2016 Scholar in the Park, for Minute Man National Historical Park.","In 1769 forty-five Lexington women gathered to spin for a day, producing 602 knots of linen and 246 of cotton.","Women who had not spun before began to; demand for spinning wheels rose.","55 of the 650 or more signatures on Boston's 1767 non-importation subscription were women's."],"grade":"B","notes":"A student research paper hosted by the Park Service, citing period records. Good for detail; pair it with S05 or S23 for any headline claim."},{"id":"S07","publisher":"Victoria and Albert Museum","title":"Indian textiles","url":"https://www.vam.ac.uk/articles/indian-textiles","packetLeads":["Swadeshi","khadi","Gandhi","spinning / textile production as resistance"],"status":"checked","checked":"2026-09-26","supports":["The swadeshi ('own country') movement of the 1890s urged boycotting foreign goods and buying Indian products.","Gandhi appealed to people to spin, weave and wear khadi, hand-woven from hand-spun cotton.","In 1921 Indian nationalists adopted khadi as a symbol of resistance and put the spinning wheel into the design of their flag."],"grade":"B","notes":""},{"id":"S08","publisher":"London Museum","title":"Women Writers' Suffrage League banner","url":"https://www.londonmuseum.org.uk/collections/v/object-91772/banner-suffrage-banner/","packetLeads":["Mary Lowndes","Christiana Herringham","1908 NUWSS procession","suffrage banners as political textile communication"],"status":"checked","checked":"2026-09-26","supports":["Object record for the Women Writers' Suffrage League banner, 1908: velvet, cotton, wool and silk.","Designed by Mary Lowndes and embroidered by Christiana Herringham, both founding members of the Artists' Suffrage League.","First carried in the National Union of Women's Suffrage Societies procession on 13 June 1908.","Bears the motto 'litera scripta manet'; paid for by Cicely Hamilton and Evelyn Sharp."],"grade":"A","notes":""},{"id":"S09","publisher":"Museo de la Memoria y los Derechos Humanos","title":"Arpilleras: Pobladores, Resistencia y Organización","url":"https://mmdh.cl/exposiciones/itinerantes/arpilleras-pobladores-resistencia-y-organizacion","packetLeads":["arpilleras","testimony","resistance","political textile documentation"],"status":"checked","checked":"2026-09-26","supports":["Arpilleras began with Violeta Parra embroidering on burlap.","They were made by mothers, sisters and daughters of the disappeared, detained and executed, later also in community workshops.","Works in the exhibition show raids with tanks, children's soup kitchens, land occupations, water supply and unemployment.","They served as a tool of social denunciation that got past censorship, and peaked during the dictatorship."],"grade":"B","notes":"The page does not list disappearance or detention as subjects shown; it names them through the makers' relatives."},{"id":"S10","publisher":"National AIDS Memorial","title":"Quilt History","url":"https://www.aidsmemorial.org/quilt-history","packetLeads":["AIDS Memorial Quilt history","1987 National Mall display","scale and collective memorialization"],"status":"checked","checked":"2026-09-26","supports":["Conceived in November 1985 by Cleve Jones; the NAMES Project Foundation was organised in June 1987.","First displayed on the National Mall on 11 October 1987 with 1,920 panels; half a million people visited that weekend.","Today about 54 tons, nearly 50,000 panels for more than 110,000 people."],"grade":"B","notes":"The organisation's own history. It does not say each panel is for one person (today's totals give about 2.2 people per panel)."},{"id":"S11","publisher":"Victoria and Albert Museum","title":"The Pussyhat","url":"https://www.vam.ac.uk/articles/the-pussyhat","packetLeads":["2017 Women's March","distributed pattern","mass visual identity","contemporary protest craft"],"status":"checked","checked":"2026-09-26","supports":["The Women's March on 21 January 2017: half a million in Washington DC, about 4 million at sister marches in over 600 cities.","The Pussyhat Project was co-founded by Krista Suh and Jayna Zweiman; Kat Coyle of The Little Knittery designed a simple pattern shared publicly.","People were asked to knit a hat to wear or to donate one to a marcher.","The hat became a recognisable symbol of solidarity; the V&A collected one in February 2017."],"grade":"B","notes":""},{"id":"S12","publisher":"Knitting Nannas","title":"History","url":"https://knitting-nannas.com/about-us/history/","packetLeads":["origin in 2012","observation / \\"guerrilla surveillance\\"","knitting as environmental activism","persistent public presence"],"status":"checked","checked":"2026-09-26","supports":["The group's own account: began in 2012 in Lismore, NSW, when older women joined an anti coal seam gas group.","Small groups parked by roadsides with knitting, folding chairs and thermoses, watching and recording Metgasco truck movements.","Their method: 'Sit, knit, plot', talking with passers-by."],"grade":"C","notes":"First-person organisational history, so grade C."},{"id":"S13","publisher":"Smithsonian National Museum of the American Indian","title":"Quipu / Counting record","url":"https://americanindian.si.edu/collections-search/object/NMAI_154591","packetLeads":["thread / knots as structured information","material data systems"],"status":"checked","checked":"2026-09-26","supports":["Object record NMAI 14/3866: quipu or counting record, khipu, cotton cord and dye, tied and knotted, 61.5 by 64.5 cm.","AD 1450 to 1532 (Late Horizon), probably Inka, from Chulpaca, Ica, Peru; acquired in 1925 by exchange with San Marcos University, Lima."],"grade":"A","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 4 April 2025. The record names it a counting record but does not describe how khipu hold information."},{"id":"S14","publisher":"Smithsonian Center for Folklife and Cultural Heritage","title":"Underground Railroad Quilt Codes: What We Know, What We Believe, and What Inspires Us","url":"https://folklife.si.edu/magazine/underground-railroad-quilt-codes","packetLeads":["disputed quilt-code story","oral history vs documentary evidence","historical methodology"],"status":"checked","checked":"2026-09-26","supports":["Folklife Magazine article on quilt codes, weighing belief against documentary evidence.","Quilt scholar Marsha MacDowell: before 1999 the codes were unheard of, even among African American quilters; the story spread from Tobin and Dobard's 1999 book Hidden in Plain View.","Historians note several patterns cited as signals probably did not exist during 1850 to 1860.","About fifty recorded interviews with African American quilters in Michigan in the late 1990s mentioned no code.","Sets out the believers' case with respect: absence of evidence is expected if discovery meant death."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 2025."},{"id":"S15","publisher":"NIST Computer Security Resource Center","title":"Encryption","url":"https://csrc.nist.gov/glossary/term/encryption","packetLeads":["encryption terminology"],"status":"checked","checked":"2026-09-26","supports":["NIST glossary: encryption is the cryptographic transformation of data to produce ciphertext (CNSSI 4009-2022), or changing plaintext into ciphertext using an algorithm and key (SP 800-57)."],"grade":"A","notes":""},{"id":"S16","publisher":"NIST Computer Security Resource Center","title":"Cryptography","url":"https://csrc.nist.gov/glossary/term/cryptography","packetLeads":["cryptography terminology","confidentiality / integrity / authentication context"],"status":"checked","checked":"2026-09-26","supports":["NIST glossary: cryptography provides information security, including confidentiality, data integrity, source authentication and non-repudiation (SP 800-175B Rev. 1)."],"grade":"A","notes":""},{"id":"S17","publisher":"NIST Computer Security Resource Center","title":"Steganography","url":"https://csrc.nist.gov/glossary/term/steganography","packetLeads":["definition of steganography","hiding the existence of communication"],"status":"checked","checked":"2026-09-26","supports":["NIST glossary: steganography is communicating in a way that hides the existence of the communication (CNSSI 4009-2022)."],"grade":"A","notes":""},{"id":"S18","publisher":"National Security Agency / Center for Cryptologic History","title":"Dawn of American Cryptology / section discussing Bacon's Biliteral Cipher","url":"https://www.nsa.gov/portals/75/documents/about/cryptologic-heritage/historical-figures-publications/publications/pre-modern/DawnAmericanCryptology_Hatch.pdf","packetLeads":["Bacon's five-position A/B cipher","history of cryptology"],"status":"checked","checked":"2026-09-26","supports":["David Hatch, The Dawn of American Cryptology, 1900 to 1917, Center for Cryptologic History, NSA, Special Series vol. 7, 80 pages.","Chapter 2 (pp. 15 to 25): the Bacon biliteral cipher was real, invented by Sir Francis Bacon early in the seventeenth century; five-group combinations of As and Bs can represent each letter.","Elizabeth Wells Gallup claimed typeface differences in the 1623 First Folio were its As and Bs; she was dismissed from the International Bacon Society in 1900 for claims she could not prove.","George Fabyan brought her to Riverbank Laboratories, where William Friedman came to cryptology."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 5 August 2024. A good Gallup story for the evidence exhibit."},{"id":"S19","publisher":"National Cryptologic Museum / NSA","title":"Museum information and educational programs","url":"https://www.nsa.gov/History/National-Cryptologic-Museum/","packetLeads":["cryptologic history","substitution and transposition education","cipher-machine history"],"status":"checked","checked":"2026-09-26","supports":["The National Cryptologic Museum is NSA's public museum; it collects, preserves and shows cryptologic artifacts and runs tours and K-12 education programs."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 7 January 2022. The page is general; it does not itself teach substitution or transposition."},{"id":"S20","publisher":"Smithsonian Institution Archives","title":"A Forgotten History: Alfred Vail and Samuel Morse","url":"https://siarchives.si.edu/blog/forgotten-history-alfred-vail-and-samuel-morse","packetLeads":["telegraph","Morse/Vail code history","dots/dashes as a communication encoding"],"status":"checked","checked":"2026-09-26","supports":["Morse's test message 'What Hath God Wrought?' went from Washington to Baltimore on 24 May 1844; Alfred Vail received it.","Vail improved the machine and developed a simpler alphabetic code in place of Morse's numerical code book system; Morse's name alone went on the patents.","The Smithsonian Institution Archives hold Vail's papers."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 12 January 2026."},{"id":"S21","publisher":"National Cryptologic Museum / NSA","title":"18th Century Cipher Device","url":"https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2718496/18th-century-cipher-device/","packetLeads":["physical cipher devices","scrambled alphabets","keys embodied in mechanical arrangement"],"status":"checked","checked":"2026-09-26","supports":["Object record: a wheel cipher found in a home near Monticello, thought to be the oldest surviving true cipher device, apparently for French.","Scrambled alphabets on numbered wheels, placed on the spindle in a prearranged order.","Called the 'Jefferson Cipher Wheel', but the link to Jefferson is unproven."],"grade":"A","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 7 June 2026."},{"id":"S22","publisher":"National Cryptologic Museum / NSA","title":"World War 2: Enigma","url":"https://www.nsa.gov/History/National-Cryptologic-Museum/Exhibits-Artifacts/Exhibit-View/Article/2719176/world-war-2-enigma/","packetLeads":["rotor-machine cryptography","machine ciphers","historical transition toward mechanized encryption"],"status":"checked","checked":"2026-09-26","supports":["Enigma was an electromechanical machine using wired rotors and plugs, the workhorse of German forces in the Second World War.","Allied cryptologists read most Enigma traffic for most of the war; many historians think this shortened the war by up to two years."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 4 April 2025."},{"id":"S23","publisher":"National Museum of American History / Smithsonian","title":"Organizing as Patriots","url":"https://americanhistory.si.edu/explore/exhibitions/american-democracy/online/great-leap/revolution/organizing-patriots","packetLeads":["boycotts","home manufacturing","homespun textiles"],"status":"checked","checked":"2026-09-26","supports":["Patriots made agreements not to use imported British goods such as fine fabrics, furnishings or tea.","To join, the wealthy bought plainer goods from neighbours, including linen spun by colonial women and woven by colonial weavers."],"grade":"B","notes":"Live host refuses scripted access (403 bot wall); read from the Wayback Machine snapshot of 13 December 2025."}]`),R={sources:$},b=R.sources,k=n=>b.find(i=>i.id===n);function B(n){return n.claims.every(o=>o.sources.length>0&&o.sources.every(t=>{var s;return((s=k(t))==null?void 0:s.status)==="checked"}))&&(n.status==="published"||n.visibility==="public")}const L=(n,i)=>i||B(n),D=`---
+slug: my-exhibit
+archive: ARCHIVE 00.0
+title: Title of the exhibit
+place: Where
+period: When
+status: draft
+experiment: Link text for a related lab or game page. | ./lab.html
+---
+
+One or two sentences that open the exhibit.
+
+## Claims
+
+- [B] [S01] One claim, as much as the source supports and no more.
+  Why: Why this grade and not a higher one.
+
+## What we know
+
+- A plain point.
+
+## What we do not know
+
+- An open question, and what would answer it.
+`,H=`---
+slug: belgium
+archive: ARCHIVE 07.1
+title: Trains, windows and knitting
+place: Occupied Belgium
+period: First World War
+status: draft
+experiment: Our knit-and-purl codes are modern reconstructions: try one in the lab. | ./lab.html
+---
+
+The story of a woman at a window, knitting a record of passing trains, is told often. Parts of it rest on good evidence. Other parts still need a source.
+
+## Claims
+
+- [B] [S03] Belgian intelligence networks, including La Dame Blanche (the White Lady), watched German rail transport and passed information to British intelligence.
+  Why: Recent history written from newly available archives.
+
+- [D] A particular knitter recorded trains stitch by stitch, with different stitches for different kinds of train.
+  Why: Widely retold, but we have no page-level source for a specific stitch system or a named knitter.
+  Missing: Popular and educational retellings only. Page-level citations from the White Lady research would settle it either way.
+
+- [B] [S04] A 1942 handbook, A Guide to Codes and Signals by Gordon A. J. Petersen and Marshall McClintock, covers signals, Morse, signs, symbols and ciphers.
+  Why: A library catalogue record confirms the book exists. What it says about handwork needs the pages themselves.
+
+## What we know
+
+- Railway watching was real intelligence work in occupied Belgium.
+- Codes and signals were taught to the public in wartime handbooks.
+
+## What we do not know
+
+- Whether any documented knitter used stitches to log trains, and how.
+- What the 1942 handbook says about codes in handwork. Earlier research points to a section on knitting, embroidery, rugs and knots; we will quote it only once we have the pages.
+`,P=`---
+slug: cloth-as-resistance
+archive: ARCHIVE 02.1
+title: Cloth as resistance
+place: Many places
+period: From colonial boycotts to today
+status: draft
+experiment: Play The Purloined Parcel, where the cloth is the letter. | ./game.html
+---
+
+Textiles have carried politics in many ways besides hidden codes: by who makes them, by being worn together, by bearing witness, and by sheer number.
+
+## Claims
+
+- [B] [S05] [S06] [S23] In colonial North America, boycotts of British goods included making cloth at home; spinning bees and homespun became part of the protest.
+  Why: Museum and national park histories agree.
+
+- [B] [S07] Gandhi called on people to spin, weave and wear khadi, which became a symbol of resistance; in 1921 nationalists put the spinning wheel on their flag.
+  Why: A museum history of Indian textiles.
+
+- [A] [S08] At the 1908 NUWSS procession, the Women Writers' Suffrage League carried a banner designed by Mary Lowndes and embroidered by Christiana Herringham.
+  Why: The banner survives in a museum collection.
+
+- [B] [S09] In Chile under the dictatorship, women made arpilleras showing repression, disappearance, poverty, detention and daily life.
+  Why: A human rights museum's exhibition on arpilleras as resistance, organization and testimony.
+
+- [B] [S10] The first major display of the AIDS Memorial Quilt on the National Mall, in 1987, had 1,920 panels, each for one person.
+  Why: The quilt's own organization's history.
+
+- [B] [S11] The pink knitted hat was a main symbol of the 21 January 2017 Women's March; its simple pattern was shared so people could make or donate hats.
+  Why: A museum article on an object in its collection.
+
+- [C] [S12] The Knitting Nannas began in Australia in 2012 in opposition to coal-seam gas; knitting went with watching company activity.
+  Why: The group's own history: valuable first-hand, and not independently checked yet.
+
+## What we know
+
+- Making cloth can change who earns from it.
+- A shared object, worn by many, can say what one person alone cannot.
+- A textile can be the record itself.
+- Knitting is slow, which suits staying put and watching.
+
+## What we do not know
+
+- Each of these deserves its own page; this overview only points the way.
+`,_=`---
+slug: evidence
+archive: ARCHIVE 17.1
+title: Good story. Where's the evidence?
+place: Everywhere stories travel
+period: Any time
+status: draft
+experiment: Our own codes are labelled modern reconstruction. See how they work in the lab. | ./lab.html
+---
+
+Secret-message stories move quickly from possible to everyone knows. This page is about telling the story and the evidence apart, without dismissing either.
+
+## Claims
+
+- [D] [S14] The widely repeated story that quilt patterns formed a standard code for routes on the Underground Railroad lacks strong contemporary documentation.
+  Why: The Smithsonian's folklife center reviews the story's modern popularity and the missing contemporary records.
+
+- [C] [S14] The story matters culturally, and oral tradition deserves respect as oral tradition.
+  Why: The same review separates what people believe and find inspiring from what can be shown.
+
+- [A] [S13] Khipu use cords, knots and their arrangement to record structured information.
+  Why: Surviving khipu are held in museum collections.
+
+## What we know
+
+- A story can be meaningful and still not be proof that something happened as told.
+- Separate facts can fuse into a stronger claim as they are retold. The Belgian train knitter and Aggi Klønig are two cases to watch.
+- Khipu show that thread can hold structured data. They are not an ancestor of European coded knitting, and we do not present them as one.
+
+## What we do not know
+
+- How the quilt-code story took its current form: the review traces it, and we want to read it in full before summarizing.
+`,O=`---
+slug: grini
+archive: ARCHIVE 04.2
+title: Grini: making in secret
+place: Grini, Norway
+period: German occupation
+status: draft
+experiment: Knit a message small: try a narrow grid in the lab. | ./lab.html
+---
+
+Women held at Grini made tiny knitted and embroidered things with almost nothing. Some were dangerous to own. Making them was a way to stay yourself.
+
+## Claims
+
+- [B] [S02] Women prisoners made very small knitted mittens and socks, and embroidery, using improvised tools such as hairpins or sewing pins.
+  Why: A museum's own account of objects in collections. Grade A would need the object records themselves.
+
+- [B] [S02] Thread was salvaged from clothing, bedding and other material to hand.
+  Why: From the museum's account; the objects are the evidence behind it.
+
+- [B] [S02] Some pieces carried patriotic motifs and statements, and were made in hiding because owning them was dangerous.
+  Why: From the museum's account.
+
+- [B] [S02] The museum reads this handwork as a way to keep concentration, imagination, competence, control, self-respect and inner freedom.
+  Why: This is the museum's interpretation, shown as interpretation.
+
+## What we know
+
+- Making can be resistance even when nobody outside ever sees it.
+- Tools and thread were improvised from whatever prisoners had.
+
+## What we do not know
+
+- Agnes (Aggi) Klønig's story brings message-smuggling and clandestine needlework into the same life: she carried messages through her Red Cross access before she was imprisoned, and made clandestine needlework while imprisoned. We have not found evidence that her messages themselves were in stitches. The source for her story is not yet on our shelf.
+- We have not yet read first-person accounts from Grini prisoners.
+`,G=`---
+slug: norway
+archive: ARCHIVE 04.1
+title: The red cap
+place: Norway
+period: German occupation
+status: draft
+visibility: public
+experiment: Try the two-colour carrier in the lab: a message in red and cream. | ./lab.html
+---
+
+A warm winter hat became a way for people to show where they stood. No cipher, no key: just a shared colour, worn by many people at once.
+
+## Claims
+
+- [B] [S01] The red knitted topplue (nisselue) became a symbol of Norwegian identity and resistance during the German occupation.
+  Why: A national encyclopedia entry, written from the historical record. A strong reference, but not itself a document from the time.
+
+- [B] [S01] A Trondheim police notice prohibited red caps from 26 February 1942, describing their widespread use as a demonstration.
+  Why: Reported by the encyclopedia. The police notice itself would be primary evidence (grade A); finding a digitized copy is on the research list.
+
+## What we know
+
+- The red cap was worn widely enough to be read as a political statement.
+- The Trondheim notice shows that the authorities treated wearing the caps as a demonstration.
+
+## What we do not know
+
+- We have not yet seen the original police notice; the cited encyclopedia reproduces its wording.
+- This source does not establish a nationwide ban.
+- We have found no evidence that Norwegian knitters hid coded text, such as Morse, in garments. The cap carried its meaning by being worn.
+`,p={A:{badge:"DOCUMENTED",meaning:"A surviving object, regulation, contemporary text, archive document or direct testimony."},B:{badge:"STRONG RECONSTRUCTION",meaning:"Supported by archival scholarship or several reliable sources."},C:{badge:"LATER ACCOUNT",meaning:"A later account or oral history: valuable, harder to check independently."},D:{badge:"DISPUTED",meaning:"A claim exists, but historians disagree or the documentation is weak."},X:{badge:"MODERN RECONSTRUCTION",meaning:"A system built here, today, from a historical principle."}};class j extends Error{}const F=["slug","archive","title","place","period","status"];function U(n,i){var x;const o=n.replace(/\r\n/g,`
+`).split(`
+`),t=(a,r)=>{throw new j(`${i}, line ${a+1}: ${r}`)};((x=o[0])==null?void 0:x.trim())!=="---"&&t(0,'the file must start with a "---" line opening the header.');const s=o.indexOf("---",1);s<0&&t(0,'the header is never closed with a "---" line.');const c={};for(let a=1;a<s;a++){const r=o[a];if(!r.trim())continue;const h=/^([a-z]+):\s*(.*)$/.exec(r);h||t(a,`"${r}" is not a "key: value" header line.`),c[h[1]]=h[2].trim()}for(const a of F)c[a]||t(0,`the header needs "${a}:".`);c.status!=="draft"&&c.status!=="published"&&t(0,'status must be "draft" or "published".'),c.visibility&&c.visibility!=="public"&&t(0,'visibility, when provided, must be "public".');const u=new Map,v=[];let w=v;for(let a=s+1;a<o.length;a++){const r=o[a],h=/^##\s+(.+)$/.exec(r);if(h){const l=h[1].trim().toLowerCase();["claims","what we know","what we do not know"].includes(l)||t(a,`unknown section "## ${h[1]}". Use Claims, What we know, What we do not know.`),w=[],u.set(l,{start:a+1,lines:w})}else w.push(r)}const S=a=>{const r=u.get(a);if(!r)return[];const h=[];return r.lines.forEach((l,y)=>{/^-\s+/.test(l)?h.push({line:r.start+y,text:[l.replace(/^-\s+/,"")]}):/^\s+\S/.test(l)&&h.length?h.at(-1).text.push(l.trim()):l.trim()&&t(r.start+y,`"${l.trim()}" should be a list item starting with "- ".`)}),h},A=S("claims").map(({line:a,text:r})=>{const h=/^\[([A-Z])\]\s*((?:\[S\d\d\]\s*)*)(.*)$/.exec(r[0]);h||t(a,'a claim starts with its grade in brackets, like "- [B] [S01] The claim."');const l=h[1];l in p||t(a,`"${l}" is not a grade. Use A, B, C, D or X.`);const y=[...h[2].matchAll(/S\d\d/g)].map(d=>d[0]),M=[h[3].trim()];let m="",g="";for(const d of r.slice(1))/^why:/i.test(d)?m=d.replace(/^why:\s*/i,""):/^missing:/i.test(d)?g=d.replace(/^missing:\s*/i,""):m?m+=` ${d}`:g?g+=` ${d}`:M.push(d);return m||t(a,'every claim needs a "Why:" line explaining its grade.'),{text:M.join(" "),grade:l,sources:y,why:m,...g?{sourceNote:g}:{}}});A.length||t(s,'an exhibit needs a "## Claims" section with at least one claim.');const W=a=>S(a).map(r=>r.text.join(" ")),[C,T]=(c.experiment??"").split("|").map(a=>a.trim());return{slug:c.slug,archive:c.archive,title:c.title,place:c.place,period:c.period,lede:v.join(`
+`).trim().replace(/\s*\n\s*/g," "),claims:A,know:W("what we know"),unknown:W("what we do not know"),...C&&T?{experiment:{text:C,href:T}}:{},status:c.status,...c.visibility==="public"?{visibility:"public"}:{}}}const V=Object.assign({"../../content/exhibits/_template.md":D,"../../content/exhibits/belgium.md":H,"../../content/exhibits/cloth-as-resistance.md":P,"../../content/exhibits/evidence.md":_,"../../content/exhibits/grini.md":O,"../../content/exhibits/norway.md":G}),f=Object.entries(V).filter(([n])=>!n.split("/").pop().startsWith("_")).map(([n,i])=>U(i,n.replace("../../",""))).sort((n,i)=>n.archive.localeCompare(i.archive,"en",{numeric:!0})),K={unchecked:"NOT YET CHECKED",checked:"CHECKED","needs-human":"NEEDS A LIBRARY OR A COPY"};function q(n,i){return e(`span.badge.badge-${n.toLowerCase()}`,{title:p[n].meaning},`${n} / ${p[n].badge}${i?" (PROPOSED)":""}`)}function z(n){const i=k(n),o=t=>{var s;return t.preventDefault(),(s=document.getElementById(`source-${n}`))==null?void 0:s.scrollIntoView({behavior:"smooth"})};return e("a.src.mono",{href:`#source-${n}`,title:`${i.publisher}: ${i.title}`,onclick:o},`[${n}]`)}function J(n){const i=n.status==="draft",o=[...new Set(n.claims.flatMap(t=>t.sources))].sort();return e("article.exhibit",{},e("p",{},e("a.mono",{href:location.search?`${location.search}#`:"#"},"← All exhibits")),e("div.labels",{},e("span.mono",{},`${n.archive} / ${n.place.toUpperCase()} / ${n.period.toUpperCase()}`),i?e("span.stamp",{},n.visibility==="public"?"PUBLIC DRAFT / EDITORIAL REVIEW":"DRAFT / SOURCES BEING CHECKED"):""),e("h2.section-label.exhibit-title",{},n.title),e("p.lede",{},n.lede),i?e("p.note.mono",{},"Draft for review. Claims retain their proposed evidence grades; wording and presentation remain under review."):"",n.slug==="norway"?e("figure",{},e("img.archive-drawing",{src:"/unravel-the-purloined/development/assets/red-cap.svg",alt:"A schematic outline of a pointed cap, annotated with a red thread."}),e("figcaption.hint",{},"X / Drawing made here, a schematic cap rather than a depiction of a surviving museum object. The cap communicates through shared symbolism.")):"",e("h3.step-title",{},"Claims"),e("ol.claims",{},...n.claims.map(t=>e("li.claim",{},q(t.grade,i),e("p",{},t.text," ",...t.sources.map(z)),t.sourceNote?e("p.hint",{},`No source yet: ${t.sourceNote}`):"",e("details.more",{},e("summary.mono",{},"WHY THIS LABEL?"),e("p",{},t.why),e("p.hint",{},`${p[t.grade].badge}: ${p[t.grade].meaning}`))))),e("div.know",{},e("section",{},e("h3.step-title",{},"What we know"),e("ul",{},...n.know.map(t=>e("li",{},t)))),e("section",{},e("h3.step-title",{},"What we do not know"),e("ul",{},...n.unknown.map(t=>e("li",{},t))))),n.experiment?e("p.experiment",{},e("span.badge.badge-x",{},"RELATED EXPERIMENT")," ",e("a",{href:n.experiment.href},n.experiment.text)):"",e("h3.step-title",{},"Sources"),e("ul.source-list",{},...o.map(t=>N(t))))}function N(n){const i=k(n);return e("li",{id:`source-${n}`},e("span.mono",{},`[${i.id}] `),`${i.publisher}, `,e("a",{href:i.url,rel:"noopener"},i.title)," ",e(`span.badge${i.status==="checked"?".badge-a":".badge-c"}`,{},K[i.status]),i.status==="checked"&&i.supports.length?e("p.hint",{},`Supports: ${i.supports.join("; ")}`):"")}function Q(n){const i=f.filter(t=>L(t,n)),o=f.filter(t=>!n&&!B(t));return e("div",{},e("p.note",{},"Each exhibit shows its claims with an evidence grade, what we know, what we do not know yet, and the sources behind it."),e("div.grades",{},...Object.entries(p).map(([t,s])=>e("p",{},e(`span.badge.badge-${t.toLowerCase()}`,{},`${t} / ${s.badge}`)," ",e("span.hint",{},s.meaning)))),i.length?e("ol.cases",{},...i.map(t=>e("li.case-card",{},e("p.mono.case-n",{},t.archive,t.status==="draft"?e("span.stamp.stamp-small",{},"DRAFT"):""),e("h3.step-title",{},t.title),e("p.hint",{},`${t.place}, ${t.period}`),e("p",{},t.lede),e("a.btn",{href:`${location.search}#${t.slug}`},"Open the exhibit →")))):"",o.length?e("section",{},e("h2.step-title",{},"In preparation"),e("p.hint",{},"These open once every source they cite has been read and recorded."),e("ul.coming",{},...o.map(t=>e("li",{},e("span.mono",{},`${t.archive} `),t.title,e("span.hint",{},` (${t.place})`))))):"",e("p",{},e("a.btn",{href:`${location.search}#sources`},"The source register →")))}function X(){const n=b.filter(i=>i.status==="checked").length;return e("div",{},e("p",{},e("a.mono",{href:`${location.search}#`},"← All exhibits")),e("h2.section-label",{},"Source register"),e("p.note",{},`${n} of ${b.length} sources read and recorded so far. Each is checked for what the page actually says before any exhibit relies on it.`),e("ul.source-list",{},...b.map(i=>N(i.id))))}function Y(n){const i=new URLSearchParams(location.search).has("drafts")||!1,o=()=>{var c;const t=location.hash.slice(1),s=f.find(u=>u.slug===t&&L(u,i));t==="sources"||t.startsWith("source-")?(n.replaceChildren(X()),t.startsWith("source-")&&((c=document.getElementById(t))==null||c.scrollIntoView())):s?n.replaceChildren(J(s)):n.replaceChildren(Q(i)),document.title=s?`${s.title}: the archive`:"The archive: Unravel the Purloined"};window.addEventListener("hashchange",o),o()}E();I();Y(document.querySelector("#archive"));
